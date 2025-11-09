@@ -1,4 +1,4 @@
-package fr.uge.backpackHero;
+package fr.uge.temp;
 
 public record Door(String nom, int floorDestination) implements Area {
 

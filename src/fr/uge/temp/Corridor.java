@@ -1,4 +1,4 @@
-package fr.uge.backpackHero;
+package fr.uge.temp;
 
 public record Corridor() implements Area {
 
