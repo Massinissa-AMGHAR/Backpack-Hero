@@ -5,15 +5,16 @@ import java.util.Scanner;
 public class Fight {
   private final Hero hero; 
   private final Ennemy ennemy; 
-  
+
   private final Scanner scanner = new Scanner(System.in);
-  
+
   public Fight(Hero hero, Ennemy ennemy) {
     this.hero = hero;
     this.ennemy = ennemy; 
   }
+
   public void game() {
-	hero.resetMana(); 
+    hero.resetMana(); 
     IO.println("The fight start between " + hero.name() + " and "+ ennemy.name() + " !\n");
     while(hero.HP() > 0 && ennemy.HP() > 0) {
       int action = ennemy.actionAnnounced();
@@ -22,59 +23,87 @@ public class Fight {
       if(ennemy.HP() <= 0) break; 
       ennemyTurn(action); 
     }
-    
-    if(hero.HP() <= 0)IO.println("You are dead bro..."); 
+
+    if(hero.HP() <= 0) IO.println("You are dead bro..."); 
     else {
       IO.println(ennemy.name() + " was tchoufara by " + hero.name()); 
       hero.winXp(ennemy);
       IO.println("Hero win " + hero.xp() + " experience points"); 
     }
   }
+
   private void heroTurn() { 
     IO.println("Hero turn : \n"); 
-    IO.println(ennemy.toString() + "\n"); 
-    
+    IO.println(ennemy + "\n"); 
+    IO.println(hero + "\n"); 
+    IO.println(hero.backpack()); 
+
     while(hero.energy() > 0) {
-     
-      IO.println(hero.toString() + "\n"); 
-      IO.println(hero.backpack().toString()); 
+      if (ennemy.HP() <= 0) break;
       Item item = null; 
       while(item == null) {
-    	  
         IO.println("Choose an item to use (enter line and column) :"); 
-        int line = scanner.nextInt(); 
-        int column = scanner.nextInt();
-        scanner.nextLine(); 
-      
+        int line = -1;
+        int column = -1;
+        if (scanner.hasNextInt()) line = scanner.nextInt(); 
+        else {
+          IO.println("You have to enter a Integer for line !");
+          scanner.nextLine();
+          continue;
+        }
+        if (scanner.hasNextInt()) column = scanner.nextInt();
+        else {
+          IO.println("You have to enter a Integer for column !");
+          scanner.nextLine();
+          continue;
+        }
+
         try {
           item = hero.backpack().choice(line, column); 
-          IO.println("You choose " + item.name() + " and it costs " + item.energyCost());
-          
+          IO.println(hero.name() + " chooses " + item.name() + " and it costs " + item.energyCost());
         } catch(IllegalArgumentException e){
-    	    IO.println(e.getMessage() + ", please choose again"); 
+          IO.println(e.getMessage() + ", please choose again"); 
         }
       }
-      
       useItem(item); 
-      
+      IO.println("\nCurrent stats:");
+      IO.println(hero);
+      IO.println(ennemy);
     }
-    
   }
-  
+
   private void useItem(Item item) {
+    int value; 
     switch(item.type()) {
-      case "MELEE" -> hero.attack(ennemy, item);
-      case "ARROW" -> hero.attack(ennemy, item);
-      case "SHIELD" -> hero.defense(item);
-      case "ARMOR" -> hero.defense(item);
-      case "MAGIC" -> hero.attack(ennemy, item);
-      case "MANA" -> hero.manaBonus(item);
-      default -> IO.println("Unknow item type"); 
+      case "MELEE", "ARROW", "MAGIC" -> {
+        value = hero.attack(ennemy, item); 
+        IO.println(hero.name() + " uses " + item.name() + " and deals " + value + " damage to " + ennemy.name() + "!");
+      }
+      case "SHIELD", "ARMOR" -> {
+        value = hero.defense(item);
+        IO.println(hero.name() + " uses " + item.name() + " and blocks " + value + " damage!");
+      }
+      case "MANA" -> {
+        value = hero.manaBonus(item);
+        IO.println(hero.name() + " uses " + item.name() + " and recovers " + value + " mana!");
+      }
+      default -> IO.println("Unknown item type");
     }
   }
-  
+
   private void ennemyTurn(int action) {
-    if(action == 0) ennemy.attack(hero, null);
-    else ennemy.defense(null);
+    IO.println("Enemy turn : \n"); 
+    if(action == 0) {
+      int damage = ennemy.attack(hero, null);
+      IO.println(ennemy.name() + " attacks and deals " + damage + " damage to " + hero.name() + "!");
+    } else {
+      ennemy.resetProtection();
+      int blocked = ennemy.defense(null);
+      IO.println(ennemy.name() + " defends and gains " + blocked + " protection!");
+    }
+    IO.println("\nCurrent stats:");
+    IO.println(hero);
+    IO.println(ennemy);
   }
 }
+
