@@ -19,7 +19,7 @@ public class Hero implements Fighter {
 	public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int gold, int xp,  int level, Backpack backpack) {
 		Objects.requireNonNull(name, "name can't be null");
 		Objects.requireNonNull(backpack, "backpack can't be null");
-        if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || gold < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");
+        if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || manaMax < 0 || xp < 0 || gold < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");
         this.name = name;
         this.HP = HP;
         this.HPMAX = HPMAX;
@@ -46,6 +46,8 @@ public class Hero implements Fighter {
 	public Backpack backpack() { return backpack; }
 	
 	public void attack(Fighter opponent, Item item) {
+		Objects.requireNonNull(opponent, "Opponent cannot be null"); 
+		Objects.requireNonNull(item, "Item cannot be null");
 		if (!(opponent instanceof Ennemy)) throw new IllegalArgumentException("Hero can only attack Ennemy");
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println(name + " doesn't have enough resources to use " + item.name());
@@ -78,6 +80,7 @@ public class Hero implements Fighter {
 	}
 	
 	public void manaBonus(Item item) {
+		Objects.requireNonNull(item, "Item cannot be null");
 	  if (mana < item.manaCost() || energy < item.energyCost()) {
 	    IO.println(name + " doesn't have enough resources to use " + item.name());
 		return;
@@ -92,6 +95,7 @@ public class Hero implements Fighter {
 	
 	
 	public void winXp(Ennemy ennemy) {
+		Objects.requireNonNull(ennemy, "Ennemy cannot be null");
 	  this.xp += ennemy.xp();
 	}
 	
@@ -101,6 +105,32 @@ public class Hero implements Fighter {
 	
 	public void resetMana() {
       mana = manaMax; 
+	}
+	public boolean buy(int cost) {
+	  if(gold < cost) {
+	    IO.println("You don't have enough money !"); 
+	    return false; 
+	  }
+	  gold -= cost; 
+	  return true; 
+	}
+	public void buyItem(Item item, int line, int column) {
+	  Objects.requireNonNull(item, "Item cannot be null"); 
+	  if(buy(item.goldCost())) {
+	    this.backpack.add(item, line, column);
+	  }
+	}
+	public void sellItem(Merchant merchant, Item item) {
+	  Objects.requireNonNull(merchant, "Merchant cannot be null"); 
+	  Objects.requireNonNull(item, "Item cannot be null");
+	  this.backpack.delete(item); 
+	  gold += merchant.goldCost(item);  
+	}
+	public void treat(Healer healer) {
+	  Objects.requireNonNull(healer, "Healer cannot be null");
+	  if(buy(healer.price())) {
+	    HP += healer.hp(); 
+	  }
 	}
 	
 	@Override

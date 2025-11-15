@@ -32,7 +32,8 @@ public class Main {
 
    
         Hero hero = new Hero("Mouse", 30, 40, 0, 3, 5, 0, 1, 0, 1, backpack);
-
+        var merchant = new Merchant(); 
+        IO.println(merchant); 
         
 
         IO.println("=== GAME START ===");
