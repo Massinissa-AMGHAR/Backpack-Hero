@@ -45,49 +45,69 @@ public class Hero implements Fighter {
 	public int xp() {return xp; }
 	public Backpack backpack() { return backpack; }
 	
-	public void attack(Fighter opponent, Item item) {
+	public int attack(Fighter opponent, Item item) {
 		if (!(opponent instanceof Ennemy)) throw new IllegalArgumentException("Hero can only attack Ennemy");
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println(name + " doesn't have enough resources to use " + item.name());
-			return;
+			return 0;
 		}
 		Ennemy ennemy = (Ennemy) opponent;
-		int damage = Math.max(item.damage() - ennemy.protection(), 0);
-		ennemy.receiveDamage(damage);
+		int totalDamage = 0;
+		int attackDamage = item.damage();
 		
+		int protection = ennemy.protection();
+		int damageToProtection = Math.min(attackDamage, protection);
+	    
+	  ennemy.receiveProtectionDamage(damageToProtection); 
+	    
+		attackDamage -= damageToProtection;
+		totalDamage += damageToProtection;
+		
+		if (attackDamage > 0) {
+			ennemy.receiveDamage(attackDamage);
+			totalDamage += attackDamage;
+		}
 		energy -= item.energyCost(); 
-		mana -= item.manaCost(); 
-		gold -= item.goldCost(); 
+		mana -= item.manaCost();
 		
+		return totalDamage;
 	}
 	
 	public void receiveDamage(int damage) {
 		HP = Math.max(HP - damage, 0);
 	}
 	
-	public void defense(Item item) {
+	public void receiveProtectionDamage(int damage) {
+	    protection = Math.max(protection - damage, 0);
+	}
+	
+	public void resetProtection() {
+		protection = 0;
+	}
+	
+	public int defense(Item item) {
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println(name + " doesn't have enough resources to use " + item.name());
-			return;
+			return 0;
 		}
 		protection += item.defense();
 		
 		energy -= item.energyCost(); 
 		mana -= item.manaCost(); 
-		gold -= item.goldCost(); 
+		return protection;
 	}
 	
-	public void manaBonus(Item item) {
+	public int manaBonus(Item item) {
 	  if (mana < item.manaCost() || energy < item.energyCost()) {
 	    IO.println(name + " doesn't have enough resources to use " + item.name());
-		return;
+		return 0;
 	  }
 	  
 	  mana += item.manaGained(); 
 	  
 	  energy -= item.energyCost(); 
-	  mana -= item.manaCost(); 
-	  gold -= item.goldCost(); 
+	  mana -= item.manaCost();  
+	  return mana;
 	}
 	
 	
@@ -103,6 +123,36 @@ public class Hero implements Fighter {
       mana = manaMax; 
 	}
 	
+	public boolean buy(int cost) {
+	    if (gold < cost) {
+	        IO.println("You don't have enough money !");
+	        return false;
+	    }
+	    gold -= cost;
+	    return true;
+	}
+
+	public void buyItem(Item item, int line, int column) {
+	    Objects.requireNonNull(item, "Item cannot be null");
+	    if (buy(item.goldCost())) {
+	        this.backpack.add(item, line, column);
+	    }
+	}
+
+	public void sellItem(Merchant merchant, Item item) {
+	    Objects.requireNonNull(merchant, "Merchant cannot be null");
+	    Objects.requireNonNull(item, "Item cannot be null");
+	    this.backpack.delete(item);
+	    gold += merchant.goldCost(item);
+	}
+
+	public void treat(Healer healer) {
+	    Objects.requireNonNull(healer, "Healer cannot be null");
+	    if (buy(healer.price())) {
+	        HP += healer.hp();
+	    }
+	}
+
 	@Override
 	public String toString() {
 		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + "| Protection: " + this.protection() + " | Energy: " + this.energy();
