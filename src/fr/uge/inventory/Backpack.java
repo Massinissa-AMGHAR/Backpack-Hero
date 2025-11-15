@@ -83,6 +83,7 @@ public class Backpack {
 	  return backpack.get(line).get(column); 
   }
   
+  
   @Override
   public String toString() {
     var builder = new StringBuilder(); 

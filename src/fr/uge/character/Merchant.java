@@ -8,6 +8,7 @@ import fr.uge.inventory.*;
 public class Merchant {
   private final ArrayList<Item> shop; 
   private final Random rand; 
+  
   public Merchant(){
     this.shop = new ArrayList<Item>();
     this.rand = new Random(); 

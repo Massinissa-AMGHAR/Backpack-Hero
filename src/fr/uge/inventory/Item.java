@@ -7,8 +7,8 @@ public class Item {
 	private final String name; 
 	private final String type; 
 	private final String rarity;
-	private final int width;
-	private final int height;
+	private int width;
+	private int height;
 	private final int damage;
 	private final int defense;
 	private final int energyCost;
@@ -50,6 +50,11 @@ public class Item {
 	public int manaGained() { return manaGained; }
 	public int goldCost() { return goldCost; }
 	
+	public void translate() {
+	  var pastWidth = width; 
+	  width = height; 
+	  height = pastWidth; 
+	}
 	
 	public static final Item[] ALL_ITEM = {
 			new Item("Wooden Sword", "MELEE", "COMMON", 1, 3, 7, 0, 1, 0, 0, 0, 5),
