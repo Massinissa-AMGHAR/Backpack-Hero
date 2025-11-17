@@ -1,60 +1,100 @@
 package fr.uge.map;
 import fr.uge.character.*;
-import fr.uge.temp.*;
-import java.util.ArrayList; 
+import fr.uge.inventory.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random; 
 
 public class Room {
-  private final ArrayList<Ennemy> enemies = new ArrayList<>(); 
-  private final Merchant merchant; 
-  private final Healer healer; 
-  private final Grid grid; 
-  private final boolean exit;
-  private final boolean treasure;
+  private final boolean hasEnemies; 
+  private final boolean hasMerchant; 
+  private final boolean hasAngel; 
+  private final Random rand; 
+  private final boolean hasTreasure;
+  private final boolean hasDoor;
+  private final boolean isCorridor; 
   
-  public Room(Merchant merchant, Healer healer, Grid grid, ArrayList<Ennemy> enemies, boolean exit, boolean treasure) {
-    this.merchant = merchant; 
-    this.healer = healer; 
-    this.grid = grid; 
-    if (enemies != null) {
-    	for (Ennemy e : enemies) this.enemies.add(e);
-    } 
-    this.exit = exit;
-    this.treasure = treasure;
+  private final ArrayList<Enemy> enemies; 
+  private final ArrayList<Item> treasure; 
+  private final Merchant merchant; 
+  private final Angel healer; 
+  private final ArrayList<Room> neighbors = new ArrayList<>(); 
+  
+  public Room(boolean hasEnemies, boolean hasMerchant, boolean hasAngel, boolean hasTreasure, boolean hasDoor) {
+    this.hasEnemies = hasEnemies; 
+    this.hasMerchant = hasMerchant; 
+    this.hasAngel = hasAngel; 
+    this.rand = new Random(); 
+    this.hasTreasure = hasTreasure; 
+    this.hasDoor = hasDoor;  
+    
+    if(!hasEnemies && !hasMerchant && !hasAngel && !hasTreasure && !hasDoor) {
+    	isCorridor = true; 
+    }
+    else {
+    	isCorridor = false; 
+    }
+    enemies = new ArrayList<>();
+    if(hasEnemies) { 
+    	int enemiesNumber = rand.nextInt(2) + 1; 
+    	for(int i = 0; i < enemiesNumber; i++) {
+    		int indexEnemies = rand.nextInt(Enemy.ALL_ENEMIES.length); 
+    		enemies.add(Enemy.ALL_ENEMIES[indexEnemies]); 
+    	}
+    }
+    
+    if(hasMerchant) {
+    	merchant = new Merchant(); 
+    }
+    else {
+    	merchant = null; 
+    }
+    
+    if(hasAngel) {
+    	healer = new Angel(10, 5); 
+    }
+    else {
+    	healer = null; 
+    }
+    
+    treasure = new ArrayList<>(); 
+    if(hasTreasure) {
+    	for(int i = 0; i < 3; i++) {
+    		int indexItem = rand.nextInt(Item.ALL_ITEM.length); 
+    		treasure.add(Item.ALL_ITEM[indexItem]); 
+    	}
+    }
+    
   }
+  public boolean hasEnemies() {return hasEnemies; }
+  public boolean hasMerchant() {return hasMerchant;}
+  public boolean hasAngel() {return hasAngel;}
+  public boolean hasTreasure() {return hasTreasure;}
+  public boolean hasDoor() {return hasDoor;}
   
   public Merchant merchant() { return merchant; }
-  public Healer healer() { return healer; }
-  public Grid grid() { return grid; }
-  public ArrayList<Ennemy> enemies() { return enemies; }
-  public boolean isExit() { return exit; }
-  public boolean hasTreasure() { return treasure; }
-
-  public boolean hasEnemies() {
-  	if (enemies.isEmpty()) return false;
-  	return true;
+  public Angel healer() { return healer; }
+  public ArrayList<Enemy> enemies() { return enemies; }
+  public ArrayList<Item> treasure(){return treasure; }
+  public ArrayList<Room> neighbors(){return neighbors;}
+  public void addNeighbor(Room room) {
+  	Objects.requireNonNull(room, "Room cannot be null"); 
+  	neighbors.add(room); 
+  	room.neighbors.add(this); 
   }
   
-  public boolean hasMerchant() {
-  	if (merchant == null) return false;
-  	return true;
-  }
-  
-  public boolean hasHealer() {
-  	if (healer == null) return false;
-  	return true;
-  }
   
   @Override
   public String toString() {
-	var builder = new StringBuilder(); 
-	builder.append("[Room : "); 
-    if(!(enemies.isEmpty())) builder.append("E "); 
-    if(merchant != null) builder.append("M ");
-    if(healer != null) builder.append("H ");
-    if(grid != null) builder.append("G ");
+	  var builder = new StringBuilder(); 
+    if(hasEnemies) builder.append("E"); 
+    if(hasMerchant) builder.append("M");
+    if(hasAngel) builder.append("A");
+    if(hasTreasure) builder.append("T"); 
+    if(hasDoor) builder.append("D"); 
+    if(isCorridor)builder.append("."); 
     
-    builder.append("]"); 
-    return builder.toString();      
+    return String.format("%-5s", builder.toString());     
   }
  
 }

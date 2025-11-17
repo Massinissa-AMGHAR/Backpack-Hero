@@ -44,12 +44,22 @@ public class Backpack {
 	}
 	return length; 
   }
-  
+  private boolean contains(Item item) {
+  	for(int i = 0; i < lines; i++) {
+  		for(int j = 0; j < columns; j++) {
+  			if(backpack.get(i).get(j) == item)return true; 
+  		}
+  	}
+  	return false; 
+  }
   public void add(Item item, int line, int column) { 
-	  
-	if(line < 0 || line >= lines || column < 0 || column >= columns) {
-	  throw new IllegalArgumentException("The case is not in the backpack"); 
-	}
+		  
+		if(line < 0 || line >= lines || column < 0 || column >= columns) {
+		  throw new IllegalArgumentException("The case is not in the backpack"); 
+		}
+		if(contains(item)) {
+			throw new IllegalArgumentException("You already have this item in your backpack"); 
+		}
     int lengthLine = lengthLine(line, column); 
     int lengthColumn = lengthColumn(line, column); 
     
@@ -62,10 +72,12 @@ public class Backpack {
       }
     }
   }
+  
   public void delete(Item item) {
     for(int i =0; i < lines; i++) {
       for(int j = 0; j < columns; j++) {
-        if(backpack.get(i).get(j).equals(item)) backpack.get(i).set(j, null); 
+      	Item current = backpack.get(i).get(j); 
+        if(current != null && current.equals(item)) backpack.get(i).set(j, null); 
         
       }
     }

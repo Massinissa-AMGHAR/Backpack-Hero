@@ -47,12 +47,12 @@ public class Hero implements Fighter {
 	
 	
 	public int attack(Fighter opponent, Item item) {
-		if (!(opponent instanceof Ennemy)) throw new IllegalArgumentException("Hero can only attack Ennemy");
+		if (!(opponent instanceof Enemy)) throw new IllegalArgumentException("Hero can only attack Ennemy");
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println(name + " doesn't have enough resources to use " + item.name());
 			return 0;
 		}
-		Ennemy ennemy = (Ennemy) opponent;
+		Enemy ennemy = (Enemy) opponent;
 		int totalDamage = 0;
 		int attackDamage = item.damage();
 		
@@ -114,7 +114,7 @@ public class Hero implements Fighter {
 	  return mana;
 	}
 	
-  public void winXp(Ennemy ennemy) {
+  public void winXp(Enemy ennemy) {
     Objects.requireNonNull(ennemy, "Ennemy cannot be null");
     this.xp += ennemy.xp();
   }
@@ -150,7 +150,7 @@ public class Hero implements Fighter {
 	  gold += merchant.goldCost(item);
 	}
 
-	public void treat(Healer healer) {
+	public void treat(Angel healer) {
 		Objects.requireNonNull(healer, "Healer cannot be null");
 	  if (buy(healer.price())) {
 	  	HP += healer.hp();

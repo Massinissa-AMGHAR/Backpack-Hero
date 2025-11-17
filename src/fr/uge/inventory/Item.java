@@ -57,11 +57,11 @@ public class Item {
 	}
 	
 	public static final Item[] ALL_ITEM = {
-			new Item("Wooden Sword", "MELEE", "COMMON", 1, 3, 7, 0, 1, 0, 0, 0, 5),
-			new Item("Arrow", "ARROW", "COMMON", 2, 1, 2, 0, 0, 0, 0, 0, 1),
-			new Item("Rough Buckler", "SHIELD", "COMMON", 2, 2, 0, 7, 1, 0, 0, 0, 2),
-			new Item("Tunic", "ARMOR", "COMMON", 2, 2, 0, 5, 0, 0, 0, 0, 1),
-			new Item("Magic Wand", "MAGIC", "COMMON", 1, 2, 3, 0, 0, 0, 2, 0, 3),
-			new Item("Mana Stone", "MANA", "COMMON", 1, 1, 0, 0, 0, 0, 0, 2, 2)
+	  new Item("Wooden Sword", "MELEE", "COMMON", 1, 3, 7, 0, 1, 0, 0, 0, 5),
+		new Item("Arrow", "ARROW", "COMMON", 2, 1, 2, 0, 0, 0, 0, 0, 1),
+		new Item("Rough Buckler", "SHIELD", "COMMON", 2, 2, 0, 7, 1, 0, 0, 0, 2),
+		new Item("Tunic", "ARMOR", "COMMON", 2, 2, 0, 5, 0, 0, 0, 0, 1),
+		new Item("Magic Wand", "MAGIC", "COMMON", 1, 2, 3, 0, 0, 0, 2, 0, 3),
+		new Item("Mana Stone", "MANA", "COMMON", 1, 1, 0, 0, 0, 0, 0, 2, 2)
 	};
 }

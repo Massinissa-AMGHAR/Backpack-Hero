@@ -4,9 +4,10 @@ import java.util.Random;
 
 import java.util.Objects;
 
-public class Ennemy implements Fighter {
+public class Enemy implements Fighter {
 	private final String name;
 	private int HP;
+	private int HPMax; 
 	private int protection;
 	private final int minAttack;
 	private final int maxAttack;
@@ -16,10 +17,11 @@ public class Ennemy implements Fighter {
 	private int xp; 
 	
 	
-	public Ennemy(String name, int HP, int protection, int minAttack, int maxAttack, int minDefense, int maxDefense, int xp) {
-      if (HP < 0 || protection < 0 || minAttack < 0 || maxAttack < 0 || minDefense < 0 || maxDefense < 0 || xp < 0) throw new IllegalArgumentException("HP and protection must be >= 0");
+	public Enemy(String name, int HP, int HPMax, int protection, int minAttack, int maxAttack, int minDefense, int maxDefense, int xp) {
+      if (HP < 0 || HPMax < 0 || protection < 0 || minAttack < 0 || maxAttack < 0 || minDefense < 0 || maxDefense < 0 || xp < 0) throw new IllegalArgumentException("HP and protection must be >= 0");
 	    Objects.requireNonNull(name, "name can't be null");
 	    this.HP = HP;
+	    this.HPMax = HPMax; 
 	    this.protection = protection;
 	    this.name = name;
 	    this.minAttack = minAttack;
@@ -30,6 +32,7 @@ public class Ennemy implements Fighter {
 	}
 	
 	public int HP() { return HP; }
+	public int HPMax() { return HPMax; }
 	public int protection() { return protection; }	
 	public String name() { return name; }
 	public int attackDamage() { return rand.nextInt(maxAttack - minAttack + 1) + minAttack; }
@@ -86,8 +89,13 @@ public class Ennemy implements Fighter {
 	  return action; 
 	}
 	
+	public static final Enemy[] ALL_ENEMIES ={
+		new Enemy("Little Rat-Wolf", 20, 20, 5, 2, 10, 1, 6, 3 ),
+		new Enemy("Rat-Wolf", 24, 24, 5, 6, 10, 3, 6, 6)
+	};
+	
 	@Override
 	public String toString() {
-		return this.name() + ": " + this.HP() + " HP | Protection: " + this.protection();
+		return this.name() + ": " + this.HP() + "/" + HPMax() + " | Protection: " + this.protection();
 	}
 }

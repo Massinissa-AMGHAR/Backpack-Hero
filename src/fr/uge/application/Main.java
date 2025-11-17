@@ -3,52 +3,32 @@ import fr.uge.character.*;
 import fr.uge.map.*;
 import fr.uge.inventory.*;
 import java.util.ArrayList; 
+import java.util.Scanner; 
 
 public class Main {
 	static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in); 
+		boolean victory = false; 
 		
-    Ennemy ratWolf = new Ennemy("Rat Wolf", 20, 0, 6, 12, 2, 7, 6); 
-    //Ennemy ratWolf1 = new Ennemy("Rat Wolf", 20, 0, 12, 7, 6); 
-    
-    var enemies = new ArrayList<Ennemy>();
-    enemies.add(ratWolf);
-   // enemies.add(ratWolf1); 
-        
-		Floor floor1 = new Floor(3, 2); 
-		Room room1 = new Room(null, null, null, null, false, false); 
-		Room room2 = new Room(null, null, null, enemies, false, false); 
-		floor1.add(room1, 0, 1); 
-		floor1.add(room2, 0, 0); 
-		IO.println(floor1); 
-		Backpack backpack = new Backpack(3, 5);
-    Item woodenSword = Item.ALL_ITEM[0];  
-    //Item roughBuckler = Item.ALL_ITEM[2]; 
-    Item manaStone = Item.ALL_ITEM[5];    
-    Item magicWand = Item.ALL_ITEM[4];  
-
-    backpack.add(woodenSword, 0, 0);
-    //backpack.add(roughBuckler, 1, 2);
-    //backpack.add(manaStone, 1, 1);
-
- 
-    Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 0, 1, 0, 1, backpack);
-    var merchant = new Merchant();
-    IO.println(merchant);
-    
-    IO.println("=== GAME START ===");
-    IO.println("Hero stats: " + hero);
-    IO.println("Enemy stats: " + ratWolf + "\n");
-
-    // Lancement du combat
-    Fight fight = new Fight(hero, ratWolf);
-    fight.game();
-
-
-    // Affichage après combat
-    IO.println("\n=== GAME END ===");
-    IO.println("Hero stats: " + hero);
-    IO.println("Enemy stats: " + ratWolf);
-        
+		Dungeon dungeon = new Dungeon(2); 
+		dungeon.createDungeon();
+		Backpack backpack = new Backpack(3, 5); 
+		backpack.add(Item.ALL_ITEM[0], 0, 0);
+		Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5, 30, 0, 0, backpack);
+		int startFloor = 0; 
+		Floor floor = dungeon.getFloor(startFloor); 
+		floor.placeHero(1, 1);
+		IO.println("###### Backpack Hero ######"); 
+		while(!victory) {
+			Room currentRoom= floor.getRoom(floor.heroX(), floor.heroY()); 
+			if(currentRoom.hasMerchant()) {
+				currentRoom.merchant().interactionBuy(hero, scanner); 
+				currentRoom.merchant().interactionSell(hero, scanner);
+			
+			}
+			victory = true; 
+		}
+		
 		
 	}
 }

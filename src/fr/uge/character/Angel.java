@@ -1,9 +1,9 @@
 package fr.uge.character;
 
-public class Healer {
+public class Angel {
   private final int price; 
   private final int hp; 
-  public Healer(int price, int hp){
+  public Angel(int price, int hp){
     this.price = price; 
     this.hp = hp; 
   }

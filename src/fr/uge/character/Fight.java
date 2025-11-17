@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class Fight {
   private final Hero hero; 
-  private final Ennemy ennemy; 
+  private final Enemy ennemy; 
 
   private final Scanner scanner = new Scanner(System.in);
 
-  public Fight(Hero hero, Ennemy ennemy) {
+  public Fight(Hero hero, Enemy ennemy) {
     this.hero = hero;
     this.ennemy = ennemy; 
   }
