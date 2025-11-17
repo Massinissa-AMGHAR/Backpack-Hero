@@ -159,7 +159,7 @@ public class Hero implements Fighter {
 
 	@Override
 	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + "| Protection: " + this.protection() + " | Energy: " + this.energy();
+		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | " +  this.gold() + " gold";
 	}
 
 	

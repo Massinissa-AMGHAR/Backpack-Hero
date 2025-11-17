@@ -64,4 +64,9 @@ public class Item {
 		new Item("Magic Wand", "MAGIC", "COMMON", 1, 2, 3, 0, 0, 0, 2, 0, 3),
 		new Item("Mana Stone", "MANA", "COMMON", 1, 1, 0, 0, 0, 0, 0, 2, 2)
 	};
+	
+	@Override
+	public String toString() {
+		return this.name() + " | type : " + this.type() + " | rarity : " + this.rarity() + " | width : " + this.width() + " | height : " + this.height() + " | damage : " + this.damage() + " | defense : " + this.defense() + " | energy cost : " + this.energyCost() + " | energy gained" + this.energyGained() + " | mana cost : " + this.manaCost() + " | mana gained : "  + this.manaGained() + " | cost : " + this.goldCost() + " gold";  
+	}
 }

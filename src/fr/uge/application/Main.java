@@ -1,10 +1,8 @@
 package fr.uge.application;
 import fr.uge.character.*;
+import java.util.Scanner; 
 import fr.uge.map.*;
 import fr.uge.inventory.*;
-import java.util.ArrayList; 
-import java.util.Scanner; 
-
 public class Main {
 	static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in); 
@@ -24,7 +22,10 @@ public class Main {
 			if(currentRoom.hasMerchant()) {
 				currentRoom.merchant().interactionBuy(hero, scanner); 
 				currentRoom.merchant().interactionSell(hero, scanner);
+			}
 			
+			if(currentRoom.hasAngel()) {
+				
 			}
 			victory = true; 
 		}

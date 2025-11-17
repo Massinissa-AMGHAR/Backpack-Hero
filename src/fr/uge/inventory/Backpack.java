@@ -100,9 +100,11 @@ public class Backpack {
   public String toString() {
     var builder = new StringBuilder(); 
     builder.append("Backpack : ").append("\n"); 
+    
     for(int i = 0; i < lines; i++) {
       for(int j = 0; j < columns; j++) {
-        builder.append(backpack.get(i).get(j) == null ? "free |" : backpack.get(i).get(j).name()+ " | "); 
+      	String value = backpack.get(i).get(j) == null ? " free " : backpack.get(i).get(j).name(); 
+        builder.append(String.format("%-15s", value)); 
       }
       builder.append("\n"); 
   

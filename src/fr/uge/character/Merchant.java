@@ -20,13 +20,15 @@ public class Merchant {
   }
  
   public int goldCost(Item item) {
-    return item.goldCost()/2; 
+    int goldCost =  item.goldCost() / 2; 
+    IO.println("Merchant : I buy this item for : " + goldCost + " gold"); 
+    return goldCost; 
   }
   public ArrayList<Item> shop(){return shop;}
   
   public void interactionBuy(Hero hero, Scanner scanner) {
   	IO.println(this.toString()); 
-  	IO.println(hero.name() + " : " + hero.gold() + " gold"); 
+  	IO.println(hero.toString()); 
   	IO.println("Do you want to buy an item ? (y/no)"); 
   	String choice = scanner.nextLine(); 
   	
@@ -46,7 +48,6 @@ public class Merchant {
   		return; 
   	}
   	Item item = shop.get(index); 
-  	IO.println("You bought : " + item.name()); 
   	IO.println(hero.backpack().toString()); 
   	
   	IO.println("Choose a place for your item : (line and column)"); 
@@ -54,11 +55,14 @@ public class Merchant {
   	int column = scanner.nextInt(); 
   	scanner.nextLine(); 
   	hero.buyItem(item, line, column); 
+  	IO.println("You bought : " + item.name()); 
+  	IO.println(hero.toString());  
   	IO.println(hero.backpack().toString()); 
  
   }
   
   public void interactionSell(Hero hero, Scanner scanner) {
+  	IO.println("Merchant : I can recup an item at half the price...\n"); 
   	IO.println("Do you wan to sell an item ? (y/no)"); 
   	String choice = scanner.nextLine(); 
   	
@@ -85,15 +89,17 @@ public class Merchant {
   	
   	Item item = hero.backpack().choice(line, column); 
   	hero.sellItem(this, item); 
+  	IO.println("You sold " + item.name()); 
+  	IO.println(hero.name() + " : " + hero.gold() + " gold"); 
   	IO.println(hero.backpack()); 
   	
   }
   @Override
   public String toString(){
     var builder = new StringBuilder(); 
-    builder.append("Hello, I am the Merchant ! What do you want to buy in my shop ?\n\n");
+    builder.append("Merchant : Hello, I am the Merchant ! What do you want to buy in my shop ?\n\n");
     for(var i : shop) {
-      builder.append(i.name() + " : ").append(i.goldCost() + "\n"); 
+      builder.append(i.toString()).append("\n"); 
     }
     return builder.toString(); 
   }
