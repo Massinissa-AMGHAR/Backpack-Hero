@@ -50,7 +50,7 @@ public class Item {
 	public int manaGained() { return manaGained; }
 	public int goldCost() { return goldCost; }
 	
-	public void translate() {
+	public void rotate() {
 	  var pastWidth = width; 
 	  width = height; 
 	  height = pastWidth; 

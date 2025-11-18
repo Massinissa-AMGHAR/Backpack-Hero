@@ -3,20 +3,18 @@ import java.util.ArrayList;
 import java.util.Scanner; 
 import java.util.Random;
 
+import fr.uge.application.Interactions;
 import fr.uge.inventory.*;
 
 
-public class Merchant {
-  private final ArrayList<Item> shop; 
+public class Merchant implements interactionCharacters {
+  private final Items shop; 
   private final Random rand; 
   
   public Merchant(){
-    this.shop = new ArrayList<Item>();
+    this.shop = new Items(); 
     this.rand = new Random(); 
-    for(int i = 0; i < 3; i++) {
-      int position = rand.nextInt(Item.ALL_ITEM.length); 
-      shop.add(Item.ALL_ITEM[position]); 
-    }
+   
   }
  
   public int goldCost(Item item) {
@@ -24,83 +22,41 @@ public class Merchant {
     IO.println("Merchant : I buy this item for : " + goldCost + " gold"); 
     return goldCost; 
   }
-  public ArrayList<Item> shop(){return shop;}
+  public Items shop(){return shop;}
   
-  public void interactionBuy(Hero hero, Scanner scanner) {
+  public void interactionBuy(Hero hero, Interactions interaction) {
   	IO.println(this.toString()); 
+  	IO.println(shop.toString()); 
   	IO.println(hero.toString()); 
-  	IO.println("Do you want to buy an item ? (y/no)"); 
-  	String choice = scanner.nextLine(); 
   	
-  	if(!choice.equals("y")) return; 
-  	IO.println("Choose an item index : "); 
-  	if(!scanner.hasNextInt()) {
-  		IO.println("Invalid input"); 
-  		scanner.nextLine(); 
-  		return; 
-  	}
-  	
-  	int index = scanner.nextInt();
-  	scanner.nextLine(); 
-  	
-  	if(index < 0 || index >= shop.size()) {
-  		IO.println("Invalid index"); 
-  		return; 
-  	}
-  	Item item = shop.get(index); 
-  	IO.println(hero.backpack().toString()); 
-  	
-  	IO.println("Choose a place for your item : (line and column)"); 
-  	int line = scanner.nextInt(); 
-  	int column = scanner.nextInt(); 
-  	scanner.nextLine(); 
-  	hero.buyItem(item, line, column); 
-  	IO.println("You bought : " + item.name()); 
-  	IO.println(hero.toString());  
-  	IO.println(hero.backpack().toString()); 
+  	hero.manageBackpack(shop, interaction, true);  
  
   }
   
-  public void interactionSell(Hero hero, Scanner scanner) {
+  public void interactionSell(Hero hero, Interactions interaction) {
   	IO.println("Merchant : I can recup an item at half the price...\n"); 
-  	IO.println("Do you wan to sell an item ? (y/no)"); 
-  	String choice = scanner.nextLine(); 
-  	
-  	if(!choice.equals("y")) {
-  		return; 
-  	}
+  	IO.println("Do you wan to sell an item ? (y/n)"); 
+  	if(!interaction.requestYesNo())return; 
   	IO.println(hero.backpack().toString()); 
+  	
   	IO.println("Choose an item what you want to sell (line and column)"); 
-  	if(!scanner.hasNextInt()) {
-  		IO.println("Invalid input"); 
-  		scanner.nextLine(); 
-  		return; 
-  	}
-  	int line = scanner.nextInt();
   	
-  	if(!scanner.hasNextInt()) {
-  		IO.println("Invalid input"); 
-  		scanner.nextLine(); 
-  		return; 
-  	}
-  	
-  	int column = scanner.nextInt(); 
-  	scanner.nextLine(); 
+  	int line = interaction.requestInt();
+  	int column = interaction.requestInt(); 
   	
   	Item item = hero.backpack().choice(line, column); 
   	hero.sellItem(this, item); 
-  	IO.println("You sold " + item.name()); 
-  	IO.println(hero.name() + " : " + hero.gold() + " gold"); 
+  	IO.println("You sold " + item.name());  
   	IO.println(hero.backpack()); 
   	
   }
+  
   @Override
+  public void interaction(Hero hero, Interactions interaction) {
+  	interactionBuy(hero, interaction); 
+  	interactionSell(hero, interaction); 
+  }
   public String toString(){
-    var builder = new StringBuilder(); 
-    builder.append("Merchant : Hello, I am the Merchant ! What do you want to buy in my shop ?\n\n");
-    for(var i : shop) {
-      builder.append(i.toString()).append("\n"); 
-    }
-    return builder.toString(); 
+    return "Merchant : Hello, do you want to buy something in my shop ?\n "; 
   }
 }

@@ -15,6 +15,7 @@ public class Enemy implements Fighter {
 	private final int maxDefense;
 	private final Random rand = new Random();
 	private int xp; 
+	private final Items reward; 
 	
 	
 	public Enemy(String name, int HP, int HPMax, int protection, int minAttack, int maxAttack, int minDefense, int maxDefense, int xp) {
@@ -29,6 +30,7 @@ public class Enemy implements Fighter {
 	    this.minDefense = minDefense;
 	    this.maxDefense = maxDefense;
 	    this.xp = xp; 
+	    this.reward = new Items(); 
 	}
 	
 	public int HP() { return HP; }
@@ -42,6 +44,7 @@ public class Enemy implements Fighter {
 	public int minDefense() { return minDefense; }
 	public int maxDefense() { return maxDefense; }
 	public int xp() { return xp; }
+	public Items reward() {return reward; }
 	
 	public void receiveDamage(int damage) {
 		HP = Math.max(HP - damage, 0);
@@ -90,12 +93,12 @@ public class Enemy implements Fighter {
 	}
 	
 	public static final Enemy[] ALL_ENEMIES ={
-		new Enemy("Little Rat-Wolf", 20, 20, 5, 2, 10, 1, 6, 3 ),
-		new Enemy("Rat-Wolf", 24, 24, 5, 6, 10, 3, 6, 6)
+		new Enemy("Little Rat-Wolf", 3, 3, 5, 1, 4, 1, 6, 3 ),
+		new Enemy("Rat-Wolf", 6, 6, 5, 3, 6, 3, 6, 6)
 	};
 	
 	@Override
 	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + HPMax() + " | Protection: " + this.protection();
+		return this.name() + ": " + this.HP() + "/" + HPMax() + " HP | Protection: " + this.protection();
 	}
 }

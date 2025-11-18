@@ -9,22 +9,20 @@ public class Room {
   private final boolean hasEnemies; 
   private final boolean hasMerchant; 
   private final boolean hasAngel; 
-  private final Random rand; 
   private final boolean hasTreasure;
   private final boolean hasDoor;
   private final boolean isCorridor; 
   
-  private final ArrayList<Enemy> enemies; 
-  private final ArrayList<Item> treasure; 
+  private final Enemies enemies; 
+  private final Treasure treasure; 
   private final Merchant merchant; 
-  private final Angel healer; 
+  private final Angel angel; 
   private final ArrayList<Room> neighbors = new ArrayList<>(); 
   
   public Room(boolean hasEnemies, boolean hasMerchant, boolean hasAngel, boolean hasTreasure, boolean hasDoor) {
-    this.hasEnemies = hasEnemies; 
+    this.hasEnemies = hasEnemies;
     this.hasMerchant = hasMerchant; 
     this.hasAngel = hasAngel; 
-    this.rand = new Random(); 
     this.hasTreasure = hasTreasure; 
     this.hasDoor = hasDoor;  
     
@@ -34,38 +32,19 @@ public class Room {
     else {
     	isCorridor = false; 
     }
-    enemies = new ArrayList<>();
-    if(hasEnemies) { 
-    	int enemiesNumber = rand.nextInt(2) + 1; 
-    	for(int i = 0; i < enemiesNumber; i++) {
-    		int indexEnemies = rand.nextInt(Enemy.ALL_ENEMIES.length); 
-    		enemies.add(Enemy.ALL_ENEMIES[indexEnemies]); 
-    	}
-    }
+    if(hasEnemies) enemies = new Enemies(); 
+    else enemies = null; 
     
-    if(hasMerchant) {
-    	merchant = new Merchant(); 
-    }
-    else {
-    	merchant = null; 
-    }
+    if(hasMerchant) merchant = new Merchant(); 
+    else merchant = null; 
     
-    if(hasAngel) {
-    	healer = new Angel(10, 5); 
-    }
-    else {
-    	healer = null; 
-    }
+    if(hasAngel) angel = new Angel(10, 5); 
+    else angel = null;
     
-    treasure = new ArrayList<>(); 
-    if(hasTreasure) {
-    	for(int i = 0; i < 3; i++) {
-    		int indexItem = rand.nextInt(Item.ALL_ITEM.length); 
-    		treasure.add(Item.ALL_ITEM[indexItem]); 
-    	}
-    }
-    
+    if(hasTreasure) treasure = new Treasure(); 
+    else treasure = null; 
   }
+  
   public boolean hasEnemies() {return hasEnemies; }
   public boolean hasMerchant() {return hasMerchant;}
   public boolean hasAngel() {return hasAngel;}
@@ -73,10 +52,11 @@ public class Room {
   public boolean hasDoor() {return hasDoor;}
   
   public Merchant merchant() { return merchant; }
-  public Angel healer() { return healer; }
-  public ArrayList<Enemy> enemies() { return enemies; }
-  public ArrayList<Item> treasure(){return treasure; }
+  public Angel angel() { return angel; }
+  public Enemies enemies() { return enemies; }
+  public Treasure treasure(){return treasure; }
   public ArrayList<Room> neighbors(){return neighbors;}
+  
   public void addNeighbor(Room room) {
   	Objects.requireNonNull(room, "Room cannot be null"); 
   	neighbors.add(room); 

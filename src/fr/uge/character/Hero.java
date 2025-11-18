@@ -1,6 +1,9 @@
 package fr.uge.character;
 import java.util.Objects;
+import fr.uge.application.*;
 import fr.uge.inventory.*;
+import java.util.Scanner; 
+import java.util.ArrayList;
 
 
 public class Hero implements Fighter {
@@ -105,8 +108,6 @@ public class Hero implements Fighter {
 	    IO.println(name + " doesn't have enough resources to use " + item.name());
 		return 0;
 	  }
-
-	  
 	  mana += item.manaGained(); 
 	  
 	  energy -= item.energyCost(); 
@@ -117,6 +118,11 @@ public class Hero implements Fighter {
   public void winXp(Enemy ennemy) {
     Objects.requireNonNull(ennemy, "Ennemy cannot be null");
     this.xp += ennemy.xp();
+  }
+  
+  public void winGold(int gold) {
+  	this.gold += gold; 
+  	IO.println(name + " wins " + gold + " gold");
   }
 	
   public void resetEnergy() {
@@ -134,32 +140,63 @@ public class Hero implements Fighter {
     gold -= cost; 
     return true; 
   }
-  
-
-	public void buyItem(Item item, int line, int column) {
-	  Objects.requireNonNull(item, "Item cannot be null");
-	  if (buy(item.goldCost())) {
-	  	this.backpack.add(item, line, column);
-	  }
-	}
 
 	public void sellItem(Merchant merchant, Item item) {
 		Objects.requireNonNull(merchant, "Merchant cannot be null");
 	  Objects.requireNonNull(item, "Item cannot be null");
 	  this.backpack.delete(item);
-	  gold += merchant.goldCost(item);
+	  winGold(merchant.goldCost(item)); 
 	}
 
 	public void treat(Angel healer) {
-		Objects.requireNonNull(healer, "Healer cannot be null");
+		Objects.requireNonNull(healer, "Angel cannot be null");
 	  if (buy(healer.price())) {
-	  	HP += healer.hp();
+	  	if(HP < HPMAX) HP += healer.hp();
 	  }
 	}
-
+	
+	public void manageBackpack(Items items, Interactions interaction, boolean isShop) {
+		var listItems = items.getItems(); 
+		while(listItems.size() > 0) {
+			IO.println(items.toString()); 
+			IO.println("\nDo you want to add an item in your backpack ? (y/n) "); 
+			if(!interaction.requestYesNo())return; 
+			IO.println("Choose an item : (line)"); 
+			int index = interaction.requestInt(); 
+			if(index < 0 || index >= listItems.size()) {
+				throw new IllegalArgumentException("Invalid index"); 
+			}
+			var item = listItems.get(index); 
+			if(isShop) {
+				if(!buy(item.goldCost()))return; 
+				IO.println(this.toString()); 
+			}
+			IO.println(backpack.toString()); 
+			IO.println("Do you want to make a rotation for your item ? (y/n)"); 
+			if(interaction.requestYesNo()) {
+				item.rotate();
+				IO.println(item.toString());
+			}
+			IO.println("Do you want to delete an item in your backpack ? (y/n)"); 
+			if(interaction.requestYesNo()) {
+				IO.println("Choose an item : (line/column)"); 
+				int line = interaction.requestInt(); 
+				int column = interaction.requestInt(); 
+				var item1 = backpack.choice(line, column); 
+				backpack.delete(item1); 
+				IO.print(backpack.toString()); 
+			}
+			IO.println("Choose a place for your item : (line/column)"); 
+			int line = interaction.requestInt(); 
+			int column = interaction.requestInt(); 
+			backpack.add(item, line, column);
+			listItems.remove(index); 
+			IO.println(backpack.toString()); 
+		}
+	}
 	@Override
 	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | " +  this.gold() + " gold";
+		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | " +  this.gold() + " gold\n";
 	}
 
 	

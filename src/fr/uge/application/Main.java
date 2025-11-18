@@ -5,9 +5,10 @@ import fr.uge.map.*;
 import fr.uge.inventory.*;
 public class Main {
 	static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in); 
+		 
 		boolean victory = false; 
-		
+		Scanner scanner = new Scanner(System.in); 
+		var interaction = new Interactions(scanner); 
 		Dungeon dungeon = new Dungeon(2); 
 		dungeon.createDungeon();
 		Backpack backpack = new Backpack(3, 5); 
@@ -15,19 +16,44 @@ public class Main {
 		Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5, 30, 0, 0, backpack);
 		int startFloor = 0; 
 		Floor floor = dungeon.getFloor(startFloor); 
-		floor.placeHero(1, 1);
 		IO.println("###### Backpack Hero ######"); 
+		floor.placeHero(1, 1);
 		while(!victory) {
 			Room currentRoom= floor.getRoom(floor.heroX(), floor.heroY()); 
 			if(currentRoom.hasMerchant()) {
-				currentRoom.merchant().interactionBuy(hero, scanner); 
-				currentRoom.merchant().interactionSell(hero, scanner);
+				currentRoom.merchant().interaction(hero, interaction); 
 			}
 			
 			if(currentRoom.hasAngel()) {
-				
+				currentRoom.angel().interaction(hero, interaction); 
 			}
-			victory = true; 
+			
+			if(currentRoom.hasEnemies()) {
+				var enemies = currentRoom.enemies(); 
+				for(var e : enemies.getEnemies()) {
+					var fight = new Fight(hero, e, interaction); 
+					if(fight.game()) continue;
+					IO.println("##### End of game #####"); 
+					return; 
+				}
+			}
+			if(currentRoom.hasTreasure()) { 
+				IO.println(currentRoom.treasure().toString()); 
+				hero.winGold(currentRoom.treasure().gold());
+			}
+			
+			if(currentRoom.hasDoor()) {
+				floor = dungeon.nextFloor(floor); 
+				if(floor == null) {
+					victory = true; 
+				}
+				else {
+					IO.println("Welcome to the new floor ! " + hero.name()); 
+					floor.placeHero(1, 1);
+				}
+			}
+			IO.println(floor.toString()); 
+			floor.moveHero(interaction); 
 		}
 		
 		

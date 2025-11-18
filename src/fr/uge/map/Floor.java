@@ -1,5 +1,6 @@
 package fr.uge.map;
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import fr.uge.application.*;
 
 public class Floor {
   private final Room[][] floor = new Room[5][11]; 
@@ -15,9 +16,7 @@ public class Floor {
   }
   
   public boolean hasRoom(int x, int y) {
-  	if(x < 0 || x > 4 || y < 0 || y > 10) {
-  		throw new IllegalArgumentException("Not in the map"); 
-  	}
+  	if(x < 0 || x > 4 || y < 0 || y > 10) return false; 
   	if (floor[x][y] == null) return false;
   	return true;
   }
@@ -35,16 +34,26 @@ public class Floor {
   	this.hasHero = true; 
   }
   
-  public boolean moveHero(int x, int y) {
-  	if(!hasRoom(x, y)) return false; 
-  	Room current = floor[heroX][heroY]; 
-  	var neighbors = current.neighbors(); 
-  	if(neighbors.contains(floor[x][y])) {
-  		heroX = x; 
-  		heroY = y; 
-  		return true; 
+  public void moveHero(Interactions interaction) {
+  	boolean goodMove = false; 
+  	int x = -1; 
+  	int y = -1; 
+  	while(!goodMove) {
+  		IO.println("Where do you want to go ? (line/column)"); 
+    	x = interaction.requestInt(); 
+    	y = interaction.requestInt(); 
+    	if(!hasRoom(x, y)) IO.println("No room here"); 
+    	else {
+	    	Room current = floor[heroX][heroY]; 
+	    	var neighbors = current.neighbors(); 
+	    	if(neighbors.contains(floor[x][y])) {
+		    	heroX = x; 
+		    	heroY = y; 
+		    	goodMove = true; 
+	      }
+	    	else IO.println("Step by step... Follow the way"); 
+      }
   	}
-  	return false; 
   }
   public int heroX(){return heroX;}
   public int heroY() {return heroY;}
