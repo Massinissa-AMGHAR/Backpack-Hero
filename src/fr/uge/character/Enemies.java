@@ -10,7 +10,7 @@ public class Enemies {
 	public Enemies() {
 		this.rand= new Random(); 
 		enemies = new ArrayList<>();
-    int enemiesNumber = rand.nextInt(2) + 1; 
+    int enemiesNumber = rand.nextInt(3) + 1; 
     for(int i = 0; i < enemiesNumber; i++) {
     	int indexEnemies = rand.nextInt(Enemy.ALL_ENEMIES.length); 
     	enemies.add(Enemy.ALL_ENEMIES[indexEnemies]); 
@@ -19,6 +19,16 @@ public class Enemies {
 	
 	public ArrayList<Enemy> getEnemies() {
 		return enemies; 
+	}
+	
+	@Override 
+	public String toString() {
+		var builder = new StringBuilder(); 
+		for(var e : enemies) {
+			builder.append(e).append("\n"); 
+		}
+		
+		return builder.toString(); 
 	}
 	
 }

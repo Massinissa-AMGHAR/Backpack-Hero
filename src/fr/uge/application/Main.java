@@ -30,12 +30,17 @@ public class Main {
 			
 			if(currentRoom.hasEnemies()) {
 				var enemies = currentRoom.enemies(); 
+				IO.println("There are several enemies in this room :\n\n" + enemies.toString()); 
 				for(var e : enemies.getEnemies()) {
 					var fight = new Fight(hero, e, interaction); 
 					if(fight.game()) continue;
-					IO.println("##### End of game #####"); 
-					return; 
-				}
+					else {
+						IO.println("##### End of game #####");
+						return; 
+					}
+				}	
+				Items reward = new Items(); 
+				hero.manageBackpack(reward, interaction, false);
 			}
 			if(currentRoom.hasTreasure()) { 
 				IO.println(currentRoom.treasure().toString()); 
@@ -55,6 +60,8 @@ public class Main {
 			IO.println(floor.toString()); 
 			floor.moveHero(interaction); 
 		}
+		
+		IO.println("##### End of game #####"); 
 		
 		
 	}

@@ -32,8 +32,6 @@ public class Fight {
     else {
       IO.println(enemy.name() + " was tchoufara by " + hero.name()); 
       hero.winXp(enemy);
-      IO.println("Enemy had an equipment \n"); 
-      hero.manageBackpack(enemy.reward(), interaction, false);
       hero.resetMana(); 
       hero.resetEnergy();
       IO.println("Hero wins " + hero.xp() + " experience points"); 

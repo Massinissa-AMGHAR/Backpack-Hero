@@ -15,7 +15,6 @@ public class Enemy implements Fighter {
 	private final int maxDefense;
 	private final Random rand = new Random();
 	private int xp; 
-	private final Items reward; 
 	
 	
 	public Enemy(String name, int HP, int HPMax, int protection, int minAttack, int maxAttack, int minDefense, int maxDefense, int xp) {
@@ -30,7 +29,6 @@ public class Enemy implements Fighter {
 	    this.minDefense = minDefense;
 	    this.maxDefense = maxDefense;
 	    this.xp = xp; 
-	    this.reward = new Items(); 
 	}
 	
 	public int HP() { return HP; }
@@ -44,7 +42,6 @@ public class Enemy implements Fighter {
 	public int minDefense() { return minDefense; }
 	public int maxDefense() { return maxDefense; }
 	public int xp() { return xp; }
-	public Items reward() {return reward; }
 	
 	public void receiveDamage(int damage) {
 		HP = Math.max(HP - damage, 0);

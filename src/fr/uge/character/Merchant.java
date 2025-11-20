@@ -26,7 +26,6 @@ public class Merchant implements interactionCharacters {
   
   public void interactionBuy(Hero hero, Interactions interaction) {
   	IO.println(this.toString()); 
-  	IO.println(shop.toString()); 
   	IO.println(hero.toString()); 
   	
   	hero.manageBackpack(shop, interaction, true);  
