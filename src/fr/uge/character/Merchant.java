@@ -22,7 +22,8 @@ public class Merchant implements interactionCharacters {
     IO.println("Merchant : I buy this item for : " + goldCost + " gold"); 
     return goldCost; 
   }
-  public Items shop(){return shop;}
+  
+  public Items shop(){ return shop; }
   
   public void interactionBuy(Hero hero, Interactions interaction) {
   	IO.println(this.toString()); 

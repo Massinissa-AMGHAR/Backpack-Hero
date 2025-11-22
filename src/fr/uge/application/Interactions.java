@@ -23,8 +23,7 @@ public class Interactions {
 		while(true) {
 			String input = scanner.nextLine(); 
 			if(input.equals("y")) return true; 
-			if(input.equals("n"))return false; 
-			
+			if(input.equals("n")) return false; 
 			IO.println("Please answer with y or n"); 
 		}
 	}

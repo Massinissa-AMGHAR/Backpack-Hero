@@ -16,6 +16,8 @@ public class Item {
 	private final int energyGained;
 	private final int manaCost;
 	private final int manaGained;
+	private final int id;
+	private static int counter = 0;
   
 	public Item(String name, String type, String rarity, int width, int height, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost) {
 		Objects.requireNonNull(name, "name can't be null.");
@@ -35,6 +37,7 @@ public class Item {
 		this.energyGained = energyGained;
 		this.manaCost = manaNeeded;
 		this.manaGained = manaGained;
+		this.id = counter++;
 	}
 	  
 	public String name() { return name; }
@@ -49,11 +52,16 @@ public class Item {
 	public int manaCost() { return manaCost; }
 	public int manaGained() { return manaGained; }
 	public int goldCost() { return goldCost; }
+	public int id() { return id; }
 	
 	public void rotate() {
 	  var pastWidth = width; 
 	  width = height; 
 	  height = pastWidth; 
+	}
+	
+	public Item copy() {
+		return new Item(this.name, this.type, this.rarity, this.width, this.height, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost);
 	}
 	
 	public static final Item[] ALL_ITEM = {

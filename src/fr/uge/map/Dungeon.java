@@ -25,15 +25,12 @@ public class Dungeon {
   	
   	return dungeon.get(i); 
   }
+  
   public void createDungeon() {
-  	Floor floor2 = Floor.createFloor(); 
-		Floor floor1 = Floor.createFloor(); 
-		Floor floor0 = Floor.createFloor(); 
-		
-		dungeon.add(floor2);
-		dungeon.add(floor1);
-		dungeon.add(floor0);
+  	var floors = Floor.createFloors(); 
+		for (var i = 0; i < 3; i++) dungeon.add(floors.get(i));
   }
+  
   public Floor nextFloor(Floor current) {
   	int i = dungeon.indexOf(current); 
   	if(i == -1) throw new IllegalArgumentException("Floor not in dungeon"); 

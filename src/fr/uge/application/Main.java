@@ -11,13 +11,14 @@ public class Main {
 		var interaction = new Interactions(scanner); 
 		Dungeon dungeon = new Dungeon(2); 
 		dungeon.createDungeon();
+		int startFloor = 0; 
+		Floor floor = dungeon.getFloor(startFloor); 
+		floor.addAllNeighbor();
 		Backpack backpack = new Backpack(3, 5); 
 		backpack.add(Item.ALL_ITEM[0], 0, 0);
 		Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5, 30, 0, 0, backpack);
-		int startFloor = 0; 
-		Floor floor = dungeon.getFloor(startFloor); 
 		IO.println("###### Backpack Hero ######"); 
-		floor.placeHero(1, 1);
+		floor.initPlaceHero();
 		while(!victory) {
 			Room currentRoom= floor.getRoom(floor.heroX(), floor.heroY()); 
 			if(currentRoom.hasMerchant()) {

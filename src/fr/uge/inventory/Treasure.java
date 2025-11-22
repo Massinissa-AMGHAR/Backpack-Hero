@@ -11,6 +11,7 @@ public class Treasure {
 	public int gold() {
 		return gold; 
 	}
+	
 	@Override
 	public String toString() {
 		return "Treasure contains " + gold + " gold"; 

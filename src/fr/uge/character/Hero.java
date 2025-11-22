@@ -2,8 +2,7 @@ package fr.uge.character;
 import java.util.Objects;
 import fr.uge.application.*;
 import fr.uge.inventory.*;
-import java.util.Scanner; 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class Hero implements Fighter {
@@ -132,6 +131,7 @@ public class Hero implements Fighter {
   public void resetMana() {
     mana = manaMax; 
   }
+  
   public boolean buy(int cost) {
     if(gold < cost) {
     	IO.println("You don't have enough money !"); 
@@ -148,13 +148,51 @@ public class Hero implements Fighter {
 	  winGold(merchant.goldCost(item)); 
 	}
 
-	public void treat(Angel healer) {
+	public void treat(Healer healer) {
 		Objects.requireNonNull(healer, "Angel cannot be null");
 	  if (buy(healer.price())) {
 	  	if(HP < HPMAX) HP += healer.hp();
 	  }
 	}
 	
+	private void choiceRotation(Item item, Interactions interaction) {
+		IO.println(backpack.toString()); 
+		IO.println("Do you want to make a rotation for your item ? (y/n)"); 
+		if(interaction.requestYesNo()) {
+			item.rotate();
+			IO.println(item.toString());
+		}
+	}
+	
+	private void choiceDelItem(Interactions interaction) {
+		IO.println("Do you want to delete an item in your backpack ? (y/n)"); 
+		if(interaction.requestYesNo()) {
+			IO.println("Choose an item : (line/column)"); 
+			int line = interaction.requestInt(); 
+			int column = interaction.requestInt(); 
+			var item1 = backpack.choice(line, column); 
+			backpack.delete(item1); 
+			IO.print(backpack.toString()); 
+		}
+	}
+	
+	private void choicePlaceItem(Item item, Interactions interaction, List<Item> listItems, int index) {
+		while (true) {
+			IO.println("Choose a place for your item : (line/column)"); 
+			int line = interaction.requestInt(); 
+			int column = interaction.requestInt(); 
+			int availableWidth = backpack.lengthLine(line, column);
+			int availableHeight = backpack.lengthColumn(line, column);
+			if (item.width() <= availableWidth && item.height() <= availableHeight) {
+				backpack.add(item, line, column);
+				listItems.remove(index); 
+				IO.println(backpack.toString()); 
+				break;
+			} else IO.println("Item doesn't fit at this position. Please try again.");
+		}
+
+	}
+
 	public void manageBackpack(Items items, Interactions interaction, boolean isShop) {
 		var listItems = items.getItems(); 
 		while(listItems.size() > 0) {
@@ -168,32 +206,16 @@ public class Hero implements Fighter {
 			}
 			var item = listItems.get(index); 
 			if(isShop) {
-				if(!buy(item.goldCost()))return; 
+				if(!buy(item.goldCost())) return; 
 				IO.println(this.toString()); 
 			}
 			IO.println(backpack.toString()); 
-			IO.println("Do you want to make a rotation for your item ? (y/n)"); 
-			if(interaction.requestYesNo()) {
-				item.rotate();
-				IO.println(item.toString());
-			}
-			IO.println("Do you want to delete an item in your backpack ? (y/n)"); 
-			if(interaction.requestYesNo()) {
-				IO.println("Choose an item : (line/column)"); 
-				int line = interaction.requestInt(); 
-				int column = interaction.requestInt(); 
-				var item1 = backpack.choice(line, column); 
-				backpack.delete(item1); 
-				IO.print(backpack.toString()); 
-			}
-			IO.println("Choose a place for your item : (line/column)"); 
-			int line = interaction.requestInt(); 
-			int column = interaction.requestInt(); 
-			backpack.add(item, line, column);
-			listItems.remove(index); 
-			IO.println(backpack.toString()); 
+			choiceRotation(item, interaction);
+			choiceDelItem(interaction);
+			choicePlaceItem(item, interaction, listItems, index);
 		}
 	}
+	
 	@Override
 	public String toString() {
 		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | " +  this.gold() + " gold\n";

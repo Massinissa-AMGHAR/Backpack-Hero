@@ -2,10 +2,10 @@ package fr.uge.character;
 import java.util.Scanner; 
 import fr.uge.application.*;
 
-public class Angel implements interactionCharacters {
+public class Healer implements interactionCharacters {
   private final int price; 
   private final int hp; 
-  public Angel(int price, int hp){
+  public Healer(int price, int hp){
     this.price = price; 
     this.hp = hp; 
   }
