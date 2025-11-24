@@ -13,7 +13,8 @@ public class Enemies {
     int enemiesNumber = rand.nextInt(3) + 1; 
     for(int i = 0; i < enemiesNumber; i++) {
     	int indexEnemies = rand.nextInt(Enemy.ALL_ENEMIES.length); 
-    	enemies.add(Enemy.ALL_ENEMIES[indexEnemies]); 
+    	var clone = Enemy.ALL_ENEMIES[indexEnemies]; 
+    	enemies.add(new Enemy(clone)); 
     }
 	}
 	

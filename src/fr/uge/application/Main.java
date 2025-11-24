@@ -40,13 +40,19 @@ public class Main {
 						return; 
 					}
 				}	
+				currentRoom.noEnemies(); 
 				Items reward = new Items(); 
 				hero.manageBackpack(reward, interaction, false);
 			}
 			if(currentRoom.hasTreasure()) { 
-				IO.println(currentRoom.treasure().toString()); 
-				hero.winGold(currentRoom.treasure().gold());
+			 IO.println("Oh ! You found a treasure !"); 
+			 var treasure = currentRoom.treasure();  
+		   hero.manageBackpack(treasure, interaction, false);
+		   if(treasure.getItems().isEmpty()) {
+		  	 currentRoom.noTreasure();
+		   }
 			}
+			
 			
 			if(currentRoom.hasDoor()) {
 				floor = dungeon.nextFloor(floor); 
@@ -54,8 +60,8 @@ public class Main {
 					victory = true; 
 				}
 				else {
-					IO.println("Welcome to the new floor ! " + hero.name()); 
-					floor.placeHero(1, 1);
+					IO.println("Welcome to the new floor" + hero.name() + " !"); 
+					floor.initPlaceHero();;
 				}
 			}
 			IO.println(floor.toString()); 

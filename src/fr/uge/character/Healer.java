@@ -22,7 +22,7 @@ public class Healer implements interactionCharacters {
   public void interaction(Hero hero, Interactions interaction) {
   	IO.println("Angel : Hello, I am the Angel. I can restore your energy ... if you have some money\n"); 
   	IO.println(hero.toString());
-  	IO.println("Do you want to restore your energy ? (y/no)");
+  	IO.println("Do you want to restore your life ? (y/n)");
   	if(!interaction.requestYesNo())return; 
   	hero.treat(this); 
   	IO.println(hero.toString()); 

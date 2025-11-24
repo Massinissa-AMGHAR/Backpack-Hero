@@ -6,16 +6,15 @@ import java.util.Objects;
 import java.util.Random; 
 
 public class Room {
-  private final boolean hasEnemies; 
+  private boolean hasEnemies; 
   private final boolean hasMerchant; 
   private final boolean hasAngel; 
-  private final boolean hasTreasure;
-  private final boolean hasDoor;
-  private final boolean isCorridor; 
+  private boolean hasTreasure;
+  private boolean hasDoor;
   private boolean visited;
   
   private final Enemies enemies; 
-  private final Treasure treasure; 
+  private Items treasure; 
   private final Merchant merchant; 
   private final Healer healer; 
   private final ArrayList<Room> neighbors = new ArrayList<>(); 
@@ -27,13 +26,7 @@ public class Room {
     this.hasTreasure = hasTreasure; 
     this.hasDoor = hasDoor;  
     this.visited = false;
-    
-    if(!hasEnemies && !hasMerchant && !hasAngel && !hasTreasure && !hasDoor) {
-    	isCorridor = true; 
-    }
-    else {
-    	isCorridor = false; 
-    }
+   
     if(hasEnemies) enemies = new Enemies(); 
     else enemies = null; 
     
@@ -43,7 +36,7 @@ public class Room {
     if(hasAngel) healer = new Healer(10, 5); 
     else healer = null;
     
-    if(hasTreasure) treasure = new Treasure(); 
+    if(hasTreasure) treasure = new Items(); 
     else treasure = null; 
   }
   
@@ -52,23 +45,30 @@ public class Room {
   public boolean hasAngel() {return hasAngel;}
   public boolean hasTreasure() {return hasTreasure;}
   public boolean hasDoor() {return hasDoor;}
-  public boolean isCorridor() { return isCorridor; }
   public boolean hasVisited() { return visited; }
   
   public Merchant merchant() { return merchant; }
   public Healer angel() { return healer; }
   public Enemies enemies() { return enemies; }
-  public Treasure treasure(){return treasure; }
+  public Items treasure(){return treasure; }
   public ArrayList<Room> neighbors(){return neighbors;}
   
   public void setVisited(boolean bool) { this.visited = bool; }
-  
+  public void noEnemies() { hasEnemies = false;}
+  public void noTreasure() { hasTreasure = false;}
   public void addNeighbor(Room room) {
   	Objects.requireNonNull(room, "Room cannot be null"); 
-  	neighbors.add(room); 
-  	room.neighbors.add(this); 
+  	if(!neighbors.contains(room))neighbors.add(room); 
+  	
+  	if(!room.neighbors.contains(this))room.neighbors.add(this); 
   }
   
+  public boolean isCorridor() {
+    if(!hasEnemies && !hasMerchant && !hasAngel && !hasTreasure && !hasDoor) {
+    	return true; 
+    }
+    return false; 
+  }
   @Override
   public String toString() {
 	  var builder = new StringBuilder(); 
@@ -77,7 +77,7 @@ public class Room {
     if(hasAngel) builder.append("A");
     if(hasTreasure) builder.append("T"); 
     if(hasDoor) builder.append("D"); 
-    if(isCorridor)builder.append("."); 
+    if(isCorridor())builder.append("."); 
     
     return String.format("%-5s", builder.toString());     
   }

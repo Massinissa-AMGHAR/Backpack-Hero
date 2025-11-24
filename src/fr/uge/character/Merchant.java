@@ -35,7 +35,7 @@ public class Merchant implements interactionCharacters {
   
   public void interactionSell(Hero hero, Interactions interaction) {
   	IO.println("Merchant : I can recup an item at half the price...\n"); 
-  	IO.println("Do you wan to sell an item ? (y/n)"); 
+  	IO.println("Do you want to sell an item ? (y/n)"); 
   	if(!interaction.requestYesNo())return; 
   	IO.println(hero.backpack().toString()); 
   	

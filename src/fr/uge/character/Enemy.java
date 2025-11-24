@@ -31,6 +31,19 @@ public class Enemy implements Fighter {
 	    this.xp = xp; 
 	}
 	
+	public Enemy(Enemy other) {
+		Objects.requireNonNull(other, "Enemy cannot be null"); 
+		this.HP = other.HP; 
+		this.HPMax = other.HP; 
+		this.protection = other.protection;
+    this.name = other.name;
+    this.minAttack = other.minAttack;
+    this.maxAttack = other.maxAttack;
+    this.minDefense = other.minDefense;
+    this.maxDefense = other.maxDefense;
+    this.xp = other.xp; 
+	}
+	
 	public int HP() { return HP; }
 	public int HPMax() { return HPMax; }
 	public int protection() { return protection; }	

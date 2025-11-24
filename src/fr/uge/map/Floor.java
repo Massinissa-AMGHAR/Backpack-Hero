@@ -47,6 +47,18 @@ public class Floor {
   	}
   }
   
+  public boolean goodPath(Room current, Room target, List<Room> visited) {
+  	if(current.equals(target)) return true; 
+  	visited.add(current); 
+  	
+  	for(var n : current.neighbors()) {
+  		if(!visited.contains(n) && (n.isCorridor() || n.equals(target))) {
+  			if(goodPath(n, target, visited)) return true; 
+  		}
+  	}
+  	return false; 
+  	
+  }
   public void moveHero(Interactions interaction) {
   	boolean goodMove = false; 
   	int x = -1; 
@@ -58,22 +70,22 @@ public class Floor {
     	if(!hasRoom(x, y)) IO.println("No room here"); 
     	else {
 	    	Room current = floor[heroX][heroY]; 
-	    	var neighbors = current.neighbors(); 
-	    	if(neighbors.contains(floor[x][y])) {
-	    		if (floor[x][y].hasVisited()) {
-	    			IO.println("You already visited this room.");
-	    			continue;
-	    		}
-		    	heroX = x; 
+	    	var target = floor[x][y];  
+	    	if(!goodPath(current, target, new ArrayList<>())) {
+	    		IO.println("Step by step ... Follow the path"); 
+	    		continue; 
+	    	}
+	    	else {
+	    	 	heroX = x; 
 		    	heroY = y;
 		    	floor[x][y].setVisited(true);
 		    	goodMove = true; 
-	      }
-	    	else IO.println("Step by step... Follow the way"); 
-      }
+	    	}
+		   
+     }
   	}
   }
-  
+ 
   public int heroX() { return heroX; }
   public int heroY() { return heroY; }
   
@@ -125,26 +137,7 @@ public class Floor {
 	      floor.add(corridor, pos[0], pos[1]);
 	    }
 	}
-	
-	private static void addNeighborsToFloor(Floor floor, List<List<Room>> neighborPairs) {
-    for (var pair : neighborPairs) {
-    	pair.get(0).addNeighbor(pair.get(1));
-        
-    }
-	}
-	
-	private static List<List<Room>> neighborFloor() {
-    var rooms = listRoomOfFloor1();
-    return List.of(
-      List.of(rooms.get(0), rooms.get(1)),
-      List.of(rooms.get(1), rooms.get(2)),
-      List.of(rooms.get(1), rooms.get(3)),
-      List.of(rooms.get(2), rooms.get(3)),
-      List.of(rooms.get(3), rooms.get(4)),
-      List.of(rooms.get(4), rooms.get(5)),
-      List.of(rooms.get(5), rooms.get(6))
-    );
-	}
+
 
   public void addAllNeighbor() {
   	for (int i = 0; i < 5; i++) {
@@ -207,19 +200,25 @@ public class Floor {
     Floor floor2 = new Floor();
     Floor floor3 = new Floor();
     
-    var corridor = new Room(false, false, false, false, false);
-    
     addRoomsToFloor(floor1, listRoomOfFloor1(), positionsRoomsFloor1());
     addRoomsToFloor(floor2, listRoomOfFloor2(), positionsRoomsFloor2());
     addRoomsToFloor(floor3, listRoomOfFloor3(), positionsRoomsFloor3());
    	 
-    addCorridorsToFloor(floor1, corridor, corridorPositionsFloor1());
-    addCorridorsToFloor(floor2, corridor, corridorPositionsFloor2());
-    addCorridorsToFloor(floor3, corridor, corridorPositionsFloor3());
-
-    addNeighborsToFloor(floor1, neighborFloor());
-    addNeighborsToFloor(floor2, neighborFloor());
-    addNeighborsToFloor(floor3, neighborFloor());
+    for(var pos : corridorPositionsFloor1()) {
+    	floor1.add(new Room(false, false, false, false, false), pos[0], pos[1]);
+    }
+    
+    for(var pos : corridorPositionsFloor2()) {
+    	floor2.add(new Room(false, false, false, false, false), pos[0], pos[1]);
+    }
+    
+    for(var pos : corridorPositionsFloor3()) {
+    	floor3.add(new Room(false, false, false, false, false), pos[0], pos[1]);
+    }
+    
+    floor1.addAllNeighbor();
+    floor2.addAllNeighbor();
+    floor3.addAllNeighbor();
 
 		return List.of(floor1, floor2, floor3); 
   }

@@ -156,7 +156,6 @@ public class Hero implements Fighter {
 	}
 	
 	private void choiceRotation(Item item, Interactions interaction) {
-		IO.println(backpack.toString()); 
 		IO.println("Do you want to make a rotation for your item ? (y/n)"); 
 		if(interaction.requestYesNo()) {
 			item.rotate();
@@ -202,7 +201,8 @@ public class Hero implements Fighter {
 			IO.println("Choose an item : (line)"); 
 			int index = interaction.requestInt(); 
 			if(index < 0 || index >= listItems.size()) {
-				throw new IllegalArgumentException("Invalid index"); 
+				IO.println("Invalid index"); 
+				continue; 
 			}
 			var item = listItems.get(index); 
 			if(isShop) {
