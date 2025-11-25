@@ -1,5 +1,7 @@
 package fr.uge.character;
 import java.util.Objects;
+import java.util.Scanner;
+
 import fr.uge.application.*;
 import fr.uge.inventory.*;
 import java.util.List;
@@ -12,16 +14,18 @@ public class Hero implements Fighter {
   private int protection;
   private int energy;
   private int mana;
-  private int manaMax; 
-  private int gold;
+  private int manaMax;
   private int xp; 
   private int level;
   private final Backpack backpack;
   
-  public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int gold, int xp,  int level, Backpack backpack) {
+  Scanner scanner = new Scanner(System.in); 
+	Interactions interaction = new Interactions(scanner); 
+  
+  public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int xp,  int level, Backpack backpack) {
     Objects.requireNonNull(name, "name can't be null");
     Objects.requireNonNull(backpack, "backpack can't be null");
-    if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || manaMax < 0 || xp < 0 || gold < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");
+    if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || manaMax < 0 || xp < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");
       this.name = name;
       this.HP = HP;
       this.HPMAX = HPMAX;
@@ -29,7 +33,6 @@ public class Hero implements Fighter {
       this.energy = energy;
       this.mana = mana;
       this.manaMax = manaMax;  
-      this.gold = gold;
       this.xp = xp; 
       this.level = level;
       this.backpack = backpack;
@@ -42,7 +45,6 @@ public class Hero implements Fighter {
   public int energy() { return energy; }
   public int mana() { return mana; }
   public int manaMax() { return manaMax; }
-  public int gold() { return gold; }
   public int level() { return level; }
   public int xp() {return xp; }
   public Backpack backpack() { return backpack; }
@@ -107,10 +109,12 @@ public class Hero implements Fighter {
 	    IO.println(name + " doesn't have enough resources to use " + item.name());
 		return 0;
 	  }
-	  mana += item.manaGained(); 
-	  
+	  mana -= item.manaCost(); 
 	  energy -= item.energyCost(); 
-	  mana -= item.manaCost();  
+	  if(mana < 0) mana = 0; 
+	  mana += item.manaGained(); 
+	  if(mana < manaMax) mana = manaMax; 
+	  
 	  return mana;
 	}
 	
@@ -119,9 +123,15 @@ public class Hero implements Fighter {
     this.xp += ennemy.xp();
   }
   
-  public void winGold(int gold) {
-  	this.gold += gold; 
-  	IO.println(name + " wins " + gold + " gold");
+  public void winGold(int amount) {
+  	Item goldItem = backpack.findGoldItem(); 
+  	if(goldItem != null) goldItem.addGold(amount);
+  	else {
+  		Items list = new Items(); 
+  		Item newGold = new Item("Gold", "GOLD", "COMMON", 1, 1, 0, 0, 0, 0, 0, 0, 0, amount); 
+  		list.addItem(newGold);
+  		choicePlaceItem(newGold, interaction, list, 0); 
+  	}
   }
 	
   public void resetEnergy() {
@@ -133,18 +143,19 @@ public class Hero implements Fighter {
   }
   
   public boolean buy(int cost) {
-    if(gold < cost) {
-    	IO.println("You don't have enough money !"); 
+    Item gold = backpack.findGoldItem(); 
+    if(gold == null || gold.goldAmount() < cost) {
+    	IO.println("You don't have enough money!"); 
     	return false; 
     }
-    gold -= cost; 
+    gold.spendGold(cost);
     return true; 
   }
 
 	public void sellItem(Merchant merchant, Item item) {
 		Objects.requireNonNull(merchant, "Merchant cannot be null");
 	  Objects.requireNonNull(item, "Item cannot be null");
-	  this.backpack.delete(item);
+	  backpack.delete(item);
 	  winGold(merchant.goldCost(item)); 
 	}
 
@@ -152,6 +163,7 @@ public class Hero implements Fighter {
 		Objects.requireNonNull(healer, "Angel cannot be null");
 	  if (buy(healer.price())) {
 	  	if(HP < HPMAX) HP += healer.hp();
+	  	else HP = HPMAX; 
 	  }
 	}
 	
@@ -175,7 +187,7 @@ public class Hero implements Fighter {
 		}
 	}
 	
-	private void choicePlaceItem(Item item, Interactions interaction, List<Item> listItems, int index) {
+	private void choicePlaceItem(Item item, Interactions interaction, Items listItems, int index) {
 		while (true) {
 			IO.println("Choose a place for your item : (line/column)"); 
 			int line = interaction.requestInt(); 
@@ -184,7 +196,7 @@ public class Hero implements Fighter {
 			int availableHeight = backpack.lengthColumn(line, column);
 			if (item.width() <= availableWidth && item.height() <= availableHeight) {
 				backpack.add(item, line, column);
-				listItems.remove(index); 
+				listItems.deleteItem(index);  
 				IO.println(backpack.toString()); 
 				break;
 			} else IO.println("Item doesn't fit at this position. Please try again.");
@@ -204,7 +216,15 @@ public class Hero implements Fighter {
 				IO.println("Invalid index"); 
 				continue; 
 			}
-			var item = listItems.get(index); 
+			Item item = listItems.get(index); 
+			if(item.isGold()) {
+				var firstItem = backpack.findGoldItem(); 
+				if(firstItem != null) {
+					firstItem.addGold(item.goldAmount()); 
+					listItems.remove(index); 
+					continue; 
+				}
+			}
 			if(isShop) {
 				if(!buy(item.goldCost())) return; 
 				IO.println(this.toString()); 
@@ -212,13 +232,13 @@ public class Hero implements Fighter {
 			IO.println(backpack.toString()); 
 			choiceRotation(item, interaction);
 			choiceDelItem(interaction);
-			choicePlaceItem(item, interaction, listItems, index);
+			choicePlaceItem(item, interaction, items, index);
 		}
 	}
 	
 	@Override
 	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | " +  this.gold() + " gold\n";
+		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy(); 
 	}
 
 	

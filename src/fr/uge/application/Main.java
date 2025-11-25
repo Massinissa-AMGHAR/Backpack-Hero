@@ -16,7 +16,7 @@ public class Main {
 		floor.addAllNeighbor();
 		Backpack backpack = new Backpack(3, 5); 
 		backpack.add(Item.ALL_ITEM[0], 0, 0);
-		Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5, 30, 0, 0, backpack);
+		Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
 		IO.println("###### Backpack Hero ######"); 
 		floor.initPlaceHero();
 		while(!victory) {

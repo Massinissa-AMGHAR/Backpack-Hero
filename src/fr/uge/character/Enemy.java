@@ -103,8 +103,8 @@ public class Enemy implements Fighter {
 	}
 	
 	public static final Enemy[] ALL_ENEMIES ={
-		new Enemy("Little Rat-Wolf", 3, 3, 5, 1, 4, 1, 6, 3 ),
-		new Enemy("Rat-Wolf", 6, 6, 5, 3, 6, 3, 6, 6)
+		new Enemy("Little Rat-Wolf", 15, 15, 5, 1, 4, 1, 6, 3 ),
+		new Enemy("Rat-Wolf", 20, 20, 5, 3, 6, 3, 6, 6)
 	};
 	
 	@Override

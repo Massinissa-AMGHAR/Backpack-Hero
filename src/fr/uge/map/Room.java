@@ -36,7 +36,12 @@ public class Room {
     if(hasAngel) healer = new Healer(10, 5); 
     else healer = null;
     
-    if(hasTreasure) treasure = new Items(); 
+    if(hasTreasure) {
+    	treasure = new Items(); 
+    	treasure.randomItems(2);
+    	var gold = new Item("Gold", "GOLD", "COMMON", 1, 1, 0, 0, 0, 0, 0, 0, 0, 10); 
+    	treasure.addItem(gold);
+    }
     else treasure = null; 
   }
   

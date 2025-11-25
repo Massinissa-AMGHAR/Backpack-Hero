@@ -18,8 +18,9 @@ public class Item {
 	private final int manaGained;
 	private final int id;
 	private static int counter = 0;
+	private int goldAmount = 0; 
   
-	public Item(String name, String type, String rarity, int width, int height, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost) {
+	public Item(String name, String type, String rarity, int width, int height, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
 		Objects.requireNonNull(type, "type can't be null.");
 		Objects.requireNonNull(rarity, "rarity can't be null.");
@@ -38,6 +39,7 @@ public class Item {
 		this.manaCost = manaNeeded;
 		this.manaGained = manaGained;
 		this.id = counter++;
+		this.goldAmount = goldAmount; 
 	}
 	  
 	public String name() { return name; }
@@ -53,7 +55,26 @@ public class Item {
 	public int manaGained() { return manaGained; }
 	public int goldCost() { return goldCost; }
 	public int id() { return id; }
+	public int goldAmount() {return goldAmount;}
 	
+	public boolean isGold() {return type.equals("GOLD"); }
+	
+	public void addGold(int amount) {
+		if(!isGold()) {
+			throw new IllegalArgumentException("Trying to add gold on a no gold item "); 
+		}
+		goldAmount += amount; 
+		IO.println(amount + "gold added !");
+		IO.println("You have "+ goldAmount); 
+	}
+	
+	public void spendGold(int amount) {
+		if(!isGold()) {
+			throw new IllegalArgumentException("Trying to spend gold on a no gold item"); 
+		}
+		goldAmount -= amount; 
+		if(goldAmount < 0) goldAmount = 0; 
+	}
 	public void rotate() {
 	  var pastWidth = width; 
 	  width = height; 
@@ -61,16 +82,16 @@ public class Item {
 	}
 	
 	public Item copy() {
-		return new Item(this.name, this.type, this.rarity, this.width, this.height, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost);
+		return new Item(this.name, this.type, this.rarity, this.width, this.height, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost, this.goldAmount);
 	}
 	
 	public static final Item[] ALL_ITEM = {
-	  new Item("Wooden Sword", "MELEE", "COMMON", 1, 3, 7, 0, 1, 0, 0, 0, 5),
-		new Item("Arrow", "ARROW", "COMMON", 2, 1, 2, 0, 0, 0, 0, 0, 1),
-		new Item("Rough Buckler", "SHIELD", "COMMON", 2, 2, 0, 7, 1, 0, 0, 0, 2),
-		new Item("Tunic", "ARMOR", "COMMON", 2, 2, 0, 5, 0, 0, 0, 0, 1),
-		new Item("Magic Wand", "MAGIC", "COMMON", 1, 2, 3, 0, 0, 0, 2, 0, 3),
-		new Item("Mana Stone", "MANA", "COMMON", 1, 1, 0, 0, 0, 0, 0, 2, 2)
+	  new Item("Wooden Sword", "MELEE", "COMMON", 1, 3, 7, 0, 1, 0, 0, 0, 5, 0),
+		new Item("Arrow", "ARROW", "COMMON", 2, 1, 2, 0, 0, 0, 0, 0, 1, 0),
+		new Item("Rough Buckler", "SHIELD", "COMMON", 2, 2, 0, 7, 1, 0, 0, 0, 2, 0),
+		new Item("Tunic", "ARMOR", "COMMON", 2, 2, 0, 5, 0, 0, 0, 0, 1, 0),
+		new Item("Magic Wand", "MAGIC", "COMMON", 1, 2, 3, 0, 0, 0, 2, 0, 3, 0),
+		new Item("Mana Stone", "MANA", "COMMON", 1, 1, 0, 0, 0, 0, 0, 2, 2, 0), 
 	};
 	
 	@Override

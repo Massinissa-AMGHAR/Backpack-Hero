@@ -13,6 +13,7 @@ public class Merchant implements interactionCharacters {
   
   public Merchant(){
     this.shop = new Items(); 
+    shop.randomItems(3);
     this.rand = new Random(); 
    
   }

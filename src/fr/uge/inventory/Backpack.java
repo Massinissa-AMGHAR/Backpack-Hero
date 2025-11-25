@@ -91,7 +91,16 @@ public class Backpack {
 	  return backpack.get(line).get(column); 
   }
   
-  
+  public Item findGoldItem() {
+  	for(int i = 0; i < lines; i++) {
+  		for(int j = 0; j < columns; j++) {
+  			Item item = backpack.get(i).get(j); 
+  			if(item != null && item.isGold())return item; 
+  		}
+  	}
+  	return null; 
+  }
+
   @Override
   public String toString() {
     var builder = new StringBuilder(); 
