@@ -7,7 +7,7 @@ public class Floor {
   private final Room[][] floor = new Room[5][11]; 
   private int heroX = -1; 
   private int heroY = -1;
-  private boolean hasHero = false; 
+
   
   public void add(Room room, int line, int column) {
     if(floor[line][column] != null) {
@@ -33,7 +33,6 @@ public class Floor {
   	}
   	this.heroX = x; 
   	this.heroY = y; 
-  	this.hasHero = true; 
   }
   
   public void initPlaceHero() {
@@ -109,7 +108,7 @@ public class Floor {
       new Room(false, false, false, true, true),
       new Room(true, false, false, false, true),
       new Room(false, false, true, false, false),
-      new Room(false, true, false, false, false)
+      new Room(true, false, false, true, false)
     );
   }
 
@@ -120,8 +119,8 @@ public class Floor {
 	      new Room(false, false, false, true, false),
 	      new Room(false, true, false, false, false),
 	      new Room(true, false, false, true, true),
-	      new Room(false, false, true, false, false),
-	      new Room(false, true, false, false, true)
+	      new Room(true, false, true, false, false),
+	      new Room(false, false, false, false, true)
 	    );
 	}
 	  
@@ -131,14 +130,6 @@ public class Floor {
       floor.add(rooms.get(i), pos[0], pos[1]);
     }
   }
-
-	private static void addCorridorsToFloor(Floor floor, Room corridor, List<int[]> positions) {
-	  for (int[] pos : positions) {
-	      floor.add(corridor, pos[0], pos[1]);
-	    }
-	}
-
-
   public void addAllNeighbor() {
   	for (int i = 0; i < 5; i++) {
   		for (int j = 0; j < 11; j++) {

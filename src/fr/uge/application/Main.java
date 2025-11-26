@@ -42,6 +42,7 @@ public class Main {
 				}	
 				currentRoom.noEnemies(); 
 				Items reward = new Items(); 
+				reward.randomItems(3);
 				hero.manageBackpack(reward, interaction, false);
 			}
 			if(currentRoom.hasTreasure()) { 
@@ -60,7 +61,7 @@ public class Main {
 					victory = true; 
 				}
 				else {
-					IO.println("Welcome to the new floor" + hero.name() + " !"); 
+					IO.println("Welcome to the new floor " + hero.name() + " !"); 
 					floor.initPlaceHero();;
 				}
 			}

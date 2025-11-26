@@ -1,7 +1,7 @@
 package fr.uge.inventory;
 
 import java.util.Objects;
-import java.util.Random;
+
 
 public class Item {
 	private final String name; 
@@ -64,8 +64,8 @@ public class Item {
 			throw new IllegalArgumentException("Trying to add gold on a no gold item "); 
 		}
 		goldAmount += amount; 
-		IO.println(amount + "gold added !");
-		IO.println("You have "+ goldAmount); 
+		IO.println(amount + " gold added !");
+		IO.println("You have "+ goldAmount + " gold"); 
 	}
 	
 	public void spendGold(int amount) {
@@ -96,6 +96,6 @@ public class Item {
 	
 	@Override
 	public String toString() {
-		return this.name() + " | type : " + this.type() + " | rarity : " + this.rarity() + " | width : " + this.width() + " | height : " + this.height() + " | damage : " + this.damage() + " | defense : " + this.defense() + " | energy cost : " + this.energyCost() + " | energy gained" + this.energyGained() + " | mana cost : " + this.manaCost() + " | mana gained : "  + this.manaGained() + " | cost : " + this.goldCost() + " gold";  
+		return this.name() + " | type : " + this.type() + " | rarity : " + this.rarity() + " | width : " + this.width() + " | height : " + this.height() + " | damage : " + this.damage() + " | defense : " + this.defense() + " | energy cost : " + this.energyCost() + " | energy gained" + this.energyGained() + " | mana cost : " + this.manaCost() + " | mana gained : "  + this.manaGained() + " | cost : " + this.goldCost() + " gold" + " | Amount : " + this.goldAmount() + " gold";  
 	}
 }

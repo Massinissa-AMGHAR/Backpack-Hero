@@ -1,10 +1,10 @@
 package fr.uge.character;
 import java.util.Objects;
+
 import java.util.Scanner;
 
 import fr.uge.application.*;
 import fr.uge.inventory.*;
-import java.util.List;
 
 
 public class Hero implements Fighter {
@@ -123,16 +123,6 @@ public class Hero implements Fighter {
     this.xp += ennemy.xp();
   }
   
-  public void winGold(int amount) {
-  	Item goldItem = backpack.findGoldItem(); 
-  	if(goldItem != null) goldItem.addGold(amount);
-  	else {
-  		Items list = new Items(); 
-  		Item newGold = new Item("Gold", "GOLD", "COMMON", 1, 1, 0, 0, 0, 0, 0, 0, 0, amount); 
-  		list.addItem(newGold);
-  		choicePlaceItem(newGold, interaction, list, 0); 
-  	}
-  }
 	
   public void resetEnergy() {
   	energy = 3; 
@@ -149,7 +139,20 @@ public class Hero implements Fighter {
     	return false; 
     }
     gold.spendGold(cost);
+    IO.println("You spend "+ cost + "golds"); 
+  	IO.println("You have "+ gold.goldAmount() + " golds"); 
     return true; 
+  }
+  
+  public void winGold(int amount) {
+  	Item goldItem = backpack.findGoldItem(); 
+  	if(goldItem != null) goldItem.addGold(amount);
+  	else {
+  		Items list = new Items(); 
+  		Item newGold = new Item("Gold", "GOLD", "COMMON", 1, 1, 0, 0, 0, 0, 0, 0, 0, amount); 
+  		list.addItem(newGold);
+  		choicePlaceItem(newGold, interaction, list, 0); 
+  	}
   }
 
 	public void sellItem(Merchant merchant, Item item) {
@@ -162,8 +165,9 @@ public class Hero implements Fighter {
 	public void treat(Healer healer) {
 		Objects.requireNonNull(healer, "Angel cannot be null");
 	  if (buy(healer.price())) {
-	  	if(HP < HPMAX) HP += healer.hp();
-	  	else HP = HPMAX; 
+	  	HP += healer.hp();
+	  	if(HP > HPMAX) HP = HPMAX; 
+	  	IO.println("You life was restored"); 
 	  }
 	}
 	
@@ -183,13 +187,14 @@ public class Hero implements Fighter {
 			int column = interaction.requestInt(); 
 			var item1 = backpack.choice(line, column); 
 			backpack.delete(item1); 
-			IO.print(backpack.toString()); 
 		}
 	}
 	
 	private void choicePlaceItem(Item item, Interactions interaction, Items listItems, int index) {
 		while (true) {
-			IO.println("Choose a place for your item : (line/column)"); 
+			IO.println(backpack.toString()); 
+			if(item.type().equals("GOLD"))IO.println("Choose a place for your gold : (line/column)"); 
+			else IO.println("Choose a place for your item : (line/column)"); 
 			int line = interaction.requestInt(); 
 			int column = interaction.requestInt(); 
 			int availableWidth = backpack.lengthLine(line, column);
@@ -226,7 +231,7 @@ public class Hero implements Fighter {
 				}
 			}
 			if(isShop) {
-				if(!buy(item.goldCost())) return; 
+				if(!buy(item.goldCost())) continue; 
 				IO.println(this.toString()); 
 			}
 			IO.println(backpack.toString()); 

@@ -1,26 +1,21 @@
 package fr.uge.character;
-import java.util.ArrayList;
-import java.util.Scanner; 
-import java.util.Random;
-
 import fr.uge.application.Interactions;
 import fr.uge.inventory.*;
 
 
 public class Merchant implements interactionCharacters {
   private final Items shop; 
-  private final Random rand; 
   
   public Merchant(){
     this.shop = new Items(); 
     shop.randomItems(3);
-    this.rand = new Random(); 
+
    
   }
  
   public int goldCost(Item item) {
     int goldCost =  item.goldCost() / 2; 
-    IO.println("Merchant : I buy this item for : " + goldCost + " gold"); 
+    IO.println("Merchant : I buy this item for : " + goldCost + " golds"); 
     return goldCost; 
   }
   
@@ -28,7 +23,6 @@ public class Merchant implements interactionCharacters {
   
   public void interactionBuy(Hero hero, Interactions interaction) {
   	IO.println(this.toString()); 
-  	IO.println(hero.toString()); 
   	
   	hero.manageBackpack(shop, interaction, true);  
  
@@ -47,7 +41,7 @@ public class Merchant implements interactionCharacters {
   	
   	Item item = hero.backpack().choice(line, column); 
   	hero.sellItem(this, item); 
-  	IO.println("You sold " + item.name());  
+  	IO.println("You sold " + item.name()); 
   	IO.println(hero.backpack()); 
   	
   }

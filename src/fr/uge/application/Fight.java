@@ -34,7 +34,8 @@ public class Fight {
       hero.winXp(enemy);
       hero.resetMana(); 
       hero.resetEnergy();
-      IO.println("Hero wins " + hero.xp() + " experience points"); 
+      IO.println("Hero wins " + enemy.xp() + " experience points"); 
+      IO.println("Hero has " + hero.xp() + " experience points"); 
       return true; 
     }
   }
@@ -90,11 +91,12 @@ public class Fight {
     IO.println("Enemy turn : \n"); 
     if(action == 0) {
       int damage = enemy.attack(hero, null);
-      IO.println(enemy.name() + " attacks and deals " + damage + " damage to " + hero.name() + "!");
+      IO.println(enemy.name() + " attacks and deals " + damage + " damages to " + hero.name() + "!"); 
     } else {
       enemy.resetProtection();
       int blocked = enemy.defense(null);
       IO.println(enemy.name() + " defends and gains " + blocked + " protection!");
+      IO.println(enemy.toString()); 
     }
     IO.println("\nCurrent stats:");
     IO.println(hero);
