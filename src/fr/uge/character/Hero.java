@@ -175,18 +175,44 @@ public class Hero implements Fighter {
 		IO.println("Do you want to make a rotation for your item ? (y/n)"); 
 		if(interaction.requestYesNo()) {
 			item.rotate();
-			IO.println(item.toString());
+			IO.println(backpack.toString()); 
+		}
+	}
+	
+	private void choiceTranslation(Interactions interaction) {
+		while(true) {
+			IO.println("Do you want to make a translation for an item in your backpack ? (y/n)"); 
+			if(interaction.requestYesNo()) {
+				IO.println("Choose an item : (line/column)"); 
+				int line = interaction.requestInt(); 
+				int column = interaction.requestInt(); 
+				var item = backpack.choice(line, column);
+				if(item == null)continue;
+				Items list = new Items(); 
+				list.addItem(item); 
+				choicePlaceItem(item, interaction, list, 0); 
+				backpack.delete(item); 
+				IO.println(backpack.toString()); 
+				break; 
+			}
+			else break; 
 		}
 	}
 	
 	private void choiceDelItem(Interactions interaction) {
-		IO.println("Do you want to delete an item in your backpack ? (y/n)"); 
-		if(interaction.requestYesNo()) {
-			IO.println("Choose an item : (line/column)"); 
-			int line = interaction.requestInt(); 
-			int column = interaction.requestInt(); 
-			var item1 = backpack.choice(line, column); 
-			backpack.delete(item1); 
+		while(true) {
+			IO.println("Do you want to delete an item in your backpack ? (y/n)"); 
+			if(interaction.requestYesNo()) {
+				IO.println("Choose an item : (line/column)"); 
+				int line = interaction.requestInt(); 
+				int column = interaction.requestInt(); 
+				var item1 = backpack.choice(line, column);
+				if(item1 == null)continue; 
+				backpack.delete(item1); 
+				IO.println("You delete " + item1.name()); 
+				break; 
+			}
+			else break; 
 		}
 	}
 	
@@ -202,7 +228,6 @@ public class Hero implements Fighter {
 			if (item.width() <= availableWidth && item.height() <= availableHeight) {
 				backpack.add(item, line, column);
 				listItems.deleteItem(index);  
-				IO.println(backpack.toString()); 
 				break;
 			} else IO.println("Item doesn't fit at this position. Please try again.");
 		}
@@ -235,9 +260,11 @@ public class Hero implements Fighter {
 				IO.println(this.toString()); 
 			}
 			IO.println(backpack.toString()); 
+			choiceTranslation(interaction); 
 			choiceRotation(item, interaction);
 			choiceDelItem(interaction);
 			choicePlaceItem(item, interaction, items, index);
+			IO.println(backpack.toString()); 
 		}
 	}
 	

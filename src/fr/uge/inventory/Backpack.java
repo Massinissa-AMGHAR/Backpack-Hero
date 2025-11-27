@@ -81,11 +81,13 @@ public class Backpack {
   
   public Item choice(int line, int column) {
 	  if(line < 0 || line >= lines || column < 0 || column >= columns) {
-	    throw new IllegalArgumentException("The case is not in the backpack"); 
+	    IO.println("The case is not in the backpack"); 
+	    return null; 
 	  }
 	  
 	  if(backpack.get(line).get(column) == null) {
-	    throw new IllegalArgumentException("The case is null"); 
+	   IO.println("The case is null"); 
+	   return null; 
 	  }
 	  
 	  return backpack.get(line).get(column); 
