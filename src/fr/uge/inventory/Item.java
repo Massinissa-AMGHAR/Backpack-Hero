@@ -7,8 +7,7 @@ public class Item {
 	private final String name; 
 	private final String type; 
 	private final String rarity;
-	private int width;
-	private int height;
+	private boolean[][] shape; 
 	private final int damage;
 	private final int defense;
 	private final int energyCost;
@@ -20,17 +19,16 @@ public class Item {
 	private static int counter = 0;
 	private int goldAmount = 0; 
   
-	public Item(String name, String type, String rarity, int width, int height, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
+	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
 		Objects.requireNonNull(type, "type can't be null.");
 		Objects.requireNonNull(rarity, "rarity can't be null.");
-	    if (damage < 0 || defense < 0 || energyNeeded < 0 || energyGained < 0|| manaNeeded < 0 || manaGained < 0 || width <= 0 || height <= 0) 
+	    if (damage < 0 || defense < 0 || energyNeeded < 0 || energyGained < 0|| manaNeeded < 0 || manaGained < 0 ) 
 	    	throw new IllegalArgumentException("Invalid values for the item");
 		this.name = name; 
 		this.type = type; 
 		this.rarity = rarity;
-		this.width = width;
-		this.height = height;
+		this.shape = shape; 
 		this.damage = damage;
 		this.defense = defense;
 		this.energyCost = energyNeeded;
@@ -45,8 +43,9 @@ public class Item {
 	public String name() { return name; }
 	public String type() { return type; }
 	public String rarity() { return rarity; }
-	public int width() { return width; }
-	public int height() { return height; }
+	public boolean[][] shape() {return shape; }
+	public int width() { return shape[0].length; }
+	public int height() { return shape.length; }
 	public int damage() { return damage; }
 	public int defense() { return defense; }
 	public int energyCost() { return energyCost; }
@@ -76,22 +75,65 @@ public class Item {
 		if(goldAmount < 0) goldAmount = 0; 
 	}
 	public void rotate() {
-	  var pastWidth = width; 
-	  width = height; 
-	  height = pastWidth; 
+		IO.println("You decided to make a rotation");
+		int oldHeight = shape.length; 
+		int oldWidth = shape[0].length; 
+		boolean[][] rotated = new boolean[oldWidth][oldHeight]; 
+		
+		for(int line = 0; line < oldHeight; line++) {
+			for(int column = 0; column < oldWidth; column++) {
+				rotated[column][oldHeight - 1 - line] = shape[line][column]; 
+			}
+		}
+		shape = rotated; 
 	}
 	
 	public Item copy() {
-		return new Item(this.name, this.type, this.rarity, this.width, this.height, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost, this.goldAmount);
+		return new Item(this.name, this.type, this.rarity, this.shape, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost, this.goldAmount);
 	}
 	
+	
+	private static final boolean[][] SHAPE_WOODEN_SWORD = {
+			{true}, 
+			{true}, 
+			{true}
+	}; 
+	
+	private static final boolean[][] SHAPE_ARROW = {
+			{true, true}, 
+			{true, false}, 
+			{true, true}
+	}; 
+	
+	private static final boolean[][] SHAPE_ROUGH_BUCKLER = {
+			{true, true}, 
+			{true, true}, 
+	}; 
+	
+	private static final boolean[][] SHAPE_TUNIC = {
+			{true, true}, 
+			{true, false}, 
+			{true, false}
+	}; 
+	
+	private static final boolean[][] SHAPE_MAGIC_WAND = {
+			{true, true, true}
+	}; 
+	
+	private static final boolean[][] SHAPE_MANA_STONE = {
+			{true}
+	}; 
+	
+	public static final boolean[][] SHAPE_GOLD = {
+			{true}
+	}; 
 	public static final Item[] ALL_ITEM = {
-	  new Item("Wooden Sword", "MELEE", "COMMON", 1, 3, 7, 0, 1, 0, 0, 0, 5, 0),
-		new Item("Arrow", "ARROW", "COMMON", 2, 1, 2, 0, 0, 0, 0, 0, 1, 0),
-		new Item("Rough Buckler", "SHIELD", "COMMON", 2, 2, 0, 7, 1, 0, 0, 0, 2, 0),
-		new Item("Tunic", "ARMOR", "COMMON", 2, 2, 0, 5, 0, 0, 0, 0, 1, 0),
-		new Item("Magic Wand", "MAGIC", "COMMON", 1, 2, 3, 0, 0, 0, 2, 0, 3, 0),
-		new Item("Mana Stone", "MANA", "COMMON", 1, 1, 0, 0, 0, 0, 0, 2, 2, 0), 
+	  new Item("Wooden Sword", "MELEE", "COMMON", SHAPE_WOODEN_SWORD, 7, 0, 1, 0, 0, 0, 5, 0),
+		new Item("Arrow", "ARROW", "COMMON", SHAPE_ARROW, 2, 0, 0, 0, 0, 0, 1, 0),
+		new Item("Rough Buckler", "SHIELD", "COMMON", SHAPE_ROUGH_BUCKLER, 0, 7, 1, 0, 0, 0, 2, 0),
+		new Item("Tunic", "ARMOR", "COMMON", SHAPE_TUNIC, 0, 5, 0, 0, 0, 0, 1, 0),
+		new Item("Magic Wand", "MAGIC", "COMMON", SHAPE_MAGIC_WAND, 3, 0, 0, 0, 2, 0, 3, 0),
+		new Item("Mana Stone", "MANA", "COMMON", SHAPE_MANA_STONE, 0, 0, 0, 0, 0, 2, 2, 0), 
 	};
 	
 	@Override

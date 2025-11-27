@@ -47,18 +47,21 @@ public class Fight {
 
     while(hero.energy() > 0) {
       if (enemy.HP() <= 0) break;
-      Item item = null; 
-      while(item == null) {
+      Item item = null;
+      boolean valid = false; 
+      while(!valid) {
       	IO.println(hero.backpack()); 
         IO.println("Choose an item to use (enter line and column) :"); 
         int line = interaction.requestInt(); 
         int column = interaction.requestInt(); 
 
-        try {
-          item = hero.backpack().choice(line, column); 
-          IO.println(hero.name() + " chooses " + item.name() + " and it costs " + item.energyCost());
-        } catch(IllegalArgumentException e){
-          IO.println(e.getMessage() + ", please choose again"); 
+        item = hero.backpack().choice(line, column); 
+        if(item == null) {
+          IO.println("Please choose again"); 
+        } 
+        else {
+        	IO.println(hero.name() + " chooses " + item.name() + " and it costs " + item.energyCost());
+        	valid = true; 
         }
       }
       useItem(item); 

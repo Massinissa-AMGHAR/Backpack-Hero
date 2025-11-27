@@ -1,5 +1,4 @@
 package fr.uge.inventory;
-import java.util.Objects;
 import java.util.ArrayList; 
 
 public class Backpack {
@@ -46,28 +45,26 @@ public class Backpack {
 	return length; 
   }
   
-  private boolean contains(Item item) {
-  	for(int i = 0; i < lines; i++) {
-  		for(int j = 0; j < columns; j++) {
-  			if(backpack.get(i).get(j) == item) return true; 
-  		}
-  	}
-  	return false; 
-  }
-  
   public void add(Item item, int line, int column) { 
-		if(line < 0 || line >= lines || column < 0 || column >= columns) {
-		  throw new IllegalArgumentException("The case is not in the backpack"); 
+  	boolean[][] shape = item.shape(); 
+		
+		for(int i = 0; i < item.height(); i++) {
+			for(int j = 0; j < item.width(); j++) {
+				if(shape[i][j]) {
+					if(!caseFree(line + i, column + j)) {
+						IO.println("The case is already occupied");
+						return; 
+					}
+				}
+			}
 		}
-		
-		var tmp = item;
-		if (contains(tmp)) tmp = item.copy();
-		
-    for(int i = line; i < line + tmp.height(); i++) {
-      for(int j = column; j < column + tmp.width(); j++) {
-        backpack.get(i).set(j, tmp); 
-      }
-    }
+		for(int i = 0; i < item.height(); i++) {
+			for(int j = 0; j < item.width(); j++) {
+				if(shape[i][j]) {
+					backpack.get(line + i).set(column + j, item); 
+				}
+			}
+		}
   }
   
   public void delete(Item item) {

@@ -3,7 +3,6 @@ import fr.uge.character.*;
 import fr.uge.inventory.*;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random; 
 
 public class Room {
   private boolean hasEnemies; 
@@ -39,7 +38,7 @@ public class Room {
     if(hasTreasure) {
     	treasure = new Items(); 
     	treasure.randomItems(2);
-    	var gold = new Item("Gold", "GOLD", "COMMON", 1, 1, 0, 0, 0, 0, 0, 0, 0, 10); 
+    	var gold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, 10); 
     	treasure.addItem(gold);
     }
     else treasure = null; 

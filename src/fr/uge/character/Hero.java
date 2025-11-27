@@ -149,7 +149,7 @@ public class Hero implements Fighter {
   	if(goldItem != null) goldItem.addGold(amount);
   	else {
   		Items list = new Items(); 
-  		Item newGold = new Item("Gold", "GOLD", "COMMON", 1, 1, 0, 0, 0, 0, 0, 0, 0, amount); 
+  		Item newGold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, amount); 
   		list.addItem(newGold);
   		choicePlaceItem(newGold, interaction, list, 0); 
   	}
@@ -170,70 +170,91 @@ public class Hero implements Fighter {
 	  	IO.println("You life was restored"); 
 	  }
 	}
-	
-	private void choiceRotation(Item item, Interactions interaction) {
-		IO.println("Do you want to make a rotation for your item ? (y/n)"); 
-		if(interaction.requestYesNo()) {
-			item.rotate();
-			IO.println(backpack.toString()); 
-		}
+	private void choiceRotation(Interactions interaction) {
+		IO.println("You decide to make a rotation"); 
+		IO.println("Choose the item to rotate (line/column)"); 
+		int line = interaction.requestInt(); 
+		int column = interaction.requestInt(); 
+		
+		Item item = backpack.choice(line, column);
+		item.rotate(); 
+		IO.println(backpack.toString()); 
 	}
-	
 	private void choiceTranslation(Interactions interaction) {
-		while(true) {
-			IO.println("Do you want to make a translation for an item in your backpack ? (y/n)"); 
-			if(interaction.requestYesNo()) {
-				IO.println("Choose an item : (line/column)"); 
-				int line = interaction.requestInt(); 
-				int column = interaction.requestInt(); 
-				var item = backpack.choice(line, column);
-				if(item == null)continue;
-				Items list = new Items(); 
-				list.addItem(item); 
-				choicePlaceItem(item, interaction, list, 0); 
-				backpack.delete(item); 
-				IO.println(backpack.toString()); 
-				break; 
-			}
-			else break; 
-		}
+		IO.println("You decided to make a translation"); 
+		IO.println("Choose an item : (line/column)"); 
+		int line = interaction.requestInt(); 
+		int column = interaction.requestInt(); 
+		var item = backpack.choice(line, column);
+		if(item == null) return; 
+		Items list = new Items(); 
+		var itemCopy = item.copy(); 
+		list.addItem(itemCopy); 
+		choicePlaceItem(itemCopy, interaction, list, 0); 
+		backpack.delete(item); 
+		IO.println(backpack.toString()); 
+			
 	}
 	
 	private void choiceDelItem(Interactions interaction) {
-		while(true) {
-			IO.println("Do you want to delete an item in your backpack ? (y/n)"); 
-			if(interaction.requestYesNo()) {
-				IO.println("Choose an item : (line/column)"); 
-				int line = interaction.requestInt(); 
-				int column = interaction.requestInt(); 
-				var item1 = backpack.choice(line, column);
-				if(item1 == null)continue; 
-				backpack.delete(item1); 
-				IO.println("You delete " + item1.name()); 
-				break; 
-			}
-			else break; 
-		}
+		IO.println("You decided to delete an item");
+		IO.println("Choose an item : (line/column)"); 
+	  int line = interaction.requestInt(); 
+		int column = interaction.requestInt(); 
+	  var item1 = backpack.choice(line, column);
+		if(item1 == null)return; 
+		backpack.delete(item1); 
+		IO.println("You delete " + item1.name()); 	
 	}
 	
 	private void choicePlaceItem(Item item, Interactions interaction, Items listItems, int index) {
-		while (true) {
-			IO.println(backpack.toString()); 
-			if(item.type().equals("GOLD"))IO.println("Choose a place for your gold : (line/column)"); 
-			else IO.println("Choose a place for your item : (line/column)"); 
-			int line = interaction.requestInt(); 
-			int column = interaction.requestInt(); 
-			int availableWidth = backpack.lengthLine(line, column);
-			int availableHeight = backpack.lengthColumn(line, column);
-			if (item.width() <= availableWidth && item.height() <= availableHeight) {
-				backpack.add(item, line, column);
-				listItems.deleteItem(index);  
-				break;
-			} else IO.println("Item doesn't fit at this position. Please try again.");
+		IO.println(backpack.toString()); 
+		if(item.type().equals("GOLD"))IO.println("Choose a place for your gold : (line/column)"); 
+		else IO.println("Choose a place for your item : (line/column)"); 
+		int line = interaction.requestInt(); 
+		int column = interaction.requestInt(); 
+		int availableWidth = backpack.lengthLine(line, column);
+		int availableHeight = backpack.lengthColumn(line, column);
+		if (item.width() <= availableWidth && item.height() <= availableHeight) {
+			backpack.add(item, line, column);
+			listItems.deleteItem(index);  
+			return; 
+		} 
+		else {
+			IO.println("Item doesn't fit at this position.");
+			return;  
 		}
 
 	}
-
+	private void manageItemPlacement(Item item, Interactions interaction, Items items, int index) {
+		while(true) {
+			IO.println("#### Backpack Management ####"); 
+			IO.println(backpack.toString()); 
+			IO.println("What do you want to do ? "); 
+			IO.println("1) Moove an item :");
+			IO.println("2) Delete an item :");
+			IO.println("3) Rotate an item :");
+			IO.println("4)Place your new item :"); 
+			IO.println("5) Go back :");
+			
+			int choice = interaction.requestInt(); 
+			switch(choice) {
+				case 1 -> choiceTranslation(interaction); 
+				case 2 -> choiceDelItem(interaction); 
+				case 3 -> choiceRotation(interaction); 
+				case 4 -> {
+					choicePlaceItem(item, interaction, items, index); 
+					return; 
+				}
+				case 5 -> {
+					IO.println("Go back !"); 
+					return; 
+				}
+				default -> IO.println("This choice doesn't exist"); 
+			}
+			
+		}
+	}
 	public void manageBackpack(Items items, Interactions interaction, boolean isShop) {
 		var listItems = items.getItems(); 
 		while(listItems.size() > 0) {
@@ -259,12 +280,7 @@ public class Hero implements Fighter {
 				if(!buy(item.goldCost())) continue; 
 				IO.println(this.toString()); 
 			}
-			IO.println(backpack.toString()); 
-			choiceTranslation(interaction); 
-			choiceRotation(item, interaction);
-			choiceDelItem(interaction);
-			choicePlaceItem(item, interaction, items, index);
-			IO.println(backpack.toString()); 
+			manageItemPlacement(item, interaction, items, index); 
 		}
 	}
 	
