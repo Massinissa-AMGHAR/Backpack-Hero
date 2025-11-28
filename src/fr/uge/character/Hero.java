@@ -177,7 +177,17 @@ public class Hero implements Fighter {
 		int column = interaction.requestInt(); 
 		
 		Item item = backpack.choice(line, column);
-		item.rotate(); 
+		if(item == null )return; 
+		Item copy = item.copy(); 
+		copy.rotate();
+		backpack.delete(item); 
+		if(backpack.canPlaceItem(copy, line, column)) { 
+			backpack.add(copy, line, column); 
+		}
+		else {
+			IO.println("Rotation not possible here"); 
+			backpack.add(item, line, column); 
+		}
 		IO.println(backpack.toString()); 
 	}
 	private void choiceTranslation(Interactions interaction) {
@@ -190,8 +200,7 @@ public class Hero implements Fighter {
 		Items list = new Items(); 
 		var itemCopy = item.copy(); 
 		list.addItem(itemCopy); 
-		choicePlaceItem(itemCopy, interaction, list, 0); 
-		backpack.delete(item); 
+		if(choicePlaceItem(itemCopy, interaction, list, 0)) backpack.delete(item); 
 		IO.println(backpack.toString()); 
 			
 	}
@@ -207,7 +216,7 @@ public class Hero implements Fighter {
 		IO.println("You delete " + item1.name()); 	
 	}
 	
-	private void choicePlaceItem(Item item, Interactions interaction, Items listItems, int index) {
+	private boolean choicePlaceItem(Item item, Interactions interaction, Items listItems, int index) {
 		IO.println(backpack.toString()); 
 		if(item.type().equals("GOLD"))IO.println("Choose a place for your gold : (line/column)"); 
 		else IO.println("Choose a place for your item : (line/column)"); 
@@ -218,11 +227,11 @@ public class Hero implements Fighter {
 		if (item.width() <= availableWidth && item.height() <= availableHeight) {
 			backpack.add(item, line, column);
 			listItems.deleteItem(index);  
-			return; 
+			return true; 
 		} 
 		else {
 			IO.println("Item doesn't fit at this position.");
-			return;  
+			return false;  
 		}
 
 	}
@@ -242,10 +251,7 @@ public class Hero implements Fighter {
 				case 1 -> choiceTranslation(interaction); 
 				case 2 -> choiceDelItem(interaction); 
 				case 3 -> choiceRotation(interaction); 
-				case 4 -> {
-					choicePlaceItem(item, interaction, items, index); 
-					return; 
-				}
+				case 4 -> choicePlaceItem(item, interaction, items, index); 
 				case 5 -> {
 					IO.println("Go back !"); 
 					return; 

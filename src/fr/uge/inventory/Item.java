@@ -74,6 +74,7 @@ public class Item {
 		goldAmount -= amount; 
 		if(goldAmount < 0) goldAmount = 0; 
 	}
+	
 	public void rotate() {
 		IO.println("You decided to make a rotation");
 		int oldHeight = shape.length; 
@@ -87,9 +88,15 @@ public class Item {
 		}
 		shape = rotated; 
 	}
-	
+
 	public Item copy() {
-		return new Item(this.name, this.type, this.rarity, this.shape, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost, this.goldAmount);
+		boolean[][] newShape = new boolean[height()][width()]; 
+		for(int i = 0; i < height(); i++) {
+			for(int j = 0; j < width(); j++) {
+				newShape[i][j] = shape[i][j]; 
+			}
+		}
+		return new Item(this.name, this.type, this.rarity, newShape, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost, this.goldAmount);
 	}
 	
 	

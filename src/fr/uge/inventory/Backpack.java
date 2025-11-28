@@ -45,19 +45,24 @@ public class Backpack {
 	return length; 
   }
   
-  public void add(Item item, int line, int column) { 
-  	boolean[][] shape = item.shape(); 
-		
-		for(int i = 0; i < item.height(); i++) {
-			for(int j = 0; j < item.width(); j++) {
-				if(shape[i][j]) {
-					if(!caseFree(line + i, column + j)) {
-						IO.println("The case is already occupied");
-						return; 
+  public boolean canPlaceItem(Item item, int line, int column) {
+		boolean[][] shape = item.shape(); 
+				
+				for(int i = 0; i < item.height(); i++) {
+					for(int j = 0; j < item.width(); j++) {
+						if(shape[i][j]) {
+							if(!caseFree(line + i, column + j)) {
+								IO.println("The case is already occupied");
+								return false; 
+							}
+						}
 					}
 				}
-			}
-		}
+		return true; 
+  }
+  
+  public void add(Item item, int line, int column) { 
+  	boolean[][] shape = item.shape(); 
 		for(int i = 0; i < item.height(); i++) {
 			for(int j = 0; j < item.width(); j++) {
 				if(shape[i][j]) {
