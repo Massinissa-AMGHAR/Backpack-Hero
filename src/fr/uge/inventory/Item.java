@@ -90,9 +90,10 @@ public class Item {
 	}
 
 	public Item copy() {
-		boolean[][] newShape = new boolean[height()][width()]; 
-		for(int i = 0; i < height(); i++) {
-			for(int j = 0; j < width(); j++) {
+		boolean[][] newShape = new boolean[shape.length][]; 
+		for(int i = 0; i < shape.length; i++) {
+			newShape[i] = new boolean[shape[i].length]; 
+			for(int j = 0; j < shape[i].length; j++) {
 				newShape[i][j] = shape[i][j]; 
 			}
 		}

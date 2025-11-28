@@ -14,7 +14,7 @@ public class Items {
 	public void randomItems(int count) {
 		for(int i = 0; i < count; i++) {
       int position = rand.nextInt(Item.ALL_ITEM.length); 
-      items.add(Item.ALL_ITEM[position]); 
+      items.add(Item.ALL_ITEM[position].copy()); 
     }
 	}
 	

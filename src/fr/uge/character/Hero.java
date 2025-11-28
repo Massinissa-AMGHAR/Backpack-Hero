@@ -200,9 +200,8 @@ public class Hero implements Fighter {
 		Items list = new Items(); 
 		var itemCopy = item.copy(); 
 		list.addItem(itemCopy); 
-		if(choicePlaceItem(itemCopy, interaction, list, 0)) backpack.delete(item); 
-		IO.println(backpack.toString()); 
-			
+		backpack.delete(item); 
+		if(!choicePlaceItem(itemCopy, interaction, list, 0)) backpack.add(itemCopy, line, column);
 	}
 	
 	private void choiceDelItem(Interactions interaction) {
