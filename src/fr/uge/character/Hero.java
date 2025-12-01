@@ -144,22 +144,29 @@ public class Hero implements Fighter {
     return true; 
   }
   
-  public void winGold(int amount) {
+  public boolean winGold(int amount) {
   	Item goldItem = backpack.findGoldItem(); 
-  	if(goldItem != null) goldItem.addGold(amount);
+  	if(goldItem != null) {
+  		goldItem.addGold(amount);
+  		return true; 
+  	}
   	else {
   		Items list = new Items(); 
   		Item newGold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, amount); 
   		list.addItem(newGold);
-  		choicePlaceItem(newGold, interaction, list, 0); 
+  		if(!choicePlaceItem(newGold, interaction, list, 0)) return false; 
+  		return true; 
   	}
   }
 
-	public void sellItem(Merchant merchant, Item item) {
+	public boolean sellItem(Merchant merchant, Item item) {
 		Objects.requireNonNull(merchant, "Merchant cannot be null");
 	  Objects.requireNonNull(item, "Item cannot be null");
-	  backpack.delete(item);
-	  winGold(merchant.goldCost(item)); 
+	  if(winGold(merchant.goldCost(item))) {
+	  	backpack.delete(item);
+	  	return true; 
+	  }
+	  return false; 
 	}
 
 	public void treat(Healer healer) {
@@ -237,7 +244,7 @@ public class Hero implements Fighter {
 		}
 
 	}
-	private boolean manageItemPlacement(Item item, Interactions interaction, Items items, int index, boolean isShop) {
+	private boolean manageItemPlacement(Item item, Interactions interaction, Items items, int index) {
 		while(true) {
 			IO.println("#### Backpack Management ####"); 
 			IO.println(backpack.toString()); 
@@ -254,15 +261,11 @@ public class Hero implements Fighter {
 				case 2 -> choiceDelItem(interaction); 
 				case 3 -> choiceRotation(interaction); 
 				case 4 -> {
-					if(choicePlaceItem(item, interaction, items, index)) {
-						if(isShop && !buy(item.goldCost())) {
-							backpack.delete(item); 
-							IO.println("You don't have enough gold bro");
-							return false; 
-						}
-						return true; 
+					if(choicePlaceItem(item, interaction, items, index)) return true; 
+					else {
+						IO.println("Item not placed"); 
+						return false; 
 					}
-					else IO.println("Item not placed"); 
 				}
 				case 5 -> {
 					IO.println("Go back !"); 
@@ -286,6 +289,17 @@ public class Hero implements Fighter {
 				continue; 
 			}
 			Item item = listItems.get(index); 
+			if(isShop) {
+				if(buy(item.goldCost())) {
+					while(!manageItemPlacement(item, interaction, items, index)) {
+						IO.println("You have to place your item !"); 
+					}
+					listItems.remove(item); 
+					return; 
+				}
+				else return; 
+			}
+			
 			if(item.isGold()) {
 				var firstItem = backpack.findGoldItem(); 
 				if(firstItem != null) {
@@ -294,7 +308,7 @@ public class Hero implements Fighter {
 					continue; 
 				}
 			}
-			if(manageItemPlacement(item, interaction, items, index, isShop)) listItems.remove(item); 
+			if(manageItemPlacement(item, interaction, items, index)) listItems.remove(item); 
 		}
 	}
 	
