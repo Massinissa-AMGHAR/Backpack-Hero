@@ -60,6 +60,8 @@ public class Room {
   public void setVisited(boolean bool) { this.visited = bool; }
   public void noEnemies() { hasEnemies = false;}
   public void noTreasure() { hasTreasure = false;}
+  
+  
   public void addNeighbor(Room room) {
   	Objects.requireNonNull(room, "Room cannot be null"); 
   	if(!neighbors.contains(room))neighbors.add(room); 
@@ -73,6 +75,7 @@ public class Room {
     }
     return false; 
   }
+  
   @Override
   public String toString() {
 	  var builder = new StringBuilder(); 
