@@ -16,8 +16,8 @@ public class Main {
 		floor.addAllNeighbor();
 		Backpack backpack = new Backpack(3, 5); 
 		var item = Item.ALL_ITEM[0]; 
-		//item.leftPlacementX = 0;
-		//item.leftPlacementY = 0; 
+		item.leftPlacementX = 0;
+		item.leftPlacementY = 0; 
 		backpack.add(item, 0, 0);
 		
 		Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
