@@ -1,9 +1,12 @@
 package fr.uge.graphics;
 
 import com.github.forax.zen.ApplicationContext;
+
 import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.map.*;
+import fr.uge.character.*;
+import fr.uge.inventory.Backpack;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,6 +17,8 @@ public class MapView implements View {
 	private String currentMessageError = null;
 	private Instant messageEndTime;
 	private final Floor floor;
+	private Backpack backpack = new Backpack(3, 5);
+	private final Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
 	private final ImageLoader images;
 	private final int cellSize = 75;
 	private final int imageSize = 200;
@@ -27,7 +32,7 @@ public class MapView implements View {
 	
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+		graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
 	}
 	
 	private int[] calculateMapStart(int screenWidth, int screenHeight, int cols, int rows, int cellSize) {
@@ -39,9 +44,18 @@ public class MapView implements View {
 	}
 	
 	private void importDoorImageOnMap(int i, int j, int[] start, Graphics2D graphics) {
-    int doorX = start[0] + j * cellSize;
-    int doorY = start[1] + i * cellSize;
-    images.drawImage(graphics, images.get(3), doorX, doorY, cellSize, cellSize);
+		int doorX = start[0] + j * cellSize;
+		int doorY = start[1] + i * cellSize;
+		images.drawImage(graphics, images.get(3), doorX, doorY, cellSize, cellSize);
+	}
+	
+	private void heroStat(Graphics2D graphics, ApplicationContext context) {
+		int statX = context.getScreenInfo().width() / 5;
+		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 75;
+        var stat = hero.HP() + " " + "/" + " " + hero.HPMAX() + " PV";
+		graphics.setColor(Color.WHITE);
+        graphics.setFont(new Font("Arial", Font.BOLD, 40));
+        graphics.drawString(stat, statX, statY);
 	}
 	
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
@@ -128,6 +142,7 @@ public class MapView implements View {
 		importHeroImage(graphics, context);
 		importHeroImageOnMap(graphics, context);
 		drawMessage(graphics, context.getScreenInfo());
+		heroStat(graphics, context);
 	}
 	 
 	public boolean isRoomClicked(int x, int y, int i, int j, int[] start) {
