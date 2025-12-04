@@ -36,13 +36,13 @@ public class MenuView implements View {
 	
 	
 	private void play(Graphics2D graphics, List<String> l, ScreenInfo screenInfo) {
-		playX = screenInfo.width() / 2 - 150;
-    playY = screenInfo.height() / 2 - 40;
-    playWidth = 300;
-    playHeight = 60;
+		playX = screenInfo.width() / 2 - 250;
+    playY = screenInfo.height() / 2 - 60;
+    playWidth = 500;
+    playHeight = 80;
     graphics.setColor(Color.LIGHT_GRAY);
     graphics.fillRect(playX, playY, playWidth, playHeight); 
-    graphics.setFont(new Font("Arial", Font.BOLD, 36));
+    graphics.setFont(new Font("Arial", Font.BOLD, 50));
     graphics.setColor(Color.WHITE);
     var fontmetric2 = graphics.getFontMetrics();
     graphics.drawString(l.get(1), (screenInfo.width() - fontmetric2.stringWidth(l.get(1))) / 2, screenInfo.height()/2);

@@ -1,6 +1,7 @@
 package fr.uge.graphics;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.KeyboardEvent;

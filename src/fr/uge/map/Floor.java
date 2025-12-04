@@ -62,6 +62,12 @@ public class Floor {
   	return false; 
   }
   
+  public boolean isAccessible(int x, int y) {
+  	if (!hasRoom(x, y)) return false;
+  	if (x == heroX && y == heroY) return false;
+  	return goodPath(floor[heroX][heroY], floor[x][y], new ArrayList<>());
+  }
+  
   public void moveHero(Interactions interaction) {
   	boolean goodMove = false; 
   	int x = -1; 

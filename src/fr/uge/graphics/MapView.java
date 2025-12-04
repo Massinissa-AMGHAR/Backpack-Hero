@@ -8,11 +8,14 @@ import fr.uge.map.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.time.Instant;
 
 public class MapView implements View {
+	private String currentMessageError = null;
+	private Instant messageEndTime;
 	private final Floor floor;
 	private final ImageLoader images;
-	private final int cellSize = 50;
+	private final int cellSize = 75;
 	private final int imageSize = 200;
 	private final int cols = 11;
 	private final int rows = 5;
@@ -92,7 +95,9 @@ public class MapView implements View {
 			for (int j = 0; j < cols; j++) {
 				if (floor.hasRoom(i, j)) {
 					Room room = floor.getRoom(i, j);
-					Color color = room.isCorridor() ? Color.LIGHT_GRAY : Color.ORANGE;
+					Color color;
+					if (floor.isAccessible(i, j)) color = Color.GREEN;
+					else color = room.isCorridor() ? Color.LIGHT_GRAY : Color.ORANGE;
 					drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, color);
 					if (room.hasDoor()) importDoorImageOnMap(i, j, start, graphics);
 					if (room.hasMerchant()) importMerchantOnMap(i, j, start, graphics);
@@ -103,11 +108,26 @@ public class MapView implements View {
 		}
 	}
 	
+	private void drawMessage(Graphics2D graphics, ScreenInfo screenInfo) {
+    if (currentMessageError != null && Instant.now().isBefore(messageEndTime)) {
+        graphics.setColor(Color.RED);
+        graphics.setFont(new Font("Arial", Font.BOLD, 40));
+        var fontmetrics = graphics.getFontMetrics();
+        graphics.drawString(currentMessageError, (screenInfo.width() - fontmetrics.stringWidth(currentMessageError)) / 2, screenInfo.height() / 10);
+    } else currentMessageError = null; 
+	}
+	
+	private void showMessage(String msg, int duration) {
+    currentMessageError = msg;
+    messageEndTime = Instant.now().plusMillis(duration);
+	}
+	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		background(graphics, context.getScreenInfo());
 		draw_map(graphics, context, floor);
 		importHeroImage(graphics, context);
 		importHeroImageOnMap(graphics, context);
+		drawMessage(graphics, context.getScreenInfo());
 	}
 	 
 	public boolean isRoomClicked(int x, int y, int i, int j, int[] start) {
@@ -121,11 +141,14 @@ public class MapView implements View {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				if (floor.hasRoom(i, j) && isRoomClicked(x, y, i, j, start)) {
+					if (!floor.isAccessible(i, j)) {
+						showMessage("Step by step ... Follow the path", 2000);
+						return;
+					}
 					Room clickedRoom = floor.getRoom(i, j);
 					if (clickedRoom.hasEnemies()) controller.changeView(controller.battleView());
 					if (clickedRoom.hasAngel()) controller.changeView(controller.healerView());
 					if (clickedRoom.hasMerchant()) controller.changeView(controller.merchantView());
-					
 				}
 			}
 		}
