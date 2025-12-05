@@ -20,6 +20,8 @@ public class Item {
 	private int goldAmount = 0; 
 	public int leftPlacementX = -1; 
 	public int leftPlacementY = -1; 
+	
+	private final ItemRotation rotation; 
   
 	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
@@ -40,6 +42,8 @@ public class Item {
 		this.manaGained = manaGained;
 		this.id = counter++;
 		this.goldAmount = goldAmount; 
+		
+		this.rotation = new ItemRotation(this); 
 	}
 	  
 	public String name() { return name; }
@@ -77,34 +81,8 @@ public class Item {
 		if(goldAmount < 0) goldAmount = 0; 
 	}
 	
-	private boolean[][] transpose() {
-		boolean[][] shapeTranspose = new boolean[width()][height()]; 
-		for(int i = 0; i < height(); i++) {
-			for(int j = 0; j < width(); j++) {
-				shapeTranspose[j][i] = shape[i][j]; 
-			}
-		}
-		return shapeTranspose; 
-	}
-	
-	private boolean[] reverse(boolean[] line) {
-		boolean[] reverse = new boolean[line.length]; 
-		for(int i = 0; i < line.length; i++) {
-			reverse[i] = line[line.length - 1 - i]; 
-		}
-		return reverse; 
-	}
-	
-	private boolean[][] rotate() {
-		boolean[][] newShape = transpose(); 
-		for(int i = 0; i < newShape.length; i++) {
-			newShape[i] = reverse(newShape[i]); 
-		}
-		return newShape;  
-	}
-	
 	public void applyRotation() {
-		this.shape = rotate(); 
+		this.shape = rotation.rotate(); 
 	}
 
 	public Item copy() {

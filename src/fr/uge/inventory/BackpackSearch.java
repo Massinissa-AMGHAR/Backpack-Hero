@@ -1,0 +1,28 @@
+package fr.uge.inventory;
+
+public record BackpackSearch(Backpack backpack) {
+	
+	public Item choice(int line, int column) {
+	  if(line < 0 || line >= backpack.lines() || column < 0 || column >= backpack.colums()) {
+	    IO.println("The case is not in the backpack"); 
+	    return null; 
+	  }
+	  
+	  if(backpack.grid().get(line).get(column) == null) {
+	   IO.println("The case is null"); 
+	   return null; 
+	  }
+	  
+	  return backpack.grid().get(line).get(column); 
+  }
+  
+  public Item findGoldItem() {
+  	for(int i = 0; i < backpack.lines(); i++) {
+  		for(int j = 0; j < backpack.colums(); j++) {
+  			Item item = backpack.grid().get(i).get(j); 
+  			if(item != null && item.isGold())return item; 
+  		}
+  	}
+  	return null; 
+  }
+}

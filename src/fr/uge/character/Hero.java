@@ -7,300 +7,68 @@ import fr.uge.application.*;
 import fr.uge.inventory.*;
 
 
-public class Hero implements Fighter {
+public class Hero implements Fighter{
   private final String name;
-  private int HP;
-  private int HPMAX;
-  private int protection;
-  private int energy;
-  private int mana;
-  private int manaMax;
   private int xp; 
   private int level;
-  private final Backpack backpack;
   
-  Scanner scanner = new Scanner(System.in); 
-	Interactions interaction = new Interactions(scanner); 
+  public final HeroFight heroFight; 
+  public final HeroInventoryManager inventoryManager; 
+  public final HeroEconomyManager economyManager; 
+
   
-  public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int xp,  int level, Backpack backpack) {
+  public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int xp,  int level, Backpack backpack, Interactions interaction) {
     Objects.requireNonNull(name, "name can't be null");
     Objects.requireNonNull(backpack, "backpack can't be null");
     if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || manaMax < 0 || xp < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");
-      this.name = name;
-      this.HP = HP;
-      this.HPMAX = HPMAX;
-      this.protection = protection;
-      this.energy = energy;
-      this.mana = mana;
-      this.manaMax = manaMax;  
+      this.name = name;  
       this.xp = xp; 
       this.level = level;
-      this.backpack = backpack;
+     
+      this.heroFight = new HeroFight(HP, HPMAX, protection, energy, manaMax, mana); 
+      this.inventoryManager = new HeroInventoryManager(backpack, interaction); 
+      this.economyManager = new HeroEconomyManager(inventoryManager, heroFight); 
   }
-	
+  
+	// Infos du héros
   public String name() { return name; }
-  public int HP() { return HP; } 
-  public int HPMAX() { return HPMAX; }
-  public int protection() { return protection; }
-  public int energy() { return energy; }
-  public int mana() { return mana; }
-  public int manaMax() { return manaMax; }
-  public int level() { return level; }
+  public int HP() {return heroFight.HP();}
+  public int HPMAX() {return heroFight.HPMAX();}
+  public int protection(){return heroFight.protection(); }
+  public int energy() {return heroFight.energy(); }
+  public int mana() {return heroFight.mana(); }
+  public int manaMax() {return heroFight.manaMax(); }
   public int xp() {return xp; }
-  public Backpack backpack() { return backpack; }
-	
-	
-	public int attack(Fighter opponent, Item item) {
-		if (!(opponent instanceof Enemy)) throw new IllegalArgumentException("Hero can only attack Ennemy");
-		if (mana < item.manaCost() || energy < item.energyCost()) {
-			IO.println(name + " doesn't have enough resources to use " + item.name());
-			return 0;
-		}
-		Enemy ennemy = (Enemy) opponent;
-		int totalDamage = 0;
-		int attackDamage = item.damage();
-		
-		int protection = ennemy.protection();
-		int damageToProtection = Math.min(attackDamage, protection);
-	    
-	  ennemy.receiveProtectionDamage(damageToProtection); 
-	    
-		attackDamage -= damageToProtection;
-		totalDamage += damageToProtection;
-		
-		if (attackDamage > 0) {
-			ennemy.receiveDamage(attackDamage);
-			totalDamage += attackDamage;
-		}
-		energy -= item.energyCost(); 
-		mana -= item.manaCost();
-		
-		return totalDamage;
-	}
-
-	
-  public void receiveDamage(int damage) {
-    HP = Math.max(HP - damage, 0);
-  }
-	
-
-	public void receiveProtectionDamage(int damage) {
-	    protection = Math.max(protection - damage, 0);
-	}
-	
-	public void resetProtection() {
-		protection = 0;
-	}
-	
-	public int defense(Item item) {
-		if (mana < item.manaCost() || energy < item.energyCost()) {
-			IO.println(name + " doesn't have enough resources to use " + item.name());
-			return 0;
-		}
-		protection += item.defense();
-		
-		energy -= item.energyCost(); 
-		mana -= item.manaCost(); 
-		return protection;
-	}
-	
-	public int manaBonus(Item item) {
-	  if (mana < item.manaCost() || energy < item.energyCost()) {
-	    IO.println(name + " doesn't have enough resources to use " + item.name());
-		return 0;
-	  }
-	  mana -= item.manaCost(); 
-	  energy -= item.energyCost(); 
-	  if(mana < 0) mana = 0; 
-	  mana += item.manaGained(); 
-	  if(mana < manaMax) mana = manaMax; 
-	  
-	  return mana;
-	}
-	
+  public int level() { return level; }
+  public Backpack backpack() {return inventoryManager.backpack(); }
+ 
   public void winXp(Enemy ennemy) {
     Objects.requireNonNull(ennemy, "Ennemy cannot be null");
     this.xp += ennemy.xp();
   }
   
-	
-  public void resetEnergy() {
-  	energy = 3; 
-  }
-	
-  public void resetMana() {
-    mana = manaMax; 
-  }
+  //Combat du héros
+  public int attack(Fighter enemy, Item item) { return heroFight.attack(enemy, item);}
+  public int defense(Item item) { return heroFight.defense(item);}
+  public int manaBonus(Item item) { return heroFight.manaBonus(item);}
+  public void receiveDamage(int damage) {heroFight.receiveDamage(damage);}
+  public void receiveProtectionDamage(int damage) {heroFight.receiveProtectionDamage(damage);}
+  public void resetProtection() {heroFight.resetProtection();}
+  public void resetEnergy() {heroFight.resetEnergy();}
+  public void resetMana() {heroFight.resetMana();}
   
-  public boolean buy(int cost) {
-    Item gold = backpack.findGoldItem(); 
-    if(gold == null || gold.goldAmount() < cost) {
-    	IO.println("You don't have enough money!"); 
-    	return false; 
-    }
-    gold.spendGold(cost);
-    IO.println("You spend "+ cost + " golds"); 
-  	IO.println("You have "+ gold.goldAmount() + " golds"); 
-    return true; 
-  }
+  //Gestion argent du héros
+  public boolean buy(int cost) {return economyManager.buy(cost); }
+  public boolean winGold(int amount) { return economyManager.winGold(amount);}
+  public boolean sellItem(Merchant merchant, Item item) {return economyManager.sellItem(merchant, item);}
+  public void treat(Healer healer) {economyManager.treat(healer);}
   
-  public void winGold(int amount) {
-  	Item goldItem = backpack.findGoldItem(); 
-  	if(goldItem != null) goldItem.addGold(amount);
-  	else {
-  		Items list = new Items(); 
-  		Item newGold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, amount); 
-  		list.addItem(newGold);
-  		choicePlaceItem(newGold, interaction, list, 0); 
-  	}
-  }
-
-	public void sellItem(Merchant merchant, Item item) {
-		Objects.requireNonNull(merchant, "Merchant cannot be null");
-	  Objects.requireNonNull(item, "Item cannot be null");
-	  backpack.delete(item);
-	  winGold(merchant.goldCost(item)); 
-	}
-
-	public void treat(Healer healer) {
-		Objects.requireNonNull(healer, "Angel cannot be null");
-	  if (buy(healer.price())) {
-	  	HP += healer.hp();
-	  	if(HP > HPMAX) HP = HPMAX; 
-	  	IO.println("You life was restored"); 
-	  }
-	}
-	private Item chooseItemInBackpack() {
-		IO.println("Choose an item : (line/column)"); 
-		int line = interaction.requestInt(); 
-		int column = interaction.requestInt(); 
-		return backpack.choice(line, column); 
-	}
-	private void choiceRotation(Interactions interaction) {
-		IO.println("You decided to make a rotation");
-		var item = chooseItemInBackpack(); 
-		if(item == null) return; 
-		var rotated = item.copy(); 
-		rotated.applyRotation(); 
-		backpack.delete(item);
-		if(backpack.canPlaceItem(rotated, item.leftPlacementX, item.leftPlacementY)) {
-			backpack.add(rotated, item.leftPlacementX, item.leftPlacementY);
-			rotated.leftPlacementX = item.leftPlacementX; 
-			rotated.leftPlacementY = item.leftPlacementY; 
-			IO.println("The item was placed"); 
-			return; 
-		}
-		backpack.add(item, item.leftPlacementX, item.leftPlacementY);
-		IO.println("Item cannot be placed");
-		return; 
-	}
-	private void choiceTranslation(Interactions interaction) {
-		IO.println("You decided to make a translation"); 
-		var item = chooseItemInBackpack(); 
-		if(item == null) return; 
-		int line = item.leftPlacementX; 
-		int column = item.leftPlacementY; 
-		Items list = new Items(); 
-		var itemCopy = item.copy(); 
-		list.addItem(itemCopy); 
-		backpack.delete(item); 
-		if(!choicePlaceItem(itemCopy, interaction, list, 0)) backpack.add(itemCopy, line, column);
-	}
-	
-	private void choiceDelItem(Interactions interaction) {
-		IO.println("You decided to delete an item");
-	  var item = chooseItemInBackpack(); 
-		if(item == null)return; 
-		backpack.delete(item); 
-		IO.println("You delete " + item.name()); 	
-	}
-	
-	private boolean choicePlaceItem(Item item, Interactions interaction, Items listItems, int index) {
-		IO.println(backpack.toString()); 
-		if(item.type().equals("GOLD"))IO.println("Choose a place for your gold : (line/column)"); 
-		else IO.println("Choose a place for your item : (line/column)"); 
-		int line = interaction.requestInt(); 
-		int column = interaction.requestInt(); 
-		int availableWidth = backpack.lengthLine(line, column);
-		int availableHeight = backpack.lengthColumn(line, column);
-		if (item.width() <= availableWidth && item.height() <= availableHeight) {
-			backpack.add(item, line, column);
-			item.leftPlacementX = line; 
-			item.leftPlacementY = column; 
-			listItems.deleteItem(index); 
-			IO.println(backpack.toString()); 
-			return true; 
-		} 
-		else {
-			IO.println("Item doesn't fit at this position.");
-			return false;  
-		}
-
-	}
-	private boolean manageItemPlacement(Item item, Interactions interaction, Items items, int index, boolean isShop) {
-		while(true) {
-			IO.println("#### Backpack Management ####"); 
-			IO.println(backpack.toString()); 
-			IO.println("What do you want to do ? "); 
-			IO.println("1) Moove an item :");
-			IO.println("2) Delete an item :");
-			IO.println("3) Rotate an item :");
-			IO.println("4)Place your new item :"); 
-			IO.println("5) Go back :");
-			
-			int choice = interaction.requestInt(); 
-			switch(choice) {
-				case 1 -> choiceTranslation(interaction); 
-				case 2 -> choiceDelItem(interaction); 
-				case 3 -> choiceRotation(interaction); 
-				case 4 -> {
-					if(choicePlaceItem(item, interaction, items, index)) {
-						if(isShop && !buy(item.goldCost())) {
-							backpack.delete(item); 
-							IO.println("You don't have enough gold bro");
-							return false; 
-						}
-						return true; 
-					}
-					else IO.println("Item not placed"); 
-				}
-				case 5 -> {
-					IO.println("Go back !"); 
-					return false;  
-				}
-				default -> IO.println("This choice doesn't exist"); 
-			}
-			
-		}
-	}
-	public void manageBackpack(Items items, Interactions interaction, boolean isShop) {
-		while(! items.getItems().isEmpty()) {
-			var listItems = items.getItems(); 
-			IO.println(items.toString()); 
-			IO.println("\nDo you want to add an item in your backpack ? (y/n) "); 
-			if(!interaction.requestYesNo())return; 
-			IO.println("Choose an item : (line)"); 
-			int index = interaction.requestInt(); 
-			if(index < 0 || index >= listItems.size()) {
-				IO.println("Invalid index"); 
-				continue; 
-			}
-			Item item = listItems.get(index); 
-			if(item.isGold()) {
-				var firstItem = backpack.findGoldItem(); 
-				if(firstItem != null) {
-					firstItem.addGold(item.goldAmount()); 
-					listItems.remove(index); 
-					continue; 
-				}
-			}
-			if(manageItemPlacement(item, interaction, items, index, isShop)) listItems.remove(item); 
-		}
-	}
-	
+  //Gestion backpack
+  public void manageBackpack(Items items, boolean isShop) {inventoryManager.manageBackpack(items,isShop);}
+  
 	@Override
 	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy(); 
+		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana() + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy(); 
 	}
 
 	
