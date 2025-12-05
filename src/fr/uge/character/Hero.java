@@ -1,8 +1,6 @@
 package fr.uge.character;
 import java.util.Objects;
 
-import java.util.Scanner;
-
 import fr.uge.application.*;
 import fr.uge.inventory.*;
 

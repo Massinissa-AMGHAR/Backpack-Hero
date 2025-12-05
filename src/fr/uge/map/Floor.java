@@ -46,6 +46,10 @@ public class Floor {
   	}
   }
   
+  public int[]getPlaceHero() {
+  	return new int[]{heroX, heroY};
+  }
+  
   public boolean goodPath(Room current, Room target, List<Room> visited) {
   	if(current.equals(target)) return true; 
   	visited.add(current); 
@@ -56,8 +60,14 @@ public class Floor {
   		}
   	}
   	return false; 
-  	
   }
+  
+  public boolean isAccessible(int x, int y) {
+  	if (!hasRoom(x, y)) return false;
+  	if (x == heroX && y == heroY) return false;
+  	return goodPath(floor[heroX][heroY], floor[x][y], new ArrayList<>());
+  }
+  
   public void moveHero(Interactions interaction) {
   	boolean goodMove = false; 
   	int x = -1; 
@@ -130,6 +140,7 @@ public class Floor {
       floor.add(rooms.get(i), pos[0], pos[1]);
     }
   }
+  
   public void addAllNeighbor() {
   	for (int i = 0; i < 5; i++) {
   		for (int j = 0; j < 11; j++) {
@@ -143,6 +154,7 @@ public class Floor {
   		}
   	}
   }
+  
   private static List<int[]> positionsRoomsFloor1() {
   	return List.of(
       new int[]{1, 1}, new int[]{1, 3}, new int[]{2, 4}, new int[]{3, 3},

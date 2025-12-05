@@ -21,7 +21,6 @@ public class Merchant implements interactionCharacters {
   
   public void interactionBuy(Hero hero) {
   	hero.manageBackpack(shop, true);  
- 
   }
   
   public void interactionSell(Hero hero, Interactions interaction) {
@@ -59,6 +58,7 @@ public class Merchant implements interactionCharacters {
   		int choice = interaction.requestInt(); 
 			switch(choice) {
 				case 1 -> interactionBuy(hero);
+
 				case 2 -> interactionSell(hero, interaction); 
 				case 3 -> {
 					IO.println("Go back"); 
