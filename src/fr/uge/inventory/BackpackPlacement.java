@@ -16,14 +16,14 @@ public class BackpackPlacement {
 		return length; 
 	}
 	  
-	  public int lengthColumn(int line, int column) {
-	    int length = 0; 
-	    for(int i = line; i < backpack.lines(); i++) {
-	    	if(caseFree(i, column)) length++; 
-	    	else break; 
+	public int lengthColumn(int line, int column) {
+	  int length = 0; 
+	  for(int i = line; i < backpack.lines(); i++) {
+	    if(caseFree(i, column)) length++; 
+	    else break; 
 	    }
-	    return length; 
-	  }
+	  return length; 
+	}
 	  
   public boolean caseFree(int line, int column) {
     if(line < 0 || line >= backpack.lines() || column < 0 || column >= backpack.colums()) return false;

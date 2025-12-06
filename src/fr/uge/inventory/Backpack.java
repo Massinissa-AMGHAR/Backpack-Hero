@@ -25,7 +25,7 @@ public class Backpack {
     this.search = new BackpackSearch(this); 
     
   }
-  public ArrayList<ArrayList<Item>> grid(){return backpack;}
+  public ArrayList<ArrayList<Item>> grid() {return backpack;}
   public int lines() {return lines; }
   public int colums() { return columns;}
   

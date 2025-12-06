@@ -1,6 +1,7 @@
 package fr.uge.graphics;
 
 import java.awt.Color;
+
 import java.awt.Graphics2D;
 
 import com.github.forax.zen.ApplicationContext;
@@ -8,40 +9,51 @@ import com.github.forax.zen.KeyboardEvent;
 import com.github.forax.zen.KeyboardEvent.Key;
 import com.github.forax.zen.PointerEvent;
 
-import fr.uge.character.Hero;
-import fr.uge.inventory.Backpack;
+import fr.uge.application.*;
+import fr.uge.character.*;
+import fr.uge.inventory.*;
 import fr.uge.map.Floor;
 
 public class Controller {	
-	private final MenuView menuView = new MenuView();
-	private final Floor floor;
-	private final MapView mapView;
-	private final BattleView battleView;
-	private final HealerView healerView;
-	private final MerchantView merchantView;
-	private Backpack backpack = new Backpack(3, 5);
-	private Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
-	//private final Enemies enemies = new Enemies();
-	private View view;
+  private final Hero hero;
+  private final Enemies enemies;
+  private final Interactions interactions;
+  private final ImageLoader imagesMap;
+  private final ImageLoader imagesEnemies;
+  private final ImageLoader imagesItems;
+  private final MenuView menuView;
+  private final MapView mapView;
+  private final BattleView battleView;
+  private final HealerView healerView;
+  private final MerchantView merchantView;
+  private final Floor floor;
+  private View view;
 	
-	public Controller() {
+  public Controller(Hero hero, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems) {
+		this.hero = hero;
+		this.enemies = enemies;
+		this.interactions = interactions;
+		this.imagesMap = imagesMap;
+		this.imagesEnemies = imagesEnemies;
+		this.imagesItems = imagesItems;		
+		menuView = new MenuView();
 		floor = Floor.createFloors().get(0);
 		floor.initPlaceHero();
-		ImageLoader imagesMap = new ImageLoader("data", "hero.png", "minihero.png", "ratwolf.png", "door.png");
-		mapView = new MapView(floor, imagesMap);
-		battleView = new BattleView(hero, imagesMap);
+		mapView = new MapView(hero, floor, imagesMap);
+		battleView = new BattleView(hero, enemies, imagesMap, imagesEnemies, imagesItems);
 		healerView = new HealerView();
 		merchantView = new MerchantView();
 		view = menuView;
-	}
-	
+  }
+
+  
 	public MenuView menuView() { return menuView; }
 	public MapView mapView() { return mapView; }
 	public BattleView battleView() { return battleView; }
 	public HealerView healerView() { return healerView; }
 	public MerchantView merchantView() { return merchantView; }
 	public View view() { return view; }
-	
+  
 	public void changeView(View newView) {
 		view = newView;
 	}
@@ -71,5 +83,4 @@ public class Controller {
 		}
 		context.dispose();
 	}
-
 }

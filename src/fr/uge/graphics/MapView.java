@@ -17,15 +17,15 @@ public class MapView implements View {
 	private String currentMessageError = null;
 	private Instant messageEndTime;
 	private final Floor floor;
-	private Backpack backpack = new Backpack(3, 5);
-	private final Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
+	private final Hero hero; 
 	private final ImageLoader images;
 	private final int cellSize = 75;
 	private final int imageSize = 200;
 	private final int cols = 11;
 	private final int rows = 5;
 	
-	public MapView(Floor floor, ImageLoader images) {
+	public MapView(Hero hero, Floor floor, ImageLoader images) {
+		this.hero = hero;
 		this.floor = floor;
 		this.images = images;
 	}
@@ -50,12 +50,12 @@ public class MapView implements View {
 	}
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
-		int statX = context.getScreenInfo().width() / 5;
-		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 75;
-        var stat = hero.HP() + " " + "/" + " " + hero.HPMAX() + " PV";
+		int statX = context.getScreenInfo().width() / 5 + 40;
+		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
+    var stat = hero.HP() + " " + "/" + " " + hero.HPMAX() + " PV";
 		graphics.setColor(Color.WHITE);
-        graphics.setFont(new Font("Arial", Font.BOLD, 40));
-        graphics.drawString(stat, statX, statY);
+    graphics.setFont(new Font("Arial", Font.BOLD, 30));
+    graphics.drawString(stat, statX, statY);
 	}
 	
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
@@ -96,6 +96,14 @@ public class MapView implements View {
     graphics.drawString("E", MerchantX, MerchantY);
 	}
 	
+	private void importTreasureOnMap(int i, int j, int[] start, Graphics2D graphics) {
+		int MerchantX = start[0] + j * cellSize + cellSize / 4 + 4;
+		int MerchantY = start[1] + i * cellSize + 3 * cellSize / 4;
+    graphics.setColor(Color.WHITE); 
+    graphics.setFont(new Font("Arial", Font.BOLD, cellSize / 2));
+    graphics.drawString("T", MerchantX, MerchantY);
+	}
+	
 	private void drawRec(Graphics2D graphics, int x, int y, int cellSize, Color fillColor) {
     graphics.setColor(fillColor);
     graphics.fillRect(x, y, cellSize, cellSize);
@@ -117,6 +125,7 @@ public class MapView implements View {
 					if (room.hasMerchant()) importMerchantOnMap(i, j, start, graphics);
 					if (room.hasAngel()) importHealerOnMap(i, j, start, graphics);
 					if (room.hasEnemies()) importEnemyOnMap(i, j, start, graphics);
+					if (room.hasTreasure()) importTreasureOnMap(i, j, start, graphics);
  				} else drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, Color.GRAY);
 			}
 		}
