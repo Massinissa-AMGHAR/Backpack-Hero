@@ -51,8 +51,10 @@ public class Game {
 					floor.initPlaceHero();;
 				}
 			}
-			IO.println(floor.toString()); 
-			floor.moveHero(interaction); 
+			if (floor != null) {
+				IO.println(floor.toString()); 
+				floor.moveHero(interaction); 
+			}
 		}
 		
 		IO.println("##### End of game #####");

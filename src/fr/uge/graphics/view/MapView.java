@@ -1,4 +1,7 @@
-package fr.uge.graphics;
+package fr.uge.graphics.view;
+
+import fr.uge.graphics.app.*;
+import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -6,7 +9,6 @@ import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.map.*;
 import fr.uge.character.*;
-import fr.uge.inventory.Backpack;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -46,7 +48,7 @@ public class MapView implements View {
 	private void importDoorImageOnMap(int i, int j, int[] start, Graphics2D graphics) {
 		int doorX = start[0] + j * cellSize;
 		int doorY = start[1] + i * cellSize;
-		images.drawImage(graphics, images.get(3), doorX, doorY, cellSize, cellSize);
+		images.drawImage(graphics, images.get(2), doorX, doorY, cellSize, cellSize);
 	}
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
@@ -69,31 +71,25 @@ public class MapView implements View {
 		var heroPos = floor.getPlaceHero();
 		int heroPosX = start[0] + heroPos[1] * cellSize;
 		int heroPosY = start[1] + heroPos[0] * cellSize; 
-		images.drawImage(graphics, images.get(1), heroPosX, heroPosY, cellSize, cellSize); //Hero sur la map
+		images.drawImage(graphics, images.get(1), heroPosX, heroPosY, cellSize, cellSize); 
 	}
 	
 	private void importMerchantOnMap(int i, int j, int[] start, Graphics2D graphics) {
-		int MerchantX = start[0] + j * cellSize + cellSize / 4 + 4;
-		int MerchantY = start[1] + i * cellSize + 3 * cellSize / 4;
-    graphics.setColor(Color.WHITE); 
-    graphics.setFont(new Font("Arial", Font.BOLD, cellSize / 2));
-    graphics.drawString("M", MerchantX, MerchantY);
+    int MerchantX = start[0] + j * cellSize;
+    int MerchantY = start[1] + i * cellSize;
+    images.drawImage(graphics, images.get(4), MerchantX, MerchantY, cellSize, cellSize); 
 	}
-	
+
 	private void importHealerOnMap(int i, int j, int[] start, Graphics2D graphics) {
-		int MerchantX = start[0] + j * cellSize + cellSize / 4 + 4;
-		int MerchantY = start[1] + i * cellSize + 3 * cellSize / 4;
-    graphics.setColor(Color.WHITE); 
-    graphics.setFont(new Font("Arial", Font.BOLD, cellSize / 2));
-    graphics.drawString("H", MerchantX, MerchantY);
+    int MerchantX = start[0] + j * cellSize;
+    int MerchantY = start[1] + i * cellSize;
+    images.drawImage(graphics, images.get(5), MerchantX, MerchantY, cellSize, cellSize); 
 	}
 	
 	private void importEnemyOnMap(int i, int j, int[] start, Graphics2D graphics) {
-		int MerchantX = start[0] + j * cellSize + cellSize / 4 + 4;
-		int MerchantY = start[1] + i * cellSize + 3 * cellSize / 4;
-    graphics.setColor(Color.WHITE); 
-    graphics.setFont(new Font("Arial", Font.BOLD, cellSize / 2));
-    graphics.drawString("E", MerchantX, MerchantY);
+    int EnemyX = start[0] + j * cellSize;
+    int EnemyY = start[1] + i * cellSize;
+    images.drawImage(graphics, images.get(3), EnemyX, EnemyY, cellSize, cellSize); 
 	}
 	
 	private void importTreasureOnMap(int i, int j, int[] start, Graphics2D graphics) {
@@ -170,9 +166,9 @@ public class MapView implements View {
 						return;
 					}
 					Room clickedRoom = floor.getRoom(i, j);
-					if (clickedRoom.hasEnemies()) controller.changeView(controller.battleView());
 					if (clickedRoom.hasAngel()) controller.changeView(controller.healerView());
 					if (clickedRoom.hasMerchant()) controller.changeView(controller.merchantView());
+					if (clickedRoom.hasEnemies()) controller.changeView(controller.battleView());
 				}
 			}
 		}

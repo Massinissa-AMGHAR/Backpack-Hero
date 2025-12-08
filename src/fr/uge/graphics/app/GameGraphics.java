@@ -1,4 +1,4 @@
-package fr.uge.graphics;
+package fr.uge.graphics.app;
 
 
 import fr.uge.application.*;

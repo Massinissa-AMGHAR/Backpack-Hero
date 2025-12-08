@@ -1,4 +1,4 @@
-package fr.uge.graphics;
+package fr.uge.graphics.image;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;

@@ -1,4 +1,8 @@
-package fr.uge.graphics;
+package fr.uge.graphics.view;
+
+import fr.uge.graphics.app.*;
+
+import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -11,12 +15,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class BattleView implements View {
+	private final List<Message> messages = new ArrayList<>();
+	private Message currentMessage = null;
+	private FightGraphics fight;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesEnemies; 
 	private final ImageLoader imagesItems;
@@ -33,6 +41,44 @@ public class BattleView implements View {
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
 		this.imagesItems = imagesItems;
+	}
+	
+	public void setFight(FightGraphics fight) {
+    this.fight = fight;
+	}
+
+	public FightGraphics fight() {
+    return fight;
+	}
+
+	
+	public void showMessage(String msg, int durationMs) {
+    var end = Instant.now().plusMillis(durationMs);
+    messages.add(new Message(msg, end));
+	}
+	
+	public boolean isMessageActive() {
+    return currentMessage != null && Instant.now().isBefore(currentMessage.endTime());
+	}	
+
+	public void updateMessageState() {
+    if (currentMessage != null && Instant.now().isAfter(currentMessage.endTime())) {
+        currentMessage = null;
+    }
+    if (currentMessage == null && !messages.isEmpty()) {
+        currentMessage = messages.remove(0);
+    }
+	}
+	
+	private void drawFightMessage(Graphics2D graphics, ApplicationContext context) {
+    if (isMessageActive()) {
+      graphics.setColor(Color.WHITE);
+      graphics.setFont(new Font("Arial", Font.BOLD, 40));
+      var fm = graphics.getFontMetrics();
+      int x = (context.getScreenInfo().width() - fm.stringWidth(currentMessage.text())) / 2;
+      int y = context.getScreenInfo().height() / 10;
+      graphics.drawString(currentMessage.text(), x, y);
+    } 
 	}
 	
 	private int[] calculateMapStart(int screenWidth, int screenHeight, int cols, int rows, int cellSize) {
@@ -93,7 +139,7 @@ public class BattleView implements View {
 		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
     var stat = hero.HP() + " " + "/" + " " + hero.HPMAX() + " PV";
     var eX = context.getScreenInfo().width() / 8 - 175;
-    var eY = context.getScreenInfo().height() / 8;
+    var eY = context.getScreenInfo().height() / 6;
     var energy = "Energy : " + hero.energy();
 		graphics.setColor(Color.WHITE);
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
@@ -116,31 +162,49 @@ public class BattleView implements View {
     graphics.drawString(stat, statX, statY);
 	}
 	
-	private void importEnemy(Graphics2D graphics, ApplicationContext context, List<Enemy> enemies, int startX, int startY, int spacing) {
-		for (int i = 0; i < enemies.size(); i++) {
-			int enemyX = startX + i * spacing;
-			int enemyY = startY;
-			imagesEnemies.drawImage(graphics, imagesEnemies.get(0), enemyX, enemyY, imageSize, imageSize);
-			enemyStat(graphics, context, enemies.get(i), i, spacing);
-		}
+	private void importEnemy(Graphics2D graphics, ApplicationContext context, List<Enemy> allEnemies, FightGraphics fight, int startX, int startY, int spacing) {
+    for (int i = 0; i < allEnemies.size(); i++) {
+      var enemy = allEnemies.get(i);
+      if (enemy.HP() <= 0) continue;
+      int enemyX = startX + i * spacing;
+      int enemyY = startY;
+      var imageIndex = 0;
+      if (enemy.name().equals("Little Rat-Wolf")) imageIndex = 1;
+      if (enemy.name().equals("Rat-Wolf")) imageIndex = 0;
+      imagesEnemies.drawImage(graphics, imagesEnemies.get(imageIndex), enemyX, enemyY, imageSize, imageSize);
+      if (enemy == fight.currentEnemy()) {
+        enemyStat(graphics, context, fight.currentEnemy(), i, spacing);
+      } else enemyStat(graphics, context, enemy, i, spacing);
+    }
 	}
 	
 	private void importEnemiesImages(Graphics2D graphics, ApplicationContext context) {
 		int enemyX = context.getScreenInfo().width() - imageSize * 3 - 150;
 		int startY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		int spacing = imageSize + 30;
-		importEnemy(graphics, context, enemies.getEnemies(), enemyX, startY, spacing);
+		importEnemy(graphics, context, enemies.getEnemies(), fight, enemyX, startY, spacing);
 	}
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		updateMessageState(); 
 		background(graphics, context.getScreenInfo());
+		drawFightMessage(graphics, context);
 		draw_backpack(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
-		importEnemiesImages(graphics, context);
+		importEnemiesImages(graphics, context);    
 	}
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		var fight = controller.fightGraphics();
+		if (fight == null || fight.isFightOver()) return;
+		if (!fight.isHeroTurn()) return;
+    var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
+    int line = (y - start[1]) / cellSize;
+    int column = (x - start[0]) / cellSize;
+    var item = fight.Hero().backpack().choice(line, column);
+    if (item != null) {
+      fight.heroUseItem(item);
+    }
 	}
-
 }

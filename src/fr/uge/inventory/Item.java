@@ -131,7 +131,7 @@ public class Item {
 			{true}
 	}; 
 	public static final Item[] ALL_ITEM = {
-	  new Item("Wooden Sword", "MELEE", "COMMON", SHAPE_WOODEN_SWORD, 7, 0, 1, 0, 0, 0, 5, 0),
+	  new Item("Wooden Sword", "MELEE", "COMMON", SHAPE_WOODEN_SWORD, 3, 0, 1, 0, 0, 0, 5, 0),
 		new Item("Arrow", "ARROW", "COMMON", SHAPE_ARROW, 2, 0, 0, 0, 0, 0, 1, 0),
 		new Item("Rough Buckler", "SHIELD", "COMMON", SHAPE_ROUGH_BUCKLER, 0, 7, 1, 0, 0, 0, 2, 0),
 		new Item("Tunic", "ARMOR", "COMMON", SHAPE_TUNIC, 0, 5, 0, 0, 0, 0, 1, 0),
