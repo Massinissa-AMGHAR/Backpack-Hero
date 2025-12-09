@@ -26,7 +26,6 @@ public class Hero implements Fighter{
       this.economyManager = new HeroEconomyManager(inventoryManager, heroFight); 
   }
   
-	// Infos du héros
   public String name() { return name; }
   public int HP() {return heroFight.HP();}
   public int HPMAX() {return heroFight.HPMAX();}
@@ -41,7 +40,6 @@ public class Hero implements Fighter{
   //Progression du héros
   public void winXp(Enemy enemy, Backpack backpack) { progression.winXp(enemy, backpack);}
   
-  //Combat du héros
   public int attack(Fighter enemy, Item item) { return heroFight.attack(enemy, item);}
   public int defense(Item item) { return heroFight.defense(item);}
   public int manaBonus(Item item) { return heroFight.manaBonus(item);}
@@ -51,13 +49,11 @@ public class Hero implements Fighter{
   public void resetEnergy() {heroFight.resetEnergy();}
   public void resetMana() {heroFight.resetMana();}
   
-  //Gestion argent du héros
   public boolean buy(int cost) {return economyManager.buy(cost); }
   public boolean winGold(int amount) { return economyManager.winGold(amount);}
   public boolean sellItem(Merchant merchant, Item item) {return economyManager.sellItem(merchant, item);}
   public void treat(Healer healer) {economyManager.treat(healer);}
   
-  //Gestion backpack
   public void manageBackpack(Items items, boolean isShop) {inventoryManager.manageBackpack(items,isShop);}
   
 	@Override

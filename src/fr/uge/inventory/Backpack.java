@@ -36,6 +36,7 @@ public class Backpack {
   public int maxLines() { return maxLines; }
   public int maxColumns() {return maxColumns; }
   public boolean[][] unlocked() { return unlocked; }; 
+
   
   // Placement/Suppression
   public boolean canPlaceItem(Item item, int line, int column) { return placement.canPlaceItem(item, line, column); }

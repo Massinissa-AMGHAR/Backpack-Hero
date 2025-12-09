@@ -110,7 +110,7 @@ public class Floor {
       new Room(false, false, false, false, true)
     );
   }
-  
+
   private static List<Room> listRoomOfFloor2() {
     return List.of(
       new Room(false, false, false, true, false),
@@ -122,7 +122,7 @@ public class Floor {
       new Room(false, false, false, false, true), 
       new Room(true, false, false, false, false), 
       new Room(false, false, false, true, false)
-      
+
     );
   }
 
@@ -137,6 +137,7 @@ public class Floor {
 	      new Room(false, false, false, true, false), 
 	      new Room(false, false, false, true, false)
 	    );
+
 	}
 	  
   private static void addRoomsToFloor(Floor floor, List<Room> rooms, List<int[]> positions) {

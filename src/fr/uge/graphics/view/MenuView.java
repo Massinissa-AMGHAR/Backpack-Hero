@@ -1,4 +1,7 @@
-package fr.uge.graphics;
+package fr.uge.graphics.view;
+
+import fr.uge.graphics.app.*;
+
 
 import com.github.forax.zen.ApplicationContext;
 

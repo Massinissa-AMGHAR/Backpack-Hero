@@ -49,8 +49,10 @@ public class Game {
 					floor.initPlaceHero();;
 				}
 			}
-			IO.println(floor.toString()); 
-			floor.moveHero(interaction); 
+			if (floor != null) {
+				IO.println(floor.toString()); 
+				floor.moveHero(interaction); 
+			}
 		}
 		
 		IO.println("##### End of game #####");
@@ -83,7 +85,7 @@ public class Game {
 		IO.println("Oh ! You found a treasure !"); 
 		var treasure = room.treasure();  
 	  hero.manageBackpack(treasure, false);
-	  if(treasure.getItems().isEmpty())room.noTreasure();
+	  if(treasure.getItems().isEmpty()) room.noTreasure();
 	}
 		
 }

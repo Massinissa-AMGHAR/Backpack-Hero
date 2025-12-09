@@ -1,5 +1,8 @@
-package fr.uge.graphics;
+package fr.uge.graphics.view;
+
+import fr.uge.graphics.app.*;
 import java.awt.Graphics2D;
+
 import com.github.forax.zen.ApplicationContext;
 
 public interface View {
