@@ -18,8 +18,8 @@ public class Item {
 	private final int id;
 	private static int counter = 0;
 	private int goldAmount = 0; 
-	private int leftPlacementX; 
-	private int leftPlacementY; 
+	private int leftPlacementX = 0; 
+	private int leftPlacementY = 0; 
 	
 	private final ItemRotation rotation; 
   

@@ -9,7 +9,7 @@ import com.github.forax.zen.Application;
 
 public class Main {
 	static void main(String[] args) {
-		var graphic = true  ;
+		var graphic = false  ;
 		if (graphic) {
 	    GameGraphics gameGraphics = new GameGraphics(); 
 	    ImageLoader imagesMap = new ImageLoader("data", "hero.png", "minihero.png", "door.png", "enemymap.png", "minimerchant.png", "minihealer.png");

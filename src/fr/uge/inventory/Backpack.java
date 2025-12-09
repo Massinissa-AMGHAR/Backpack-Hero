@@ -62,23 +62,21 @@ public class Backpack {
   		int line = interaction.requestInt(); 
   		int column = interaction.requestInt(); 
   		if(!inside(line, column)) {
-  			IO.println("The case is not in the backpack"); 
-  			continue; 
+  			IO.println("The case is not in the backpack"); continue; 
   		}
   		
   		if(unlocked[line][column]) {
-  			IO.println("The case is already unlocked"); 
-  			continue; 
+  			IO.println("The case is already unlocked"); continue; 
   		}
   		
   		if(!isAdjacent(line, column)) {
-  	  	IO.println("Cases must be adjacent");
-  	  	continue; 
+  	  	IO.println("Cases must be adjacent"); continue; 
   		}
   		unlocked[line][column] = true; 
   		cpt++; 
   		IO.println("Case unlocked"); 
   	}
+  	IO.println(this.toString()); 
   }
   
   private boolean inside(int line, int column) {
