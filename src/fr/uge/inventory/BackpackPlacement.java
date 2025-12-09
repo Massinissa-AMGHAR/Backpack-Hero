@@ -9,7 +9,7 @@ public class BackpackPlacement {
 	
 	public int lengthLine(int line, int column) {
 		int length = 0; 
-		for(int j = column; j < backpack.colums(); j++) {
+		for(int j = column; j < backpack.maxColumns(); j++) {
 		  if(caseFree(line, j)) length++; 
 		  else break;  
 	  }
@@ -18,7 +18,7 @@ public class BackpackPlacement {
 	  
 	  public int lengthColumn(int line, int column) {
 	    int length = 0; 
-	    for(int i = line; i < backpack.lines(); i++) {
+	    for(int i = line; i < backpack.maxLines(); i++) {
 	    	if(caseFree(i, column)) length++; 
 	    	else break; 
 	    }
@@ -26,10 +26,9 @@ public class BackpackPlacement {
 	  }
 	  
   public boolean caseFree(int line, int column) {
-    if(line < 0 || line >= backpack.lines() || column < 0 || column >= backpack.colums()) return false;
-    if(backpack.grid().get(line).get(column) != null) {
-      return false; 
-    }
+    if(line < 0 || line >= backpack.maxLines() || column < 0 || column >= backpack.maxColumns()) return false;
+    if(backpack.grid().get(line).get(column) != null) return false; 
+    if(!backpack.unlocked()[line][column])return false; 
     return true; 
   }
 	
@@ -61,8 +60,8 @@ public class BackpackPlacement {
   }
   
   public void delete(Item item) {
-    for(int i = 0; i < backpack.lines(); i++) {
-      for(int j = 0; j < backpack.colums(); j++) {
+    for(int i = 0; i < backpack.maxLines(); i++) {
+      for(int j = 0; j < backpack.maxColumns(); j++) {
       	Item current = backpack.grid().get(i).get(j); 
         if(current != null && current.id() == item.id()) backpack.grid().get(i).set(j, null); 
       }

@@ -21,11 +21,9 @@ public class Game {
 		dungeon = new Dungeon(2); 
 		dungeon.createDungeon();
 		
-		Backpack backpack = new Backpack(3, 5); 
-		var item = Item.ALL_ITEM[0]; 
-		item.leftPlacementX = 0;
-		item.leftPlacementY = 0; 
-		backpack.add(item, 0, 0);
+		Backpack backpack = new Backpack(); 
+		var item = Item.ALL_ITEM[0];  
+		backpack.add(item, 1, 2);
 		
 		hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack, interaction);
 	}

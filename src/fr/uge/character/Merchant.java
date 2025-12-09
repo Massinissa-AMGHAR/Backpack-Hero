@@ -3,7 +3,7 @@ import fr.uge.application.Interactions;
 import fr.uge.inventory.*;
 
 
-public class Merchant implements interactionCharacters {
+public class Merchant implements InteractionCharacters {
   private final Items shop; 
   
   public Merchant(){

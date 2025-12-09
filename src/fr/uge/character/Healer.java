@@ -2,7 +2,7 @@ package fr.uge.character;
 import java.util.Scanner; 
 import fr.uge.application.*;
 
-public class Healer implements interactionCharacters {
+public class Healer implements InteractionCharacters {
   private final int price; 
   private final int hp; 
   public Healer(int price, int hp){

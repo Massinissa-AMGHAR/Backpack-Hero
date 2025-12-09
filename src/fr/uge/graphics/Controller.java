@@ -19,8 +19,8 @@ public class Controller {
 	private final BattleView battleView;
 	private final HealerView healerView;
 	private final MerchantView merchantView;
-	private Backpack backpack = new Backpack(3, 5);
-	private Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
+	private Backpack backpack = new Backpack();
+	private Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack, null);
 	//private final Enemies enemies = new Enemies();
 	private View view;
 	

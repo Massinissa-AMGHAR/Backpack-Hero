@@ -103,34 +103,39 @@ public class Floor {
       new Room(false, true, false, false, false),
       new Room(true, false, false, false, false),
       new Room(true, false, false, false, false),
-      new Room(false, false, true, true, false),
-      new Room(true, false, false, true, false),
-      new Room(false, true, false, false, false),
+      new Room(false, false, true, false, false),
+      new Room(false, false, false, true, false),
+      new Room(true, false, false, false, false),
+      new Room(false, false, false, true, false),
       new Room(false, false, false, false, true)
     );
   }
   
   private static List<Room> listRoomOfFloor2() {
     return List.of(
+      new Room(false, false, false, true, false),
+      new Room(false, true, false, false, false),
+      new Room(false, false, false, false, false),
       new Room(true, false, false, false, false),
       new Room(false, false, true, false, false),
-      new Room(false, true, false, false, false),
-      new Room(false, false, false, true, true),
-      new Room(true, false, false, false, true),
-      new Room(false, false, true, false, false),
-      new Room(true, false, false, true, false)
+      new Room(true, false, false, false, false), 
+      new Room(false, false, false, false, true), 
+      new Room(true, false, false, false, false), 
+      new Room(false, false, false, true, false)
+      
     );
   }
 
 	private static List<Room> listRoomOfFloor3() {
 	    return List.of(
 	      new Room(false, false, true, false, false),
-	      new Room(true, true, false, false, false),
-	      new Room(false, false, false, true, false),
+	      new Room(true, false, false, false, false),
+	      new Room(true, false, false, false, false),
 	      new Room(false, true, false, false, false),
-	      new Room(true, false, false, true, true),
-	      new Room(true, false, true, false, false),
-	      new Room(false, false, false, false, true)
+	      new Room(true, false, false, false, false),
+	      new Room(false, false, false, false, true),
+	      new Room(false, false, false, true, false), 
+	      new Room(false, false, false, true, false)
 	    );
 	}
 	  
@@ -157,22 +162,23 @@ public class Floor {
   
   private static List<int[]> positionsRoomsFloor1() {
   	return List.of(
-      new int[]{1, 1}, new int[]{1, 3}, new int[]{2, 4}, new int[]{3, 3},
+      new int[]{1, 1}, new int[]{1, 3}, new int[]{2, 4}, new int[]{3, 3}, new int[] {4, 4},
       new int[]{3, 6}, new int[]{1, 6}, new int[]{1, 9}
   		);
   }
 
   private static List<int[]> positionsRoomsFloor2() {
   	return List.of(
-      new int[]{0, 0}, new int[]{0, 2}, new int[]{1, 1}, new int[]{2, 3},
-      new int[]{2, 5}, new int[]{1, 5}, new int[]{0, 6}
+      new int[]{0, 2}, new int[]{1, 1}, new int[]{2, 3},
+      new int[]{2, 5}, new int[]{1, 5}, new int[]{0, 6}, new int[] {2, 6}, 
+      new int[] {0, 5}, new int[] {0, 7}
   		);
   }
 
   private static List<int[]> positionsRoomsFloor3() { 
   	return List.of(
       new int[]{1, 0}, new int[]{1, 2}, new int[]{2, 1}, new int[]{2, 3},
-      new int[]{3, 2}, new int[]{3, 4}, new int[]{0, 5}
+      new int[]{3, 2}, new int[]{3, 4}, new int[]{3, 5}, new int[] {1, 4}
   	);
   }
   

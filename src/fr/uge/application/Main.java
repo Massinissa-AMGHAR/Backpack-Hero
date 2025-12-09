@@ -1,11 +1,7 @@
-package fr.uge.application;
-
-import java.util.Scanner; 
+package fr.uge.application; 
 public class Main {
-	static void main(String[] args) {
-		 
-		Scanner scanner = new Scanner(System.in); 
-		Interactions interaction = new Interactions(scanner); 
+	static void main(String[] args) { 
+		Interactions interaction = new Interactions(); 
 		Game game = new Game(interaction); 
 		game.start();
 	}

@@ -17,8 +17,8 @@ public class MapView implements View {
 	private String currentMessageError = null;
 	private Instant messageEndTime;
 	private final Floor floor;
-	private Backpack backpack = new Backpack(3, 5);
-	private final Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
+	private Backpack backpack = new Backpack();
+	private final Hero hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack, null);
 	private final ImageLoader images;
 	private final int cellSize = 75;
 	private final int imageSize = 200;

@@ -30,12 +30,10 @@ public class Fight {
     	return false; 
     }
     else {
-      IO.println(enemy.name() + " was tchoufara by " + hero.name()); 
-      hero.winXp(enemy);
+      IO.println(enemy.name() + " was killed by " + hero.name()); 
+      hero.winXp(enemy, hero.backpack());
       hero.resetMana(); 
-      hero.resetEnergy();
-      IO.println("Hero wins " + enemy.xp() + " experience points"); 
-      IO.println("Hero has " + hero.xp() + " experience points"); 
+      hero.resetEnergy(); 
       return true; 
     }
   }

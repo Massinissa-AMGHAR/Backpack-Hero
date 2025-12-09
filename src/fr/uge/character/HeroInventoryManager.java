@@ -107,14 +107,13 @@ public class HeroInventoryManager {
 			var rotated = item.copy(); 
 			rotated.applyRotation(); 
 			backpack.delete(item);
-			if(backpack.canPlaceItem(rotated, item.leftPlacementX, item.leftPlacementY)) {
-				backpack.add(rotated, item.leftPlacementX, item.leftPlacementY);
-				rotated.leftPlacementX = item.leftPlacementX; 
-				rotated.leftPlacementY = item.leftPlacementY; 
+			if(backpack.canPlaceItem(rotated, item.leftPlacementX(), item.leftPlacementY())) {
+				backpack.add(rotated, item.leftPlacementX(), item.leftPlacementY());
+				rotated.setLeftPlacement(item.leftPlacementX(), item.leftPlacementY()); 
 				IO.println("The item was placed"); 
 				return; 
 			}
-			backpack.add(item, item.leftPlacementX, item.leftPlacementY);
+			backpack.add(item, item.leftPlacementX(), item.leftPlacementY());
 			IO.println("Item cannot be placed");
 			return; 
 		}
@@ -123,8 +122,8 @@ public class HeroInventoryManager {
 			IO.println("You decided to make a translation"); 
 			var item = chooseItemInBackpack(); 
 			if(item == null) return; 
-			int line = item.leftPlacementX; 
-			int column = item.leftPlacementY; 
+			int line = item.leftPlacementX(); 
+			int column = item.leftPlacementY(); 
 			Items list = new Items(); 
 			var itemCopy = item.copy(); 
 			list.addItem(itemCopy); 
@@ -150,8 +149,7 @@ public class HeroInventoryManager {
 			int availableHeight = backpack.lengthColumn(line, column);
 			if (item.width() <= availableWidth && item.height() <= availableHeight) {
 				backpack.add(item, line, column);
-				item.leftPlacementX = line; 
-				item.leftPlacementY = column; 
+				item.setLeftPlacement(line, column); 
 				listItems.deleteItem(index); 
 				IO.println(backpack.toString()); 
 				return true; 

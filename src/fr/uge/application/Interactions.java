@@ -4,8 +4,8 @@ import java.util.Scanner;
 public class Interactions {
 	private Scanner scanner; 
 	
-	public Interactions(Scanner scanner){
-		this.scanner = scanner; 
+	public Interactions(){
+		this.scanner = new Scanner(System.in);  
 	}
 	
 	public int requestInt() {

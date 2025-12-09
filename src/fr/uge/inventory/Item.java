@@ -18,8 +18,8 @@ public class Item {
 	private final int id;
 	private static int counter = 0;
 	private int goldAmount = 0; 
-	public int leftPlacementX = -1; 
-	public int leftPlacementY = -1; 
+	private int leftPlacementX; 
+	private int leftPlacementY; 
 	
 	private final ItemRotation rotation; 
   
@@ -61,6 +61,13 @@ public class Item {
 	public int goldCost() { return goldCost; }
 	public int id() { return id; }
 	public int goldAmount() {return goldAmount;}
+	public int leftPlacementX() {return leftPlacementX; }
+	public int leftPlacementY() {return leftPlacementY; }
+	
+	public void setLeftPlacement(int x, int y) {
+		this.leftPlacementX = x; 
+		this.leftPlacementY = y; 
+	}
 	
 	public boolean isGold() {return type.equals("GOLD"); }
 	
