@@ -115,7 +115,7 @@ public class BattleView implements View {
 	    graphics.drawRect(x, y, cellSize, cellSize);
 	}
 	
-	private boolean isItemStartOrigin(Item item, int line, int column, ArrayList<ArrayList<Item>> grid) {
+	private boolean isItemStart(Item item, int line, int column, ArrayList<ArrayList<Item>> grid) {
 		if (item == null) return false;
     boolean topFree = (line == 0 || grid.get(line - 1).get(column) != item);
     boolean leftFree = (column == 0 || grid.get(line).get(column - 1) != item);
@@ -127,7 +127,7 @@ public class BattleView implements View {
 		for (int i = 0; i < grid.size(); i++) {
 			for (int j = 0; j < grid.get(i).size(); j++) {
 				var item = grid.get(i).get(j);
-				if (isItemStartOrigin(item, i, j, grid)) {
+				if (isItemStart(item, i, j, grid)) {
 					int x = startX + j * cellSizeBackPack;
 					int y = startY + i * cellSizeBackPack;
 					int width = item.width() * cellSizeBackPack;

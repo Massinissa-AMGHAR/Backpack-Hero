@@ -17,7 +17,7 @@ public class Main {
 	    ImageLoader imagesItems = new ImageLoader("data", "Wooden_sword.png");
 	    ImageLoader imagesServices = new ImageLoader("data", "merchant.png", "healer.png");
 	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices);
-	    Application.run(Color.BLACK, controller::game);
+	    Application.run(Color.DARK_GRAY, controller::game);
 		} else { 
 	    Interactions interaction = new Interactions(); 
 	    Game game = new Game(interaction); 
@@ -25,6 +25,3 @@ public class Main {
 		}
 	}
 }
-
-
- 
