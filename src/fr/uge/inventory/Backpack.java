@@ -107,7 +107,6 @@ public class Backpack {
     if (unlocked[line][column]) return "The case is already unlocked";
     if (!isAdjacent(line, column)) return "Cases must be adjacent";
     unlocked[line][column] = true;
-    
     return null;
   }
   

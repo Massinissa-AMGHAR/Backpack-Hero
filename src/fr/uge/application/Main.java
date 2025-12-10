@@ -9,7 +9,7 @@ import com.github.forax.zen.Application;
 
 public class Main {
 	static void main(String[] args) {
-		var graphic = true;
+		var graphic = false;
 		if (graphic) {
 	    GameGraphics gameGraphics = new GameGraphics(); 
 	    ImageLoader imagesMap = new ImageLoader("data", "hero.png", "minihero.png", "door.png", "enemymap.png", "minimerchant.png", "minihealer.png");
@@ -17,7 +17,7 @@ public class Main {
 	    ImageLoader imagesItems = new ImageLoader("data", "Wooden_Sword.png");
 	    ImageLoader imagesServices = new ImageLoader("data", "merchant.png", "healer.png");
 	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices);
-	    Application.run(Color.BLACK, controller::game);
+	    Application.run(Color.DARK_GRAY, controller::game);
 		} else { 
 	    Interactions interaction = new Interactions(); 
 	    Game game = new Game(interaction); 
@@ -25,6 +25,3 @@ public class Main {
 		}
 	}
 }
-
-
- 
