@@ -20,7 +20,7 @@ public class GameGraphics {
 
     Backpack backpack = new Backpack();
     var item = Item.ALL_ITEM[0];
-    backpack.add(item, 0, 0);
+    backpack.add(item, 1, 2);
 
     hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5, 0, 0, backpack, interaction);
     enemies = new Enemies();

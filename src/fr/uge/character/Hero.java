@@ -34,8 +34,10 @@ public class Hero implements Fighter{
   public int mana() {return heroFight.mana(); }
   public int manaMax() {return heroFight.manaMax(); }
   public int xp() {return progression.xp(); }
+  public int nextLevelXp() { return progression.xpThreshold(); }
   public int level() { return progression.level(); }
   public Backpack backpack() {return inventoryManager.backpack(); }
+  public HeroProgression progression() { return progression; }
  
   //Progression du héros
   public void winXp(Enemy enemy, Backpack backpack) { progression.winXp(enemy, backpack);}
