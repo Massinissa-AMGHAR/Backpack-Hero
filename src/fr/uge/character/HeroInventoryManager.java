@@ -124,11 +124,14 @@ public class HeroInventoryManager {
 			if(item == null) return; 
 			int line = item.leftPlacementX(); 
 			int column = item.leftPlacementY(); 
-			Items list = new Items(); 
-			var itemCopy = item.copy(); 
-			list.addItem(itemCopy); 
 			backpack.delete(item); 
-			if(!choicePlaceItem(itemCopy, list, 0)) backpack.add(itemCopy, line, column);
+			Items list = new Items(); 
+			list.addItem(item); 
+			if(!choicePlaceItem(item, list, 0)) {
+				backpack.add(item, line, column);
+				backpack.toString(); 
+				IO.println("Item cannot be moved and was restored"); 
+			}
 		}
 		
 		private void choiceDelItem(Interactions interaction) {
@@ -159,7 +162,7 @@ public class HeroInventoryManager {
 				return false;  
 			}
 
-		}
+	 }
 		
 }
 
