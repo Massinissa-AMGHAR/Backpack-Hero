@@ -61,12 +61,16 @@ public class FightGraphics {
         int cases = hero.backpack().casesToUnlock();
         hero.backpack().setUnlockCount(cases);
         hero.backpack().setUnlockMode(true);
-        var firstEnd = Instant.now().plusMillis(2000);
-        battleView.Messages().add(new Message("You can unlock " + cases + " backpack cases!", firstEnd.plusMillis(2000)));
+        battleView.showMessage("You can unlock " + cases + " backpack cases!", 4000);
         hero.progression().resetLevelUpFlag(); 
+      } else {
+        battleView.showMessage("Returning to the map...", 4000);
+        battleView.setReadyToReturnToMap(true);
       }
     } else {
         battleView.showMessage(hero.name() + " was defeated...", 2000);
+        battleView.showMessage("Returning to the map...", 4000);
+        battleView.setReadyToReturnToMap(true);
     }
   }
 

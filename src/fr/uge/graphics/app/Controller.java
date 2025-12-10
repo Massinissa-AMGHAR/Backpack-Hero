@@ -88,7 +88,14 @@ public class Controller {
     while (running) {
     	context.renderFrame(graphics -> {
         view.draw(graphics, context);
-        if(view == battleView) fightGraphics.updateFight();
+        if(view == battleView) {
+        	fightGraphics.updateFight();
+          battleView.updateMessageState();            
+          if (!battleView.isMessageActive() && battleView.isReadyToReturnToMap()) {
+            changeView(mapView());
+            battleView.setReadyToReturnToMap(false);
+          }
+        }
     	});
     	running = gameLoop(context);
     }

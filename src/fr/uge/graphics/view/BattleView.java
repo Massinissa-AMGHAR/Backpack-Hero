@@ -35,6 +35,8 @@ public class BattleView implements View {
 	private final int cellSizeBackPack = 75;
 	private final int cols;
 	private final int rows;
+	private boolean readyToReturnToMap = false;
+
 	
 	public BattleView(Hero hero, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems) {
 		this.hero = hero;
@@ -44,6 +46,14 @@ public class BattleView implements View {
 		this.imagesItems = imagesItems;
     cols = hero.backpack().maxColumns();
     rows = hero.backpack().maxLines();
+	}
+	
+	public void setReadyToReturnToMap(boolean ready) {
+    readyToReturnToMap = ready;
+	}
+
+	public boolean isReadyToReturnToMap() {
+    return readyToReturnToMap;
 	}
 	
 	public List<Message> Messages() { return messages; }
@@ -225,7 +235,7 @@ public class BattleView implements View {
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
     var fight = controller.fightGraphics();
-     if (fight == null) return;                
+    if (fight == null) return;                
     var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSizeBackPack);
     int line = (y - start[1]) / cellSizeBackPack;
     int column = (x - start[0]) / cellSizeBackPack;
@@ -238,6 +248,12 @@ public class BattleView implements View {
       	showMessage("Case unlocked ! (" + backpack.unlockCount() + " left)", 1000);
       }
       else showMessage(msg + " (" + backpack.unlockCount() + " left)", 1000);
+      if (backpack.unlockCount() == 0) {
+      	backpack.setUnlockMode(false);
+      	showMessage("You have unlocked all your backpack slots!", 2000);
+        showMessage("Returning to the map...", 4000);
+        setReadyToReturnToMap(true); 
+      }
     }
     if (fight.isFightOver() || !fight.isHeroTurn()) return;
     var item = fight.Hero().backpack().choice(line, column);

@@ -54,7 +54,6 @@ public class Game {
 				floor.moveHero(interaction); 
 			}
 		}
-		
 		IO.println("##### End of game #####");
 	}
 	
