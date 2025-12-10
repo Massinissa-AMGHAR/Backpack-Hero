@@ -1,6 +1,9 @@
 package fr.uge.graphics.app;
 
+import java.time.Instant;
+
 import fr.uge.application.*;
+
 import fr.uge.character.*;
 import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
@@ -13,12 +16,14 @@ public class FightGraphics {
 	private boolean heroTurn = true;
 	private boolean fightEnded = false;
 	private boolean nextEnemyAnnounced = false;
+	private final int levelBeforeFight;
 	
 
 	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
 		this.hero = hero;
 		this.enemies = enemies;
 		this.battleView = battleView;
+		this.levelBeforeFight = hero.progression().level();
     battleView.showMessage("The fight starts between " + hero.name() + " and " + currentEnemy().name() + " !", 1000);
 	}
 	
@@ -33,6 +38,7 @@ public class FightGraphics {
     Enemy enemy = currentEnemy();
     if (enemy != null && enemy.HP() <= 0) {
     	battleView.showMessage(enemy.name() + " was defeated!", 1000);
+    	hero.progression().WinXpGraphics(enemy);
       currentEnemyIndex++;
       nextEnemyAnnounced = false;
       return;
@@ -44,18 +50,30 @@ public class FightGraphics {
     }
   }
   
-	public void checkEndFight() {
-		if (fightEnded) return;
-    if (isFightOver()) {
-      if (heroWon()) {
-      	fightEnded = true;
-        battleView.showMessage(hero.name() + " wins the fight!", 2000);
+  public void checkEndFight() {
+    if (fightEnded) return;
+    if (!isFightOver()) return;
+    fightEnded = true;
+    heroTurn = false;
+    if (heroWon()) {
+      battleView.showMessage(hero.name() + " wins the fight!", 2000);
+      if (hero.progression().hasLeveledUpDuringFight()) {
+        int cases = hero.backpack().casesToUnlock();
+        hero.backpack().setUnlockCount(cases);
+        hero.backpack().setUnlockMode(true);
+        battleView.showMessage("You can unlock " + cases + " backpack cases!", 4000);
+        hero.progression().resetLevelUpFlag(); 
       } else {
-        battleView.showMessage(hero.name() + " was defeated...", 2000);
+        battleView.showMessage("Returning to the map...", 4000);
+        battleView.setReadyToReturnToMap(true);
       }
-      heroTurn = false;
+    } else {
+        battleView.showMessage(hero.name() + " was defeated...", 2000);
+        battleView.showMessage("Returning to the map...", 4000);
+        battleView.setReadyToReturnToMap(true);
     }
-	}
+  }
+
 
   public boolean isHeroTurn() {
     return heroTurn;

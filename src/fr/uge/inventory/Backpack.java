@@ -1,5 +1,7 @@
 package fr.uge.inventory;
 import java.util.ArrayList;
+import java.util.Random;
+
 
 import fr.uge.application.Interactions; 
 
@@ -8,7 +10,8 @@ public class Backpack {
   private final boolean[][] unlocked; 
   private final int maxLines = 5; 
   private final int maxColumns = 7; 
- 
+  public boolean unlockMode = false;
+  private int unlockCount = 0;
   private final BackpackPlacement placement; 
   private final BackpackSearch search; 
   
@@ -51,6 +54,26 @@ public class Backpack {
   public Item choice(int line, int column) {return search.choice(line, column); }
   public Item findGoldItem() {return search.findGoldItem();}
   
+  public int unlockCount() { return unlockCount; }
+  public boolean isUnlockMode() { return unlockMode; }
+  public void setUnlockMode(boolean bool) { unlockMode = bool; }
+  public void setUnlockCount(int count) { unlockCount = count; }
+  
+  public int casesToUnlock() {
+  	var r = new Random().nextInt(2);
+  	if (r == 0) return 3;
+  	return 4;
+  }
+  
+  public void useUnlockCase() {
+  	if (unlockMode && unlockCount > 0) {
+  		unlockCount--;
+  		if (unlockCount <= 0) {
+  	    unlockMode = false;
+  		}
+  	}
+  }
+  
   //Ajout des cases 
   public void unlockCase(int n) {
   	IO.println("You can unlock " + n + " cases !"); 
@@ -77,6 +100,15 @@ public class Backpack {
   		IO.println("Case unlocked"); 
   	}
   	IO.println(this.toString()); 
+  }
+  
+  public String tryUnlockCase(int line, int column) {
+    if (!inside(line, column)) return "The case is not in the backpack";
+    if (unlocked[line][column]) return "The case is already unlocked";
+    if (!isAdjacent(line, column)) return "Cases must be adjacent";
+    unlocked[line][column] = true;
+    
+    return null;
   }
   
   private boolean inside(int line, int column) {

@@ -160,12 +160,17 @@ public class MapView implements View {
 		var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
+				Room clickedRoom = floor.getRoom(i, j);
 				if (floor.hasRoom(i, j) && isRoomClicked(x, y, i, j, start)) {
+          if (clickedRoom.isCorridor()) {
+            showMessage("You can only move to rooms!", 2000);
+            return;
+          }
 					if (!floor.isAccessible(i, j)) {
 						showMessage("Step by step ... Follow the path", 2000);
 						return;
-					}
-					Room clickedRoom = floor.getRoom(i, j);
+					} 
+					floor.placeHero(i, j);
 					if (clickedRoom.hasAngel()) controller.changeView(controller.healerView());
 					if (clickedRoom.hasMerchant()) controller.changeView(controller.merchantView());
 					if (clickedRoom.hasEnemies()) controller.changeView(controller.battleView());

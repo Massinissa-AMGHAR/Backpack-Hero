@@ -32,8 +32,11 @@ public class BattleView implements View {
 	private final Hero hero;
 	private final Enemies enemies;
 	private final int cellSize = 100;
-	private final int cols = 5;
-	private final int rows = 3;
+	private final int cellSizeBackPack = 75;
+	private final int cols;
+	private final int rows;
+	private boolean readyToReturnToMap = false;
+
 	
 	public BattleView(Hero hero, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems) {
 		this.hero = hero;
@@ -41,8 +44,19 @@ public class BattleView implements View {
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
 		this.imagesItems = imagesItems;
+    cols = hero.backpack().maxColumns();
+    rows = hero.backpack().maxLines();
 	}
 	
+	public void setReadyToReturnToMap(boolean ready) {
+    readyToReturnToMap = ready;
+	}
+
+	public boolean isReadyToReturnToMap() {
+    return readyToReturnToMap;
+	}
+	
+	public List<Message> Messages() { return messages; }
 	public void setFight(FightGraphics fight) {
     this.fight = fight;
 	}
@@ -114,10 +128,10 @@ public class BattleView implements View {
 			for (int j = 0; j < grid.get(i).size(); j++) {
 				var item = grid.get(i).get(j);
 				if (isItemStartOrigin(item, i, j, grid)) {
-					int x = startX + j * cellSize;
-					int y = startY + i * cellSize;
-					int width = item.width() * cellSize;
-					int height = item.height() * cellSize;
+					int x = startX + j * cellSizeBackPack;
+					int y = startY + i * cellSizeBackPack;
+					int width = item.width() * cellSizeBackPack;
+					int height = item.height() * cellSizeBackPack;
 					imagesItems.drawImage(graphics, imagesItems.get(0), x, y, width, height);
 				}
 			}
@@ -125,26 +139,50 @@ public class BattleView implements View {
 	}
 	
 	private void draw_backpack(Graphics2D graphics, ApplicationContext context) {
-	  var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
+	  var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSizeBackPack);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, Color.GRAY);
+				int x = start[0] + j * cellSizeBackPack;
+				int y = start[1] + i * cellSizeBackPack;
+				Color color;
+				if (hero.backpack().unlocked()[i][j]) color = Color.GRAY;
+				else color = Color.LIGHT_GRAY;
+				drawRec(graphics, start[0] + j * cellSizeBackPack, start[1] + i * cellSizeBackPack, cellSizeBackPack, color);
 			}
 		}
 		importImageItemOnBackPack(graphics, start[0], start[1]);
 	}
 	
-	private void heroStat(Graphics2D graphics, ApplicationContext context) {
+	private void heroPV(Graphics2D graphics, ApplicationContext context) {
+		var stat = hero.HP() + " / " + hero.HPMAX() + " PV";
 		int statX = context.getScreenInfo().width() / 5 + 40;
 		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
-    var stat = hero.HP() + " " + "/" + " " + hero.HPMAX() + " PV";
-    var eX = context.getScreenInfo().width() / 8 - 175;
+		graphics.drawString(stat, statX, statY);
+	}
+	
+	private void heroEnergy(Graphics2D graphics, ApplicationContext context) {
+		var energy = "Energy : " + hero.energy();
+		var eX = context.getScreenInfo().width() / 8 - 175;
     var eY = context.getScreenInfo().height() / 6;
-    var energy = "Energy : " + hero.energy();
+    graphics.drawString(energy, eX, eY);
+	}
+	
+	private void heroLevel(Graphics2D graphics, ApplicationContext context) {
+    var level = "LVL." + hero.level();
+    var xp = hero.xp() + " / " + hero.nextLevelXp() + " XP"; 
+    var levelX = context.getScreenInfo().width() / 8 - 175;
+    var levelY = context.getScreenInfo().height() / 6 + 200;
+    graphics.drawString(level, levelX, levelY);
+    graphics.drawString(xp, levelX, levelY + 40);
+	}
+	
+	private void heroStat(Graphics2D graphics, ApplicationContext context) {
 		graphics.setColor(Color.WHITE);
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
-    graphics.drawString(stat, statX, statY);
-    graphics.drawString(energy, eX, eY);
+    heroPV(graphics, context);
+    heroEnergy(graphics, context);
+    heroLevel(graphics, context);
+    
 	}
 	
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
@@ -196,15 +234,29 @@ public class BattleView implements View {
 	}
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
-		var fight = controller.fightGraphics();
-		if (fight == null || fight.isFightOver()) return;
-		if (!fight.isHeroTurn()) return;
-    var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
-    int line = (y - start[1]) / cellSize;
-    int column = (x - start[0]) / cellSize;
-    var item = fight.Hero().backpack().choice(line, column);
-    if (item != null) {
-      fight.heroUseItem(item);
+    var fight = controller.fightGraphics();
+    if (fight == null) return;                
+    var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSizeBackPack);
+    int line = (y - start[1]) / cellSizeBackPack;
+    int column = (x - start[0]) / cellSizeBackPack;
+    var backpack = fight.Hero().backpack();
+    if (backpack.isUnlockMode()) {
+      IO.println("UnlockMode : " + backpack.isUnlockMode());
+      var msg = backpack.tryUnlockCase(line, column);
+      if (msg == null) {
+      	backpack.useUnlockCase();
+      	showMessage("Case unlocked ! (" + backpack.unlockCount() + " left)", 1000);
+      }
+      else showMessage(msg + " (" + backpack.unlockCount() + " left)", 1000);
+      if (backpack.unlockCount() == 0) {
+      	backpack.setUnlockMode(false);
+      	showMessage("You have unlocked all your backpack slots!", 2000);
+        showMessage("Returning to the map...", 4000);
+        setReadyToReturnToMap(true); 
+      }
     }
+    if (fight.isFightOver() || !fight.isHeroTurn()) return;
+    var item = fight.Hero().backpack().choice(line, column);
+    if (item != null) fight.heroUseItem(item); 
 	}
 }

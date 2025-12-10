@@ -23,14 +23,12 @@ public class Floor {
   }
   
   public Room getRoom(int x, int y) {
-  	if (!hasRoom(x, y)) throw new IllegalArgumentException("No room here");
+  	if (!hasRoom(x, y)) return null;
   	return floor[x][y];
   }
   
   public void placeHero(int x, int y) {
-  	if(!hasRoom(x, y)) {
-  		throw new IllegalArgumentException("No room here"); 
-  	}
+  	if(!hasRoom(x, y)) return;  	
   	this.heroX = x; 
   	this.heroY = y; 
   }
