@@ -2,6 +2,7 @@ package fr.uge.graphics.view;
 
 import fr.uge.graphics.app.*;
 
+
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
@@ -13,10 +14,8 @@ import fr.uge.inventory.*;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +30,8 @@ public class BattleView implements View {
 	private final int imageSize = 200;
 	private final Hero hero;
 	private final Enemies enemies;
-	private final int cellSize = 100;
-	private final int cellSizeBackPack = 75;
-	private final int cols;
-	private final int rows;
 	private boolean readyToReturnToMap = false;
+	private final BackpackView backpackView; 
 
 	
 	public BattleView(Hero hero, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems) {
@@ -44,8 +40,8 @@ public class BattleView implements View {
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
 		this.imagesItems = imagesItems;
-    cols = hero.backpack().maxColumns();
-    rows = hero.backpack().maxLines();
+		
+		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 	}
 	
 	public void setReadyToReturnToMap(boolean ready) {
@@ -95,63 +91,12 @@ public class BattleView implements View {
     } 
 	}
 	
-	private int[] calculateMapStart(int screenWidth, int screenHeight, int cols, int rows, int cellSize) {
-		int mapWidth = cols * cellSize;
-		int mapHeight = rows * cellSize;
-		int x = (screenWidth - mapWidth) / 2;
-		int y = (screenHeight - mapHeight) / 4;
-		return new int[] {x, y};
-	}
 	
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
 	}
-
-	private void drawRec(Graphics2D graphics, int x, int y, int cellSize, Color fillColor) {
-	    graphics.setColor(fillColor);
-	    graphics.fillRect(x, y, cellSize, cellSize);
-	    graphics.setColor(Color.WHITE);
-	    graphics.drawRect(x, y, cellSize, cellSize);
-	}
 	
-	private boolean isItemStart(Item item, int line, int column, ArrayList<ArrayList<Item>> grid) {
-		if (item == null) return false;
-    boolean topFree = (line == 0 || grid.get(line - 1).get(column) != item);
-    boolean leftFree = (column == 0 || grid.get(line).get(column - 1) != item);
-    return topFree && leftFree;
-	}
-	
-	private void importImageItemOnBackPack(Graphics2D graphics, int startX, int startY) {
-		var grid = hero.backpack().grid();
-		for (int i = 0; i < grid.size(); i++) {
-			for (int j = 0; j < grid.get(i).size(); j++) {
-				var item = grid.get(i).get(j);
-				if (isItemStart(item, i, j, grid)) {
-					int x = startX + j * cellSizeBackPack;
-					int y = startY + i * cellSizeBackPack;
-					int width = item.width() * cellSizeBackPack;
-					int height = item.height() * cellSizeBackPack;
-					imagesItems.drawImage(graphics, imagesItems.get(0), x, y, width, height);
-				}
-			}
-		}
-	}
-	
-	private void drawBackpack(Graphics2D graphics, ApplicationContext context) {
-	  var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSizeBackPack);
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				int x = start[0] + j * cellSizeBackPack;
-				int y = start[1] + i * cellSizeBackPack;
-				Color color;
-				if (hero.backpack().unlocked()[i][j]) color = Color.GRAY;
-				else color = Color.LIGHT_GRAY;
-				drawRec(graphics, start[0] + j * cellSizeBackPack, start[1] + i * cellSizeBackPack, cellSizeBackPack, color);
-			}
-		}
-		importImageItemOnBackPack(graphics, start[0], start[1]);
-	}
 	
 	private void heroPV(Graphics2D graphics, ApplicationContext context) {
 		var stat = hero.HP() + " / " + hero.HPMAX() + " PV";
@@ -227,7 +172,7 @@ public class BattleView implements View {
 		updateMessageState(); 
 		background(graphics, context.getScreenInfo());
 		drawFightMessage(graphics, context);
-		drawBackpack(graphics, context);
+		backpackView.draw(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
 		importEnemiesImages(graphics, context);    
@@ -235,11 +180,12 @@ public class BattleView implements View {
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
     var fight = controller.fightGraphics();
-    if (fight == null) return;                
-    var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSizeBackPack);
-    int line = (y - start[1]) / cellSizeBackPack;
-    int column = (x - start[0]) / cellSizeBackPack;
-    var backpack = fight.Hero().backpack();
+    if (fight == null) return;       
+    var backpack = backpackView.backpack(); 
+    var start = backpackView.calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
+    int line = (y - start[1]) / backpackView.cellSize();
+    int column = (x - start[0]) / backpackView.cellSize();
+   
     if (backpack.isUnlockMode()) {
       IO.println("UnlockMode : " + backpack.isUnlockMode());
       var msg = backpack.tryUnlockCase(line, column);

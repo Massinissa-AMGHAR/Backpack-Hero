@@ -20,8 +20,16 @@ public class MerchantView implements View {
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesItems; 
 	private final ImageLoader imagesServices; 
-	private final int imageSize = 200;
+	private final BackpackView backpackView; 
 	
+	private static final int imageSize = 200;
+	private static final int shopWidth = 350; 
+	private static final int shopHeight = 70; 
+	private static final int shopGap = 15; 
+	private static final int itemSize = 48; 
+	
+	private static final Font itemName = new Font("Arial", Font.BOLD, 16); 
+	private static final Font itemPrice = new Font("Arial", Font.PLAIN, 14); 
 	
 	public MerchantView(Hero hero, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		this.hero = hero;
@@ -29,6 +37,7 @@ public class MerchantView implements View {
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices;
 		this.imagesItems = imagesItems; 
+		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 	}
 	
 	private int imageIndex(Item item) {
@@ -47,18 +56,6 @@ public class MerchantView implements View {
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
 	}
 	
-	private void title(Graphics2D graphics, ApplicationContext context, ScreenInfo screenInfo) {
-    int titleX = screenInfo.width() / 2 - 250;
-    int titleY = screenInfo.height() / 5 - 60;
-    int titleWidth = 500;
-    int titleHeight = 80;
-    graphics.setColor(Color.LIGHT_GRAY);
-    graphics.fillRect(titleX, titleY, titleWidth, titleHeight); 
-		graphics.setColor(Color.WHITE);
-    graphics.setFont(new Font("Arial", Font.BOLD, 50));
-    var fontmetric1 = graphics.getFontMetrics();
-    graphics.drawString("MERCHANT VIEW", (screenInfo.width() - fontmetric1.stringWidth("MERCHANT VIEW")) / 2, screenInfo.height()/5);
-	}
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
 		int statX = context.getScreenInfo().width() / 5 + 40;
@@ -85,42 +82,63 @@ public class MerchantView implements View {
 		imagesHero.drawImage(graphics, imagesServices.get(0), MerchantX, MerchantY, imageSize, imageSize); 
 	}
 	
+	private int shopX(ApplicationContext context) {
+		return context.getScreenInfo().width()/2 - shopWidth /2; 
+	}
+	
+	private int shopY(ApplicationContext context, int index) {
+		return context.getScreenInfo().height()/2 + context.getScreenInfo().height() / 6 + index *(shopHeight + shopGap); 
+	}
+	private void drawItemsSlot(Graphics2D graphics, ApplicationContext context, int index) {
+		int x = shopX(context); 
+		int y = shopY(context, index); 
+		
+		graphics.setColor(Color.GRAY);
+		graphics.fillRect(x,  y, shopWidth, shopHeight);
+		graphics.setColor(Color.WHITE);
+		graphics.drawRect(x,  y, shopWidth, shopHeight);
+	}
+	
+	private void drawItemImage(Graphics2D graphics, ApplicationContext context, int index ) {
+		Item item = shopItems.getItems().get(index); 
+		var img = imagesItems.get(imageIndex(item)); 
+		
+		if(img != null) {
+			imagesItems.drawImage(graphics, img, shopX(context) + 10, shopY(context, index) + 10, itemSize, itemSize);
+		}
+	}
+	
+	private void drawItemText(Graphics2D graphics, ApplicationContext context, int index) {
+		Item item = shopItems.getItems().get(index); 
+		
+		int textX = shopX(context) + imageSize + 25; 
+		int textY = shopY(context, index) + 28; 
+		
+		graphics.setColor(Color.WHITE);
+		graphics.setFont(itemName);
+		graphics.drawString(item.name(), textX, textY);
+		
+		graphics.setFont(itemPrice);
+		graphics.drawString(item.goldCost() + " gold", textX, textY + 20);
+		
+	}
+	private void drawShop(Graphics2D graphics, ApplicationContext context) {
+		var items = shopItems.getItems(); 
+		for(int i = 0; i < items.size(); i++) {
+			drawItemsSlot(graphics, context, i); 
+			drawItemImage(graphics, context, i); 
+			drawItemText(graphics, context, i); 
+		}
+	}
+	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		background(graphics, context.getScreenInfo());
-		title(graphics, context, context.getScreenInfo());
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
 		importMerchantImage(graphics, context);
 		drawShop(graphics, context); 
+		backpackView.draw(graphics, context); 
 	}
-	
-	private void drawShop(Graphics2D graphics, ApplicationContext context) {
-		int x = context.getScreenInfo().width() / 2 - 150; 
-		int y = context.getScreenInfo().height()/3; 
-		
-		int width = 300; 
-		int height = 60; 
-		int gap = 20; 
-		int size = 48; 
-		
-		var items = shopItems.getItems(); 
-		
-		graphics.setFont(new Font("Arial", Font.BOLD, 18));
-		for(int i = 0; i < items.size(); i++) {
-			Item item = items.get(i); 
-			int itemY = y + i * (height + gap); 
-			
-			graphics.setColor(Color.GRAY);
-			graphics.fillRect(x, itemY, width, height);
-			
-			graphics.setColor(Color.WHITE);
-			graphics.drawRect(x, itemY, width, height);
-			
-			int imgIndex = imageIndex(item); 
-			imagesItems.drawImage(graphics, imagesItems.get(imgIndex), x + 10, itemY + 6, size, size);
-		}
-	}
-	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		
 	}
