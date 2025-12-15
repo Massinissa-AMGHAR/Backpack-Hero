@@ -3,6 +3,8 @@ package fr.uge.graphics.view;
 import fr.uge.character.Hero;
 import fr.uge.graphics.app.*;
 import fr.uge.graphics.image.ImageLoader;
+import fr.uge.inventory.Item;
+import fr.uge.inventory.Items;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,17 +16,32 @@ import com.github.forax.zen.ScreenInfo;
 
 public class MerchantView implements View {
 	private final Hero hero;
+	private final Items shopItems; 
 	private final ImageLoader imagesHero;
+	private final ImageLoader imagesItems; 
 	private final ImageLoader imagesServices; 
 	private final int imageSize = 200;
 	
 	
-	public MerchantView(Hero hero, ImageLoader imagesHero, ImageLoader imagesServices) {
+	public MerchantView(Hero hero, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		this.hero = hero;
+		this.shopItems = shopItems; 
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices;
+		this.imagesItems = imagesItems; 
 	}
 	
+	private int imageIndex(Item item) {
+		return switch(item.name()) {
+		 case "Wooden Sword" -> 0; 
+		 case "Arrow" -> 1; 
+		 case "Rough Buckler" ->2; 
+		 case "Tunic" -> 3; 
+		 case "Magic Wand" -> 4; 
+		 case "Mana Stone" -> 5; 
+		 default -> 0; 
+		};
+	}
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
@@ -74,6 +91,34 @@ public class MerchantView implements View {
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
 		importMerchantImage(graphics, context);
+		drawShop(graphics, context); 
+	}
+	
+	private void drawShop(Graphics2D graphics, ApplicationContext context) {
+		int x = context.getScreenInfo().width() / 2 - 150; 
+		int y = context.getScreenInfo().height()/3; 
+		
+		int width = 300; 
+		int height = 60; 
+		int gap = 20; 
+		int size = 48; 
+		
+		var items = shopItems.getItems(); 
+		
+		graphics.setFont(new Font("Arial", Font.BOLD, 18));
+		for(int i = 0; i < items.size(); i++) {
+			Item item = items.get(i); 
+			int itemY = y + i * (height + gap); 
+			
+			graphics.setColor(Color.GRAY);
+			graphics.fillRect(x, itemY, width, height);
+			
+			graphics.setColor(Color.WHITE);
+			graphics.drawRect(x, itemY, width, height);
+			
+			int imgIndex = imageIndex(item); 
+			imagesItems.drawImage(graphics, imagesItems.get(imgIndex), x + 10, itemY + 6, size, size);
+		}
 	}
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {

@@ -22,11 +22,13 @@ public class Controller {
   private final ImageLoader imagesMap;
   private final ImageLoader imagesEnemies;
   private final ImageLoader imagesItems;
+  private final Items merchantItems; 
   private final ImageLoader imagesServices;
   private final MenuView menuView;
   private final MapView mapView;
   private final BattleView battleView;
   private final HealerView healerView;
+  private final ImageLoader imagesItemsShop; 
   private final MerchantView merchantView;
   private final Floor floor;
   private View view;
@@ -49,7 +51,18 @@ public class Controller {
 		fightGraphics = new FightGraphics(hero, enemies, battleView);
 		battleView.setFight(fightGraphics);
 		healerView = new HealerView(hero, imagesMap, imagesServices);
-		merchantView = new MerchantView(hero, imagesMap, imagesServices);
+		merchantItems = new Items(); 
+		merchantItems.randomItems(3);
+		imagesItemsShop = new ImageLoader(
+				"data/", 
+				"Wooden_sword.png", 
+				"arrow.png", 
+				"rough_buckler.png", 
+				"tunic.png", 
+				"magic_wand.png", 
+				"mana_stone.png"
+	  ); 
+		merchantView = new MerchantView(hero, merchantItems, imagesMap, imagesServices, imagesItemsShop);
 		view = menuView;
   }
 

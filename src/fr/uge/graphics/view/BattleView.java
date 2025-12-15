@@ -138,7 +138,7 @@ public class BattleView implements View {
 		}
 	}
 	
-	private void draw_backpack(Graphics2D graphics, ApplicationContext context) {
+	private void drawBackpack(Graphics2D graphics, ApplicationContext context) {
 	  var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSizeBackPack);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
@@ -227,7 +227,7 @@ public class BattleView implements View {
 		updateMessageState(); 
 		background(graphics, context.getScreenInfo());
 		drawFightMessage(graphics, context);
-		draw_backpack(graphics, context);
+		drawBackpack(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
 		importEnemiesImages(graphics, context);    
