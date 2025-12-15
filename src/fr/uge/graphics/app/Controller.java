@@ -56,9 +56,9 @@ public class Controller {
 		imagesItemsShop = new ImageLoader(
 				"data/", 
 				"Wooden_sword.png", 
-				"arrow.png", 
-				"rough_buckler.png", 
-				"tunic.png", 
+				"Arrow.png", 
+				"Rough_Buckler.png", 
+				"Tunic.png", 
 				"magic_wand.png", 
 				"mana_stone.png"
 	  ); 
