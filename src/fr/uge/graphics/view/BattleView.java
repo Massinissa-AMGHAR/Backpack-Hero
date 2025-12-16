@@ -26,22 +26,25 @@ public class BattleView implements View {
 	private FightGraphics fight;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesEnemies; 
-	private final ImageLoader imagesItems;
+	private final ImageLoader imagesItemsLoot;
 	private final int imageSize = 200;
 	private final Hero hero;
 	private final Enemies enemies;
 	private boolean readyToReturnToMap = false;
 	private final BackpackView backpackView; 
+	private ItemsView lootView; 
 
 	
-	public BattleView(Hero hero, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems) {
+	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesItemsLoot) {
+
 		this.hero = hero;
 		this.enemies = enemies;
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
-		this.imagesItems = imagesItems;
+		this.imagesItemsLoot = imagesItemsLoot;
 		
-		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
+		this.backpackView = new BackpackView(hero.backpack(), imagesItemsLoot); 
+		this.lootView = new ItemsView(lootItems, imagesItemsLoot); 
 	}
 	
 	public void setReadyToReturnToMap(boolean ready) {
@@ -167,17 +170,21 @@ public class BattleView implements View {
 		int spacing = imageSize + 30;
 		importEnemy(graphics, context, enemies.getEnemies(), fight, enemyX, startY, spacing);
 	}
-	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		updateMessageState(); 
 		background(graphics, context.getScreenInfo());
 		drawFightMessage(graphics, context);
 		backpackView.draw(graphics, context);
 		heroStat(graphics, context);
-		importHeroImage(graphics, context);
-		importEnemiesImages(graphics, context);    
+		importHeroImage(graphics, context);   
+		if(fight.isLootPhase()) {
+			lootView.drawItems(graphics, context, false);
+		}
+		else {
+			importEnemiesImages(graphics, context); 
+		}
 	}
-	
+
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
     var fight = controller.fightGraphics();
     if (fight == null) return;       

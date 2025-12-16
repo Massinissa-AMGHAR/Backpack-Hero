@@ -21,14 +21,17 @@ public class Controller {
   private final Interactions interactions;
   private final ImageLoader imagesMap;
   private final ImageLoader imagesEnemies;
+  
   private final ImageLoader imagesItems;
   private final Items merchantItems; 
   private final ImageLoader imagesServices;
   private final MenuView menuView;
   private final MapView mapView;
+  
+  private final Items lootItems; 
   private final BattleView battleView;
   private final HealerView healerView;
-  private final ImageLoader imagesItemsShop; 
+  private final ImageLoader imagesItemsLoot; 
   private final MerchantView merchantView;
   private final Floor floor;
   private View view;
@@ -46,24 +49,29 @@ public class Controller {
 		menuView = new MenuView();
 		floor = Floor.createFloors().get(0);
 		floor.initPlaceHero();
-		mapView = new MapView(hero, floor, imagesMap);
-		battleView = new BattleView(hero, enemies, imagesMap, imagesEnemies, imagesItems);
-		fightGraphics = new FightGraphics(hero, enemies, battleView);
-		battleView.setFight(fightGraphics);
+		mapView = new MapView(hero, floor, imagesMap); 
+		view = menuView;
 		healerView = new HealerView(hero, imagesMap, imagesServices);
-		merchantItems = new Items(); 
-		merchantItems.randomItems(3);
-		imagesItemsShop = new ImageLoader(
+		
+		imagesItemsLoot = new ImageLoader(
 				"data/", 
 				"Wooden_sword.png", 
 				"Arrow.png", 
 				"Rough_Buckler.png", 
 				"Tunic.png", 
 				"magic_wand.png", 
-				"mana_stone.png"
+				"mana_stone.png", 
+				"Gold.png"
 	  ); 
-		merchantView = new MerchantView(hero, merchantItems, imagesMap, imagesServices, imagesItemsShop);
-		view = menuView;
+		merchantItems = new Items(); 
+		merchantItems.randomItems(3);
+		merchantView = new MerchantView(hero, merchantItems, imagesMap, imagesServices, imagesItemsLoot);
+
+		lootItems = new Items(); 
+		lootItems.randomItems(3);
+		battleView = new BattleView(hero, lootItems, enemies, imagesMap, imagesEnemies, imagesItems, imagesItemsLoot);
+		fightGraphics = new FightGraphics(hero, enemies, battleView);
+		battleView.setFight(fightGraphics);
   }
 
 	public MenuView menuView() { return menuView; }

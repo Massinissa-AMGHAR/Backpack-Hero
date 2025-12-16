@@ -144,6 +144,7 @@ public class Item {
 		new Item("Tunic", "ARMOR", "COMMON", SHAPE_TUNIC, 0, 5, 0, 0, 0, 0, 1, 0),
 		new Item("Magic Wand", "MAGIC", "COMMON", SHAPE_MAGIC_WAND, 3, 0, 0, 0, 2, 0, 3, 0),
 		new Item("Mana Stone", "MANA", "COMMON", SHAPE_MANA_STONE, 0, 0, 0, 0, 0, 2, 2, 0), 
+		new Item("Gold", "GOLD", "COMMON", SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, 10)
 	};
 	
 	@Override

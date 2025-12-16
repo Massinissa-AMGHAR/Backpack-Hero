@@ -18,6 +18,9 @@ public class FightGraphics {
 	private boolean nextEnemyAnnounced = false;
 	private final int levelBeforeFight;
 	
+	private boolean lootPhase = false; 
+	private Items lootItems = new Items(); 
+	
 
 	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
 		this.hero = hero;
@@ -56,7 +59,9 @@ public class FightGraphics {
     fightEnded = true;
     heroTurn = false;
     if (heroWon()) {
+    	lootPhase = true; 
       battleView.showMessage(hero.name() + " wins the fight!", 2000);
+      battleView.showMessage("Choose your loot !", 2000);
       if (hero.progression().hasLeveledUpDuringFight()) {
         int cases = hero.backpack().casesToUnlock();
         hero.backpack().setUnlockCount(cases);
@@ -74,7 +79,9 @@ public class FightGraphics {
     }
   }
 
-
+  public boolean isLootPhase() {return lootPhase;}
+  
+  public Items lootItems() {return lootItems;}
   public boolean isHeroTurn() {
     return heroTurn;
   }
