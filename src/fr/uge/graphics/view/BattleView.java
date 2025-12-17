@@ -32,6 +32,7 @@ public class BattleView implements View {
 	private final Enemies enemies;
 	private boolean readyToReturnToMap = false;
 	private final BackpackView backpackView; 
+	private final ItemPlacementView placementView; 
 	private ItemsView lootView; 
 
 	
@@ -45,6 +46,8 @@ public class BattleView implements View {
 		
 		this.backpackView = new BackpackView(hero.backpack(), imagesItemsLoot); 
 		this.lootView = new ItemsView(lootItems, imagesItemsLoot); 
+		this.placementView = new ItemPlacementView(imagesItemsLoot); 
+		
 	}
 	
 	public void setReadyToReturnToMap(boolean ready) {
@@ -174,11 +177,12 @@ public class BattleView implements View {
 		updateMessageState(); 
 		background(graphics, context.getScreenInfo());
 		drawFightMessage(graphics, context);
-		backpackView.draw(graphics, context);
+		backpackView.drawBackpack(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);   
 		if(fight.isLootPhase()) {
 			lootView.drawItems(graphics, context, false);
+			placementView.draw(graphics, context);
 		}
 		else {
 			importEnemiesImages(graphics, context); 

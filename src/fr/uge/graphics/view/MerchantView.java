@@ -20,6 +20,7 @@ public class MerchantView implements View {
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesServices; 
 	private final BackpackView backpackView; 
+	private final ItemPlacementView placementView; 
 	
 	private static final int imageSize = 200; 
 	
@@ -28,7 +29,8 @@ public class MerchantView implements View {
 		this.shopView= new ItemsView(shopItems, imagesItems);  
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices; 
-		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
+		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
+		this.placementView = new ItemPlacementView(imagesItems); 
 	
 	}
 	
@@ -66,9 +68,11 @@ public class MerchantView implements View {
 		importHeroImage(graphics, context);
 		importMerchantImage(graphics, context);
 		shopView.drawItems(graphics, context, true);
-		backpackView.draw(graphics, context); 
+		backpackView.drawBackpack(graphics, context); 
+		placementView.draw(graphics, context);
+		
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
-		
+		placementView.clickSource(x, y, backpackView, context); 
 	}
 }

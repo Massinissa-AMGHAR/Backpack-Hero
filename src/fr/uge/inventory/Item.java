@@ -103,6 +103,20 @@ public class Item {
 		return new Item(this.name, this.type, this.rarity, newShape, this.damage, this.defense, this.energyCost, this.energyGained, this.manaCost, this.manaGained, this.goldCost, this.goldAmount);
 	}
 	
+	public int imageIndex() {
+		return switch(this.name()) {
+		 case "Wooden Sword" -> 0; 
+		 case "Arrow" -> 1; 
+		 case "Rough Buckler" ->2; 
+		 case "Tunic" -> 3; 
+		 case "Magic Wand" -> 4; 
+		 case "Mana Stone" -> 5;
+		 case "Gold" -> 6; 
+		 default -> 0; 
+		};
+	}
+	
+	
 	private static final boolean[][] SHAPE_WOODEN_SWORD = {
 			{true}, 
 			{true}, 

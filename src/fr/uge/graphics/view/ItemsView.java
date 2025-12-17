@@ -10,7 +10,7 @@ import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.Items;
 
-public class ItemsView {
+public class ItemsView implements ClickableItems{
 	private final Items items; 
 	private final ImageLoader images;  
 	
@@ -27,18 +27,6 @@ public class ItemsView {
 		this.items = items; 
 		this.images = images; 
 		
-	}
-	private int imageIndex(Item item) {
-		return switch(item.name()) {
-		 case "Wooden Sword" -> 0; 
-		 case "Arrow" -> 1; 
-		 case "Rough Buckler" ->2; 
-		 case "Tunic" -> 3; 
-		 case "Magic Wand" -> 4; 
-		 case "Mana Stone" -> 5;
-		 case "Gold" -> 6; 
-		 default -> 0; 
-		};
 	}
 	
 	private int itemX(ApplicationContext context) {
@@ -60,7 +48,7 @@ public class ItemsView {
 	
 	private void drawItemImage(Graphics2D graphics, ApplicationContext context, int index ) {
 		Item item = items.getItems().get(index); 
-		var img = images.get(imageIndex(item)); 
+		var img = images.get(item.imageIndex()); 
 		
 		if(img != null) {
 			images.drawImage(graphics, img, itemX(context) + 10, itemY(context, index) + 10, itemSize, itemSize);
@@ -92,7 +80,7 @@ public class ItemsView {
 		}
 	}
 	
-	
+	@Override
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		for(int i = 0; i < items.getItems().size(); i++) {
 			int x = itemX(context) + i * spacing; 

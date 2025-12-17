@@ -17,7 +17,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 
-public class BackpackView {
+public class BackpackView implements ClickableItems{
 	private final Backpack backpack; 
 	private final ImageLoader imagesItems; 
 	
@@ -31,6 +31,7 @@ public class BackpackView {
 		return backpack; 
 	}
 	public int cellSize() {return cellSize;}
+	
 	public int[] calculateGridStart(int screenWidth, int screenHeight) {
 		int mapWidth = backpack.maxColumns() * cellSize;
 		int mapHeight = backpack.maxLines() * cellSize;
@@ -69,8 +70,7 @@ public class BackpackView {
 		}
 	}
 	
-
-	public void draw(Graphics2D graphics, ApplicationContext context) {
+	public void drawBackpack(Graphics2D graphics, ApplicationContext context) {
 		int cols = backpack.maxColumns(); 
 		int rows = backpack.maxLines(); 
 	  var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
@@ -86,4 +86,20 @@ public class BackpackView {
 		}
 		importImageItemOnBackPack(graphics, start[0], start[1]);
 	}
+	
+	@Override
+	public Item click(int mouseX, int mouseY, ApplicationContext context) {
+		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
+		for(int i = 0; i < backpack.maxLines(); i++) {
+			for(int j = 0; j < backpack.maxColumns(); j++) {
+				int x = start[0] + j * cellSize; 
+				int y = start[1] + i * cellSize; 
+				if(mouseX >= x && mouseX <= x + cellSize && mouseY >= y && mouseY < y + cellSize) {
+					return backpack.grid().get(i).get(j);
+				}
+			}
+		}
+		return null; 
+	}
+	
 }
