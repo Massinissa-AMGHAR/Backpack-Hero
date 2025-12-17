@@ -3,6 +3,7 @@ package fr.uge.graphics.view;
 import fr.uge.character.Hero;
 import fr.uge.graphics.app.*;
 import fr.uge.graphics.image.ImageLoader;
+import fr.uge.inventory.BackpackPlacement;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.Items;
 
@@ -73,6 +74,24 @@ public class MerchantView implements View {
 		
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
-		placementView.clickSource(x, y, backpackView, context); 
+		if(placementView.hasItem()) {
+			
+			int[] cell = backpackView.choiceCase(x, y, context); 
+			if(cell != null) {
+				int line = cell[0]; 
+				int column = cell[1]; 
+				IO.println(line); 
+				IO.println(column); 
+				Item item = placementView.item(); 
+				if(backpackView.backpack().canPlaceItem(item, line, column)){
+					IO.println("Place item : ok"); 
+					backpackView.backpack().add(item, line, column);
+					placementView.clear(); 
+					IO.println("Techniquqement ça devrait s'afficher"); 
+				}
+				
+			}
+		}
+		
 	}
 }

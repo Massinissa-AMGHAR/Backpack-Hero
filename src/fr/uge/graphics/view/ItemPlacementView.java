@@ -8,7 +8,7 @@ import com.github.forax.zen.ApplicationContext;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 
-public class ItemPlacementView {
+public class ItemPlacementView implements ClickableItems{
 	private Item item; 
 	private boolean hasItem; 
 	
@@ -34,10 +34,16 @@ public class ItemPlacementView {
 		this.item = null; 
 		hasItem = false; 
 	}
+	private int zoneX(ApplicationContext context) {
+		return context.getScreenInfo().width() - zoneWidth - 200; 
+	}
 	
+	private int zoneY(ApplicationContext context) {
+		return context.getScreenInfo().height() / 10 + 100;  
+	}
 	public void draw(Graphics2D graphics, ApplicationContext context) {
-		int x = context.getScreenInfo().width() - zoneWidth - 200; 
-		int y = context.getScreenInfo().height() / 10 + 100; 
+		int x = zoneX(context); 
+		int y = zoneY(context); 
 		drawZone(graphics, x, y); 
 		if(hasItem) {
 			drawItem(graphics, x, y); 
@@ -71,6 +77,21 @@ public class ItemPlacementView {
 			return true; 
 		}
 		return false; 
+	}
+	
+	@Override
+	public Item click(int mouseX, int mouseY, ApplicationContext context) {
+		if(!hasItem || item == null) return null; 
+		
+		int x = zoneX(context); 
+		int y = zoneY(context); 
+		
+		if(mouseX >= x && mouseX <= x + zoneWidth && mouseY >= y && mouseY <= y + zoneHeight) {
+			return item; 
+		}
+		
+		return null; 
+		
 	}
 	
 }

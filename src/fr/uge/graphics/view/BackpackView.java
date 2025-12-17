@@ -40,6 +40,20 @@ public class BackpackView implements ClickableItems{
 		return new int[] {x, y};
 	}
 	
+	public int[] choiceCase(int mouseX, int mouseY, ApplicationContext context) {
+		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
+		for(int i = 0; i < backpack.maxLines(); i++) {
+			for(int j = 0; j < backpack.maxColumns(); j++) {
+				int x = start[0] + j * cellSize; 
+				int y = start[1] + i * cellSize; 
+				if(mouseX >= x && mouseX <= x + cellSize && mouseY >= y && mouseY < y + cellSize) {
+					return new int[] {i, j}; 
+				}
+			}
+		}
+		return null; 
+	}
+	
 	private void drawRec(Graphics2D graphics, int x, int y, int cellSize, Color fillColor) {
     graphics.setColor(fillColor);
     graphics.fillRect(x, y, cellSize, cellSize);
@@ -64,7 +78,7 @@ public class BackpackView implements ClickableItems{
 					int y = startY + i * cellSize;
 					int width = item.width() * cellSize;
 					int height = item.height() * cellSize;
-					imagesItems.drawImage(graphics, imagesItems.get(0), x, y, width, height);
+					imagesItems.drawImage(graphics, imagesItems.get(item.imageIndex()), x, y, width, height);
 				}
 			}
 		}
@@ -86,6 +100,7 @@ public class BackpackView implements ClickableItems{
 		}
 		importImageItemOnBackPack(graphics, start[0], start[1]);
 	}
+	
 	
 	@Override
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
