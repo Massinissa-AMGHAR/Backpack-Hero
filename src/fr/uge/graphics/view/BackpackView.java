@@ -63,8 +63,8 @@ public class BackpackView implements ClickableItems{
 	
 	private boolean isItemStart(Item item, int line, int column, ArrayList<ArrayList<Item>> grid) {
 		if (item == null) return false;
-    boolean topFree = (line == 0 || grid.get(line - 1).get(column) != item);
-    boolean leftFree = (column == 0 || grid.get(line).get(column - 1) != item);
+    boolean topFree = (line == 0 || grid.get(line - 1).get(column) == null);
+    boolean leftFree = (column == 0 || grid.get(line).get(column - 1) == null);
     return topFree && leftFree;
 	}
 	
