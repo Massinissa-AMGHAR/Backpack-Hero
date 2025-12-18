@@ -124,9 +124,7 @@ public class Item {
 	}; 
 	
 	private static final boolean[][] SHAPE_ARROW = {
-			{true, true}, 
-			{true, false}, 
-			{true, true}
+			{true, true, true}
 	}; 
 	
 	private static final boolean[][] SHAPE_ROUGH_BUCKLER = {
@@ -136,12 +134,13 @@ public class Item {
 	
 	private static final boolean[][] SHAPE_TUNIC = {
 			{true, true}, 
-			{true, false}, 
-			{true, false}
+			{true, true}, 
+			{true, true}
 	}; 
 	
 	private static final boolean[][] SHAPE_MAGIC_WAND = {
-			{true, true, true}
+			{true, true}, 
+			{true, true}
 	}; 
 	
 	private static final boolean[][] SHAPE_MANA_STONE = {

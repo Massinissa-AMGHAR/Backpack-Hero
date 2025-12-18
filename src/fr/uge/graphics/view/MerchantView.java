@@ -74,6 +74,7 @@ public class MerchantView implements View {
 		
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		
 		Item clicked1 = backpackView.click(x, y, context); 
 		IO.println(clicked1);
 		if(clicked1 != null) {			
@@ -82,13 +83,19 @@ public class MerchantView implements View {
 			return;
 		}
 		
-		
 		Item clicked2 = placementView.click(x, y, context); 
 		if(clicked2 != null) {
 			placementView.clear();
 			return;
 		}
 		
+		Item clicked3 = shopView.click(x, y, context); 
+		if(clicked3 != null) {
+			placementView.take(clicked3);
+			return; 
+		}
+		
+
 		if(placementView.hasItem()) {
 			int[] cell = backpackView.choiceCase(x, y, context); 
 			if(cell != null) {
@@ -96,12 +103,12 @@ public class MerchantView implements View {
 				int column = cell[1]; 
 				Item item = placementView.item();  
 				if(backpackView.backpack().canPlaceItem(item, line, column)){
-					IO.println(backpackView.backpack());
 					backpackView.backpack().add(item, line, column);
-					IO.println(backpackView.backpack()); 
 					placementView.clear(); 
 				}
 			}
 		}
+		
+
 	}
 }

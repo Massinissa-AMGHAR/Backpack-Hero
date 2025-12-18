@@ -83,9 +83,9 @@ public class ItemsView implements ClickableItems{
 	@Override
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		for(int i = 0; i < items.getItems().size(); i++) {
-			int x = itemX(context) + i * spacing; 
+			int x = itemX(context); 
 			int y = itemY(context, i); 
-			if(mouseX >= x && mouseX <= x + imageSize && mouseY >= y && mouseY <= y + imageSize) {
+			if(mouseX >= x && mouseX <= x + itemWidth && mouseY >= y && mouseY <= y + itemHeight) {
 				return items.getItems().get(i); 
 			}
 		}
