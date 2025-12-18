@@ -74,35 +74,34 @@ public class MerchantView implements View {
 		
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Item clicked1 = backpackView.click(x, y, context); 
+		IO.println(clicked1);
+		if(clicked1 != null) {			
+			backpackView.backpack().delete(clicked1);
+			placementView.take(clicked1);
+			return;
+		}
+		
+		
+		Item clicked2 = placementView.click(x, y, context); 
+		if(clicked2 != null) {
+			placementView.clear();
+			return;
+		}
+		
 		if(placementView.hasItem()) {
-			
 			int[] cell = backpackView.choiceCase(x, y, context); 
 			if(cell != null) {
 				int line = cell[0]; 
 				int column = cell[1]; 
-				IO.println(line); 
-				IO.println(column); 
-				Item item = placementView.item(); 
-				IO.println(item); 
+				Item item = placementView.item();  
 				if(backpackView.backpack().canPlaceItem(item, line, column)){
+					IO.println(backpackView.backpack());
 					backpackView.backpack().add(item, line, column);
 					IO.println(backpackView.backpack()); 
 					placementView.clear(); 
-				
 				}
-				
 			}
-		}
-		Item clicked1 = backpackView.click(x, y, context); 
-		if(clicked1 != null) {
-			backpackView.backpack().delete(clicked1);
-			placementView.take(clicked1);
-		}
-		
-		Item clicked2 = placementView.click(x, y, context); 
-		if(clicked2 != null) {
-			backpackView.backpack().delete(clicked1);
-			placementView.clear();
 		}
 	}
 }

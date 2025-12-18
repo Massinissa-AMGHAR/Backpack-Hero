@@ -73,7 +73,7 @@ public class BackpackView implements ClickableItems{
 		for (int i = 0; i < grid.size(); i++) {
 			for (int j = 0; j < grid.get(i).size(); j++) {
 				var item = grid.get(i).get(j);
-				if (isItemStart(item, i, j, grid)) {
+				if (isItemStart(item, i, j, grid)) { 
 					int x = startX + j * cellSize;
 					int y = startY + i * cellSize;
 					int width = item.width() * cellSize;
@@ -109,7 +109,8 @@ public class BackpackView implements ClickableItems{
 			for(int j = 0; j < backpack.maxColumns(); j++) {
 				int x = start[0] + j * cellSize; 
 				int y = start[1] + i * cellSize; 
-				if(mouseX >= x && mouseX <= x + cellSize && mouseY >= y && mouseY < y + cellSize) {
+				if(mouseX >= x && mouseX <= x + cellSize && mouseY >= y && mouseY <= y + cellSize) {
+					IO.println("j'ai cliqué sur la premiere case");
 					return backpack.grid().get(i).get(j);
 				}
 			}
