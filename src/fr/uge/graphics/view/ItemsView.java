@@ -28,7 +28,7 @@ public class ItemsView implements ClickableItems{
 		this.images = images; 
 		
 	}
-	
+	public Items items(){return items; }
 	private int itemX(ApplicationContext context) {
 		return context.getScreenInfo().width()/2 - itemWidth /2; 
 	}

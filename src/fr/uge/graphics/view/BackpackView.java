@@ -63,8 +63,8 @@ public class BackpackView implements ClickableItems{
 	
 	private boolean isItemStart(Item item, int line, int column, ArrayList<ArrayList<Item>> grid) {
 		if (item == null) return false;
-    boolean topFree = (line == 0 || grid.get(line - 1).get(column) == null);
-    boolean leftFree = (column == 0 || grid.get(line).get(column - 1) == null);
+    boolean topFree = (line == 0 || grid.get(line - 1).get(column) != item);
+    boolean leftFree = (column == 0 || grid.get(line).get(column - 1) != item);
     return topFree && leftFree;
 	}
 	
@@ -110,7 +110,6 @@ public class BackpackView implements ClickableItems{
 				int x = start[0] + j * cellSize; 
 				int y = start[1] + i * cellSize; 
 				if(mouseX >= x && mouseX <= x + cellSize && mouseY >= y && mouseY <= y + cellSize) {
-					IO.println("j'ai cliqué sur la premiere case");
 					return backpack.grid().get(i).get(j);
 				}
 			}

@@ -76,7 +76,6 @@ public class MerchantView implements View {
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		
 		Item clicked1 = backpackView.click(x, y, context); 
-		IO.println(clicked1);
 		if(clicked1 != null) {			
 			backpackView.backpack().delete(clicked1);
 			placementView.take(clicked1);
@@ -92,6 +91,7 @@ public class MerchantView implements View {
 		Item clicked3 = shopView.click(x, y, context); 
 		if(clicked3 != null) {
 			placementView.take(clicked3);
+			shopView.items().deleteItem(shopView.items().index(clicked3));
 			return; 
 		}
 		
@@ -107,7 +107,10 @@ public class MerchantView implements View {
 					placementView.clear(); 
 				}
 			}
+			
 		}
+		
+		IO.println(backpackView.backpack().toString()); 
 		
 
 	}

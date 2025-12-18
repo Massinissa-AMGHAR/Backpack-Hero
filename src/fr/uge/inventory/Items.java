@@ -17,7 +17,13 @@ public class Items {
       items.add(Item.ALL_ITEM[position].copy()); 
     }
 	}
-	
+	public int index(Item item) {
+		Objects.requireNonNull(item); 
+		for(int i = 0; i < items.size(); i++) {
+			if(items.get(i).equals(item)) return i; 
+		}
+		return -1; 
+	}
 	public void addItem(Item item) {
 		Objects.requireNonNull(item); 
 		items.add(item); 
