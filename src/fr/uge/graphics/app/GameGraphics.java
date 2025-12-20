@@ -12,6 +12,7 @@ public class GameGraphics {
   private final Floor floor;
   private final Hero hero;
   private final Enemies enemies;
+  private final Merchant merchant; 
   
   public GameGraphics() {
     this.interaction = new Interactions();
@@ -24,12 +25,14 @@ public class GameGraphics {
 
     hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5, 0, 0, backpack, interaction);
     enemies = new Enemies();
+    merchant = new Merchant(); 
 
     floor = Floor.createFloors().get(0);
     floor.initPlaceHero();
   }
 
   public Hero hero() { return hero; }
+  public Merchant merchant() {return merchant; }
   public Enemies enemies() { return enemies; }
   public Interactions interaction() { return interaction; }
   public Floor floor() { return floor; }

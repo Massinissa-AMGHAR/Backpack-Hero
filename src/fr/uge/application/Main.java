@@ -16,7 +16,7 @@ public class Main {
 	    ImageLoader  imagesEnemies = new ImageLoader("data", "enemy.png", "minienemy.png");
 	    ImageLoader imagesItems = new ImageLoader("data", "Wooden_sword.png");
 	    ImageLoader imagesServices = new ImageLoader("data", "merchant.png", "healer.png");
-	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices);
+	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.merchant(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices);
 	    Application.run(Color.DARK_GRAY, controller::game);
 		} else { 
 	    Interactions interaction = new Interactions(); 

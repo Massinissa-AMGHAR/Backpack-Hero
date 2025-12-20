@@ -21,6 +21,7 @@ public class Item {
 	private int leftPlacementX = 0; 
 	private int leftPlacementY = 0; 
 	
+	private int graphicRotation = 0; 
 	private final ItemRotation rotation; 
   
 	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
@@ -64,6 +65,14 @@ public class Item {
 	public int leftPlacementX() {return leftPlacementX; }
 	public int leftPlacementY() {return leftPlacementY; }
 	
+	public void VisualRotation() {
+		graphicRotation += 90; 
+		graphicRotation %= 360; 
+	}
+	
+	public int graphicRotation() {
+		return graphicRotation; 
+	}
 	public void setLeftPlacement(int x, int y) {
 		this.leftPlacementX = x; 
 		this.leftPlacementY = y; 
@@ -73,7 +82,7 @@ public class Item {
 	
 	public void addGold(int amount) {
 		if(!isGold()) {
-			throw new IllegalArgumentException("Trying to add gold on a no gold item "); 
+			return; 
 		}
 		goldAmount += amount; 
 		IO.println(amount + " gold added !");
@@ -157,7 +166,6 @@ public class Item {
 		new Item("Tunic", "ARMOR", "COMMON", SHAPE_TUNIC, 0, 5, 0, 0, 0, 0, 1, 0),
 		new Item("Magic Wand", "MAGIC", "COMMON", SHAPE_MAGIC_WAND, 3, 0, 0, 0, 2, 0, 3, 0),
 		new Item("Mana Stone", "MANA", "COMMON", SHAPE_MANA_STONE, 0, 0, 0, 0, 0, 2, 2, 0), 
-		new Item("Gold", "GOLD", "COMMON", SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, 10)
 	};
 	
 	@Override

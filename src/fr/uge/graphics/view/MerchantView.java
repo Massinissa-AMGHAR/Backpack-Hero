@@ -1,6 +1,7 @@
 package fr.uge.graphics.view;
 
 import fr.uge.character.Hero;
+import fr.uge.character.Merchant;
 import fr.uge.graphics.app.*;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.BackpackPlacement;
@@ -17,21 +18,31 @@ import com.github.forax.zen.ScreenInfo;
 
 public class MerchantView implements View {
 	private final Hero hero;
+	private final Merchant merchant; 
 	private final ItemsView shopView; 
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesServices; 
 	private final BackpackView backpackView; 
 	private final ItemPlacementView placementView; 
+	private final ManageBackpack management; 
+	private final MessageView message; 
+	private final Button mapButton; 
+	private final RotateButton rotateButton; 
 	
 	private static final int imageSize = 200; 
 	
-	public MerchantView(Hero hero, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+	public MerchantView(Hero hero, Merchant merchant, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		this.hero = hero;
+		this.merchant = merchant; 
 		this.shopView= new ItemsView(shopItems, imagesItems);  
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices; 
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, hero, merchant); 
+		this.message = new MessageView(); 
+		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
+		this.rotateButton = new RotateButton(); 
 	
 	}
 	
@@ -44,10 +55,16 @@ public class MerchantView implements View {
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
 		int statX = context.getScreenInfo().width() / 5 + 40;
 		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
-    var stat = hero.HP() + " " + "/" + " " + hero.HPMAX() + " PV";
+		var gold = backpackView.backpack().findGoldItem(); 
+		String goldText; 
+    if(gold == null) {
+    	goldText = "Gold : 0 gold"; 
+    }else {
+    	goldText = "Gold : " + gold.goldAmount() + " gold"; 
+    }
 		graphics.setColor(Color.WHITE);
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
-    graphics.drawString(stat, statX, statY);
+    graphics.drawString(goldText, statX, statY);
 	}
 	
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
@@ -64,54 +81,46 @@ public class MerchantView implements View {
 	
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		message.update();
 		background(graphics, context.getScreenInfo());
+		message.drawMessage(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
 		importMerchantImage(graphics, context);
 		shopView.drawItems(graphics, context, true);
 		backpackView.drawBackpack(graphics, context); 
 		placementView.draw(graphics, context);
+		mapButton.draw(graphics);
+		rotateButton.draw(graphics, context);
 		
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
-		
-		Item clicked1 = backpackView.click(x, y, context); 
-		if(clicked1 != null) {			
-			backpackView.backpack().delete(clicked1);
-			placementView.take(clicked1);
-			return;
+		if(mapButton.click(x, y)) {
+			controller.changeView(controller.mapView());
+			return; 
 		}
+		Item fromBackpack = backpackView.click(x, y, context); 
+		if(management.clickFromBackpack(fromBackpack)) return;
 		
-		Item clicked2 = placementView.click(x, y, context); 
-		if(clicked2 != null) {
-			placementView.clear();
-			return;
-		}
-		
-		Item clicked3 = shopView.click(x, y, context); 
-		if(clicked3 != null) {
-			placementView.take(clicked3);
-			shopView.items().deleteItem(shopView.items().index(clicked3));
+		Item placedItem = placementView.item(); 
+		if(rotateButton.click(x, y, placedItem)) {
+			placedItem.VisualRotation();
 			return; 
 		}
 		
-
-		if(placementView.hasItem()) {
-			int[] cell = backpackView.choiceCase(x, y, context); 
-			if(cell != null) {
-				int line = cell[0]; 
-				int column = cell[1]; 
-				Item item = placementView.item();  
-				if(backpackView.backpack().canPlaceItem(item, line, column)){
-					backpackView.backpack().add(item, line, column);
-					placementView.clear(); 
-				}
-			}
-			
+		Item fromPlacement = placementView.click(x, y, context); 
+		if(fromPlacement != null && !fromPlacement.isGold()) {
+			if(management.sell())message.showMessage("You sold " + fromPlacement.name(), 1000); 
+			return; 
 		}
-		
-		IO.println(backpackView.backpack().toString()); 
-		
-
+		Item fromShop = shopView.click(x, y, context); 
+		if(fromShop != null) {
+			if(!management.clickFromShop(fromShop, shopView.items())) {
+				message.showMessage("You don't have enough money !", 1000);
+			}
+			return; 
+		}
+		int[] cell = backpackView.choiceCase(x, y, context); 
+		if(cell != null) management.placeInBackpack(cell[0], cell[1]); 
 	}
 }

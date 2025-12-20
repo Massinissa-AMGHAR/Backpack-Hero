@@ -21,8 +21,8 @@ import java.util.List;
 
 
 public class BattleView implements View {
-	private final List<Message> messages = new ArrayList<>();
-	private Message currentMessage = null;
+	
+	private final MessageView messageView = new MessageView(); 
 	private FightGraphics fight;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesEnemies; 
@@ -34,6 +34,10 @@ public class BattleView implements View {
 	private final BackpackView backpackView; 
 	private final ItemPlacementView placementView; 
 	private ItemsView lootView; 
+	private final ManageBackpack management; 
+	private final MessageView message; 
+	private final Button mapButton; 
+	private final RotateButton rotateButton;
 
 	
 	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesItemsLoot) {
@@ -47,9 +51,13 @@ public class BattleView implements View {
 		this.backpackView = new BackpackView(hero.backpack(), imagesItemsLoot); 
 		this.lootView = new ItemsView(lootItems, imagesItemsLoot); 
 		this.placementView = new ItemPlacementView(imagesItemsLoot); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null ); 
+		this.message = new MessageView(); 
+		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
+		this.rotateButton = new RotateButton(); 
 		
 	}
-	
+	public MessageView messageView() {return messageView; }
 	public void setReadyToReturnToMap(boolean ready) {
     readyToReturnToMap = ready;
 	}
@@ -58,7 +66,6 @@ public class BattleView implements View {
     return readyToReturnToMap;
 	}
 	
-	public List<Message> Messages() { return messages; }
 	public void setFight(FightGraphics fight) {
     this.fight = fight;
 	}
@@ -67,37 +74,6 @@ public class BattleView implements View {
     return fight;
 	}
 
-	
-	public void showMessage(String msg, int durationMs) {
-    var end = Instant.now().plusMillis(durationMs);
-    messages.add(new Message(msg, end));
-	}
-	
-	public boolean isMessageActive() {
-    return currentMessage != null && Instant.now().isBefore(currentMessage.endTime());
-	}	
-
-	public void updateMessageState() {
-    if (currentMessage != null && Instant.now().isAfter(currentMessage.endTime())) {
-        currentMessage = null;
-    }
-    if (currentMessage == null && !messages.isEmpty()) {
-        currentMessage = messages.remove(0);
-    }
-	}
-	
-	private void drawFightMessage(Graphics2D graphics, ApplicationContext context) {
-    if (isMessageActive()) {
-      graphics.setColor(Color.WHITE);
-      graphics.setFont(new Font("Arial", Font.BOLD, 40));
-      var fm = graphics.getFontMetrics();
-      int x = (context.getScreenInfo().width() - fm.stringWidth(currentMessage.text())) / 2;
-      int y = context.getScreenInfo().height() / 10;
-      graphics.drawString(currentMessage.text(), x, y);
-    } 
-	}
-	
-	
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
@@ -174,22 +150,24 @@ public class BattleView implements View {
 		importEnemy(graphics, context, enemies.getEnemies(), fight, enemyX, startY, spacing);
 	}
 	public void draw(Graphics2D graphics, ApplicationContext context) {
-		updateMessageState(); 
+		messageView.update(); 
 		background(graphics, context.getScreenInfo());
-		drawFightMessage(graphics, context);
+		messageView.drawMessage(graphics, context);
 		backpackView.drawBackpack(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);   
 		if(fight.isLootPhase()) {
 			lootView.drawItems(graphics, context, false);
 			placementView.draw(graphics, context);
+			mapButton.draw(graphics);
+			rotateButton.draw(graphics, context);
 		}
 		else {
 			importEnemiesImages(graphics, context); 
 		}
 	}
 
-	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+	private void ClickFight(int x, int y, Controller controller, ApplicationContext context) {
     var fight = controller.fightGraphics();
     if (fight == null) return;       
     var backpack = backpackView.backpack(); 
@@ -202,13 +180,13 @@ public class BattleView implements View {
       var msg = backpack.tryUnlockCase(line, column);
       if (msg == null) {
       	backpack.useUnlockCase();
-      	showMessage("Case unlocked ! (" + backpack.unlockCount() + " left)", 1000);
+      	messageView.showMessage("Case unlocked ! (" + backpack.unlockCount() + " left)", 1000);
       }
-      else showMessage(msg + " (" + backpack.unlockCount() + " left)", 1000);
+      else messageView.showMessage(msg + " (" + backpack.unlockCount() + " left)", 1000);
       if (backpack.unlockCount() == 0) {
       	backpack.setUnlockMode(false);
-      	showMessage("You have unlocked all your backpack slots!", 2000);
-        showMessage("Returning to the map...", 4000);
+      	messageView.showMessage("You have unlocked all your backpack slots!", 2000);
+        messageView.showMessage("Returning to the map...", 4000);
         setReadyToReturnToMap(true); 
       }
     }
@@ -216,4 +194,38 @@ public class BattleView implements View {
     var item = fight.Hero().backpack().choice(line, column);
     if (item != null) fight.heroUseItem(item); 
 	}
+	private void clickLootPhase(int x, int y, Controller controller, ApplicationContext context) {
+		if(mapButton.click(x, y)) {
+			controller.changeView(controller.mapView());
+			return; 
+		}
+		Item fromBackpack = backpackView.click(x, y, context); 
+		if(management.clickFromBackpack(fromBackpack)) return;
+		
+		Item placedItem = placementView.item(); 
+		if(rotateButton.click(x, y, placedItem)) {
+			placedItem.VisualRotation();
+			return; 
+		}
+		
+		Item fromPlacement = placementView.click(x, y, context); 
+		if(fromPlacement != null && !fromPlacement.isGold()) {
+			placementView.clear();
+			return; 
+		}
+		Item fromLoot = lootView.click(x, y, context); 
+		if(fromLoot != null) {
+			management.clickFromLoot(fromLoot, lootView.items()); 
+			return; 
+		}
+		int[] cell = backpackView.choiceCase(x, y, context); 
+		if(cell != null) management.placeInBackpack(cell[0], cell[1]); 
+	}
+	
+	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		if(fight.isLootPhase())clickLootPhase(x, y, controller, context); 
+		else ClickFight(x, y, controller, context); 
+	}
+	
+	
 }

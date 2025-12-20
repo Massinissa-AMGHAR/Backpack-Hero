@@ -11,12 +11,11 @@ public class HeroInventoryManager {
   private Backpack backpack;
 	private final Interactions interaction; 
 	
-	public HeroInventoryManager(Backpack backpack, Interactions interaction) {
-		Objects.requireNonNull(backpack); 
-		Objects.requireNonNull(interaction); 
+	public HeroInventoryManager(Backpack backpack) {
+		Objects.requireNonNull(backpack);  
 		
 		this.backpack = backpack; 
-		this.interaction = interaction; 
+		this.interaction = new Interactions(); 
 	}
 	
 	public Backpack backpack() {return backpack; }

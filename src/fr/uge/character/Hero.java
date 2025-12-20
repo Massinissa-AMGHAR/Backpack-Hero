@@ -22,7 +22,7 @@ public class Hero implements Fighter{
       
       this.progression = new HeroProgression(); 
       this.heroFight = new HeroFight(HP, HPMAX, protection, energy, manaMax, mana); 
-      this.inventoryManager = new HeroInventoryManager(backpack, interaction); 
+      this.inventoryManager = new HeroInventoryManager(backpack); 
       this.economyManager = new HeroEconomyManager(inventoryManager, heroFight); 
   }
   

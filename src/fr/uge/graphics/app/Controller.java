@@ -17,6 +17,7 @@ import fr.uge.map.*;
 
 public class Controller {	
   private final Hero hero;
+  private final Merchant merchant; 
   private final Enemies enemies;
   private final Interactions interactions;
   private final ImageLoader imagesMap;
@@ -38,8 +39,9 @@ public class Controller {
   private FightGraphics fightGraphics;
   
 	
-  public Controller(Hero hero, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices) {
+  public Controller(Hero hero, Merchant merchant, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices) {
 		this.hero = hero;
+		this.merchant = merchant; 
 		this.enemies = enemies;
 		this.interactions = interactions;
 		this.imagesMap = imagesMap;
@@ -65,7 +67,7 @@ public class Controller {
 	  ); 
 		merchantItems = new Items(); 
 		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchantItems, imagesMap, imagesServices, imagesItemsLoot);
+		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItemsLoot);
 
 		lootItems = new Items(); 
 		lootItems.randomItems(3);
@@ -111,8 +113,8 @@ public class Controller {
         view.draw(graphics, context);
         if(view == battleView) {
         	fightGraphics.updateFight();
-          battleView.updateMessageState();            
-          if (!battleView.isMessageActive() && battleView.isReadyToReturnToMap()) {
+          battleView.messageView().update();            
+          if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
             changeView(mapView());
             battleView.setReadyToReturnToMap(false);
           }

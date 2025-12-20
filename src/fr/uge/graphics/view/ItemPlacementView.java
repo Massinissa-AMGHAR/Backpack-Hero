@@ -63,11 +63,23 @@ public class ItemPlacementView implements ClickableItems{
 		int cellSize = 75; 
 		int w = item.width() * cellSize; 
 		int h = item.height() * cellSize; 
+	 
+		int angle = item.graphicRotation() % 360; 
+		if(angle == 90 || angle == 270) {
+			int tmp = w; 
+			w = h; 
+			h = tmp;
+		}
+		int cx = x + zoneWidth/2; 
+		int cy = y + zoneHeight /2; 
+		int itemX = cx - w/2; 
+		int itemY = cy - h /2; 
+		Graphics2D g2 = (Graphics2D) graphics.create(); 
 		
-		int itemX = x + (zoneWidth - w)/2; 
-		int itemY = y + (zoneHeight - h)/2; 
+		g2.rotate(Math.toRadians(angle),cx, cy);
+		imagesItems.drawImage(g2, imagesItems.get(item.imageIndex()), itemX, itemY, w, h);
 		
-		imagesItems.drawImage(graphics, imagesItems.get(item.imageIndex()), itemX, itemY, w, h);
+		g2.dispose();
 	}
 	
 	public boolean clickSource(int mouseX, int mouseY, ClickableItems source, ApplicationContext context) {

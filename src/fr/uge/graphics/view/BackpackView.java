@@ -78,7 +78,25 @@ public class BackpackView implements ClickableItems{
 					int y = startY + i * cellSize;
 					int width = item.width() * cellSize;
 					int height = item.height() * cellSize;
-					imagesItems.drawImage(graphics, imagesItems.get(item.imageIndex()), x, y, width, height);
+					
+					int angle = item.graphicRotation() % 360; 
+					if(angle == 90 || angle == 270) {
+						int tmp = width; 
+						width = height; 
+						height = tmp; 
+						x = x - (width - height)/2; 
+						y = y - (height - width)/2; 
+					}
+					
+					Graphics2D g2 = (Graphics2D) graphics.create(); 
+					
+					int cx = x + width/2; 
+					int cy = y + height/2; 
+					 
+					g2.rotate(Math.toRadians(angle), cx, cy);
+					imagesItems.drawImage(g2, imagesItems.get(item.imageIndex()), x, y, width, height);
+					
+					g2.dispose();
 				}
 			}
 		}
