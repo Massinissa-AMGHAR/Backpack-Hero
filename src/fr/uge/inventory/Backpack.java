@@ -33,8 +33,8 @@ public class Backpack {
     }
     this.placement = new BackpackPlacement(this);
     this.search = new BackpackSearch(this); 
-    
   }
+  
   public ArrayList<ArrayList<Item>> grid(){return grid;}
   public int maxLines() { return maxLines; }
   public int maxColumns() {return maxColumns; }
@@ -53,6 +53,7 @@ public class Backpack {
   // Recherche d'un item
   public Item choice(int line, int column) {return search.choice(line, column); }
   public Item findGoldItem() {return search.findGoldItem();}
+  public Item findManaItem() { return search.findManaItem(); }
   
   public int unlockCount() { return unlockCount; }
   public boolean isUnlockMode() { return unlockMode; }

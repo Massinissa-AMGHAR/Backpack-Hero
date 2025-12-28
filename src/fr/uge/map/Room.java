@@ -49,8 +49,7 @@ public class Room {
   public boolean hasAngel() {return hasAngel;}
   public boolean hasTreasure() {return hasTreasure;}
   public boolean hasDoor() {return hasDoor;}
-  public boolean hasVisited() { return visited; }
-  
+  public boolean hasVisited() { return visited; }  
   public Merchant merchant() { return merchant; }
   public Healer angel() { return healer; }
   public Enemies enemies() { return enemies; }

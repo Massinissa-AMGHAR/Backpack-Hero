@@ -12,6 +12,7 @@ import com.github.forax.zen.ScreenInfo;
 import fr.uge.character.*;
 import fr.uge.inventory.*;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -22,52 +23,56 @@ import java.util.List;
 
 public class BattleView implements View {
 	
-	private final MessageView messageView = new MessageView(); 
+	private final MessageView messageView;
 	private FightGraphics fight;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesEnemies; 
-	private final ImageLoader imagesItemsLoot;
 	private final int imageSize = 200;
 	private final Hero hero;
 	private final Enemies enemies;
 	private boolean readyToReturnToMap = false;
 	private final BackpackView backpackView; 
 	private final ItemPlacementView placementView; 
-	private ItemsView lootView; 
+	private final ItemDeleteView deleteView;
+	private final ItemsView lootView; 
 	private final ManageBackpack management; 
-	private final MessageView message; 
 	private final Button mapButton; 
 	private final RotateButton rotateButton;
-
+	private final DeleteButton deleteButton;
+	private final EndTurnButton endButton;
+	private Enemy selectedEnemy;
+	private boolean goldPlaced = false;
 	
-	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesItemsLoot) {
+	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems) {
 
 		this.hero = hero;
 		this.enemies = enemies;
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
-		this.imagesItemsLoot = imagesItemsLoot;
 		
-		this.backpackView = new BackpackView(hero.backpack(), imagesItemsLoot); 
-		this.lootView = new ItemsView(lootItems, imagesItemsLoot); 
-		this.placementView = new ItemPlacementView(imagesItemsLoot); 
-		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null ); 
-		this.message = new MessageView(); 
+		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
+		this.lootView = new ItemsView(lootItems, imagesItems); 
+		this.deleteView = new ItemDeleteView(imagesItems);
+		this.placementView = new ItemPlacementView(imagesItems, deleteView);
+		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null); 
+		this.messageView = new MessageView(); 
 		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
 		this.rotateButton = new RotateButton(); 
+		this.deleteButton = new DeleteButton();
+		this.endButton = new EndTurnButton();
 		
 	}
 	public MessageView messageView() {return messageView; }
+	
 	public void setReadyToReturnToMap(boolean ready) {
     readyToReturnToMap = ready;
 	}
-
-	public boolean isReadyToReturnToMap() {
-    return readyToReturnToMap;
-	}
+	
+	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
 	
 	public void setFight(FightGraphics fight) {
     this.fight = fight;
+    updateSelectedEnemy();
 	}
 
 	public FightGraphics fight() {
@@ -94,11 +99,31 @@ public class BattleView implements View {
     graphics.drawString(energy, eX, eY);
 	}
 	
+	private void heroManaEnergy(Graphics2D graphics, ApplicationContext context) {
+		var mana = "ManaEnergy : " + hero.mana();
+		var mX = context.getScreenInfo().width() / 8 - 175;
+    var mY = context.getScreenInfo().height() / 6 + 50;
+    graphics.drawString(mana, mX, mY);
+	}
+	
+	private void heroGold(Graphics2D graphics, ApplicationContext context) {
+		var gold = backpackView.backpack().findGoldItem(); 
+		String goldText; 
+    if(gold == null) {
+    	goldText = "Gold : 0 gold"; 
+    }else {
+    	goldText = "Gold : " + gold.goldAmount() + " gold"; 
+    }
+		var gX = context.getScreenInfo().width() / 8 - 175;
+    var gY = context.getScreenInfo().height() / 6 + 100;
+    graphics.drawString(goldText, gX, gY);
+	}
+	
 	private void heroLevel(Graphics2D graphics, ApplicationContext context) {
     var level = "LVL." + hero.level();
     var xp = hero.xp() + " / " + hero.nextLevelXp() + " XP"; 
     var levelX = context.getScreenInfo().width() / 8 - 175;
-    var levelY = context.getScreenInfo().height() / 6 + 200;
+    var levelY = context.getScreenInfo().height() / 6 + 300;
     graphics.drawString(level, levelX, levelY);
     graphics.drawString(xp, levelX, levelY + 40);
 	}
@@ -108,7 +133,9 @@ public class BattleView implements View {
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
     heroPV(graphics, context);
     heroEnergy(graphics, context);
+    heroManaEnergy(graphics, context);
     heroLevel(graphics, context);
+    heroGold(graphics, context);
     
 	}
 	
@@ -127,6 +154,26 @@ public class BattleView implements View {
     graphics.drawString(stat, statX, statY);
 	}
 	
+	private void drawTarget(Graphics2D graphics, int x, int y, int size) {
+		graphics.setColor(Color.RED);
+		graphics.setStroke(new BasicStroke(3));
+		int corner = 20;
+		int topLeftX = x - size / 2;
+		int topLeftY = y - size / 2;
+		graphics.drawLine(topLeftX,  topLeftY, topLeftX + corner, topLeftY);
+		graphics.drawLine(topLeftX, topLeftY, topLeftX, topLeftY + corner);
+		
+		graphics.drawLine(topLeftX + size, topLeftY, topLeftX + size - corner, topLeftY);
+		graphics.drawLine(topLeftX + size, topLeftY, topLeftX + size, topLeftY + corner);
+		
+		graphics.drawLine(topLeftX, topLeftY + size, topLeftX + corner, topLeftY + size);
+		graphics.drawLine(topLeftX, topLeftY + size, topLeftX, topLeftY + size - corner);
+		
+		graphics.drawLine(topLeftX + size, topLeftY + size, topLeftX + size - corner, topLeftY + size);
+		graphics.drawLine(topLeftX + size, topLeftY + size, topLeftX + size, topLeftY + size - corner);
+		graphics.setStroke(new BasicStroke(1));
+	} 
+	
 	private void importEnemy(Graphics2D graphics, ApplicationContext context, List<Enemy> allEnemies, FightGraphics fight, int startX, int startY, int spacing) {
     for (int i = 0; i < allEnemies.size(); i++) {
       var enemy = allEnemies.get(i);
@@ -137,18 +184,40 @@ public class BattleView implements View {
       if (enemy.name().equals("Little Rat-Wolf")) imageIndex = 1;
       if (enemy.name().equals("Rat-Wolf")) imageIndex = 0;
       imagesEnemies.drawImage(graphics, imagesEnemies.get(imageIndex), enemyX, enemyY, imageSize, imageSize);
-      if (enemy == fight.currentEnemy()) {
-        enemyStat(graphics, context, fight.currentEnemy(), i, spacing);
-      } else enemyStat(graphics, context, enemy, i, spacing);
+      enemyStat(graphics, context, enemy, i, spacing);
+      if (enemy == selectedEnemy) {
+      	int centerX = enemyX + imageSize / 2;
+      	int centerY = enemyY + imageSize / 2;
+      	drawTarget(graphics, centerX, centerY, imageSize);
+      }
     }
 	}
 	
-	private void importEnemiesImages(Graphics2D graphics, ApplicationContext context) {
+	private int[] getEnemiesLayout(ApplicationContext context) {
 		int enemyX = context.getScreenInfo().width() - imageSize * 3 - 150;
-		int startY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
+		int enemyY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		int spacing = imageSize + 30;
-		importEnemy(graphics, context, enemies.getEnemies(), fight, enemyX, startY, spacing);
+		return new int[] {enemyX, enemyY, spacing};
 	}
+	
+	private void importEnemiesImages(Graphics2D graphics, ApplicationContext context) {
+		var layout = getEnemiesLayout(context);
+		importEnemy(graphics, context, enemies.getEnemies(), fight, layout[0], layout[1], layout[2]);
+	}
+	 
+	private void goldReward() {
+		if (goldPlaced || !fight.isLootPhase()) return;
+		var reward = fight.getGoldReward();
+		var backpack = backpackView.backpack();
+		var gold = backpack.findGoldItem();
+		if (gold != null) gold.addGold(reward);
+		else {
+			var newGold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, reward); 
+			placementView.take(newGold);
+		}
+		goldPlaced = true;
+	}
+	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		background(graphics, context.getScreenInfo());
@@ -159,22 +228,20 @@ public class BattleView implements View {
 		if(fight.isLootPhase()) {
 			lootView.drawItems(graphics, context, false);
 			placementView.draw(graphics, context);
+			deleteView.draw(graphics, context);
+			goldReward();
 			mapButton.draw(graphics);
 			rotateButton.draw(graphics, context);
+			deleteButton.draw(graphics, context);
 		}
 		else {
+			if (!fight.isFightOver()) endButton.draw(graphics, context);
 			importEnemiesImages(graphics, context); 
+			
 		}
 	}
 
-	private void ClickFight(int x, int y, Controller controller, ApplicationContext context) {
-    var fight = controller.fightGraphics();
-    if (fight == null) return;       
-    var backpack = backpackView.backpack(); 
-    var start = backpackView.calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
-    int line = (y - start[1]) / backpackView.cellSize();
-    int column = (x - start[0]) / backpackView.cellSize();
-   
+	private void ClickUnlockCase(Backpack backpack, int line, int column, Controller controller, ApplicationContext context) {
     if (backpack.isUnlockMode()) {
       IO.println("UnlockMode : " + backpack.isUnlockMode());
       var msg = backpack.tryUnlockCase(line, column);
@@ -185,22 +252,70 @@ public class BattleView implements View {
       else messageView.showMessage(msg + " (" + backpack.unlockCount() + " left)", 1000);
       if (backpack.unlockCount() == 0) {
       	backpack.setUnlockMode(false);
-      	messageView.showMessage("You have unlocked all your backpack slots!", 2000);
-        messageView.showMessage("Returning to the map...", 4000);
-        setReadyToReturnToMap(true); 
+      	messageView.showMessage("All backpack slots unlocked!", 2000);
+      	messageView.showMessage("Choose your loot !!", 3500);
+      	fight.setLootPhase(true);
       }
     }
+	}
+	
+	private void updateSelectedEnemy() {
+		selectedEnemy = null;
+		for (var enemy : enemies.getEnemies()) {
+			if (enemy.HP() > 0) {
+				selectedEnemy = enemy;
+				break;
+			}
+		}
+	}
+	
+	private Enemy getClickedEnemy(int x, int y, List<Enemy> allEnemies, int startX, int startY, int spacing) {
+		for (var i = 0; i < allEnemies.size(); i++) {
+			var enemy = allEnemies.get(i);
+			if (enemy.HP() <= 0) continue;
+			var enemyX = startX + i * spacing;
+			var enemyY = startY;
+			if (x >= enemyX && x <= enemyX + imageSize && y >= enemyY && y <= enemyY + imageSize) return enemy;
+		}
+		return null;
+	}
+	
+	private void ClickFight(int x, int y, Controller controller, ApplicationContext context) {
+    var fight = controller.fightGraphics();
+    if (fight == null) return;       
+    var backpack = backpackView.backpack(); 
+    var start = backpackView.calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
+    int line = (y - start[1]) / backpackView.cellSize();
+    int column = (x - start[0]) / backpackView.cellSize();
+    ClickUnlockCase(backpack, line, column, controller, context); 
     if (fight.isFightOver() || !fight.isHeroTurn()) return;
     var item = fight.Hero().backpack().choice(line, column);
-    if (item != null) fight.heroUseItem(item); 
+    var layout = getEnemiesLayout(context);
+    var ClickedEnemy = getClickedEnemy(x, y, fight.Enemies().getEnemies(), layout[0], layout[1], layout[2]);
+    if (ClickedEnemy != null) selectedEnemy = ClickedEnemy;
+    if (item != null && selectedEnemy != null) {
+    	fight.heroUseItem(item, selectedEnemy); 
+    	if (selectedEnemy.HP() <= 0) updateSelectedEnemy();
+    }
 	}
+	
 	private void clickLootPhase(int x, int y, Controller controller, ApplicationContext context) {
 		if(mapButton.click(x, y)) {
-			controller.changeView(controller.mapView());
+			messageView.showMessage("Returning to te map...", 2000);
+			setReadyToReturnToMap(true);
 			return; 
 		}
+		
+		Item fromDelete = deleteView.click(x, y, context);
+		if (fromDelete != null) {
+			if (placementView.takeFromDelete(fromDelete)) return;
+		}
+		
 		Item fromBackpack = backpackView.click(x, y, context); 
-		if(management.clickFromBackpack(fromBackpack)) return;
+		if(management.clickFromBackpack(fromBackpack)) {
+			if (fromBackpack.type().equals("MANA")) hero.reduceMana(fromBackpack.manaGained());
+			return;
+		}
 		
 		Item placedItem = placementView.item(); 
 		if(rotateButton.click(x, y, placedItem)) {
@@ -208,24 +323,33 @@ public class BattleView implements View {
 			return; 
 		}
 		
-		Item fromPlacement = placementView.click(x, y, context); 
-		if(fromPlacement != null && !fromPlacement.isGold()) {
-			placementView.clear();
-			return; 
-		}
+		if (deleteButton.click(x, y, placementView, messageView)) return;
 		Item fromLoot = lootView.click(x, y, context); 
 		if(fromLoot != null) {
 			management.clickFromLoot(fromLoot, lootView.items()); 
 			return; 
 		}
 		int[] cell = backpackView.choiceCase(x, y, context); 
-		if(cell != null) management.placeInBackpack(cell[0], cell[1]); 
-	}
+		if(cell != null) {
+			var item = placementView.item();
+			if (management.placeInBackpack(cell[0], cell[1])) {
+				if (item.type().equals("MANA")) hero.addMana(item.manaGained());
+			}
+		}
+	} 
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
-		if(fight.isLootPhase())clickLootPhase(x, y, controller, context); 
+		if (!fight.isLootPhase() && fight.isHeroTurn()) {
+			if (endButton.click(x, y)) {
+				fight.endHeroTurn();
+				return;
+			}
+		}
+		if (backpackView.backpack().isUnlockMode()) {
+			ClickFight(x, y, controller, context);
+			return;
+		}
+		if(fight.isLootPhase() && !backpackView.backpack().isUnlockMode()) clickLootPhase(x, y, controller, context); 
 		else ClickFight(x, y, controller, context); 
 	}
-	
-	
 }

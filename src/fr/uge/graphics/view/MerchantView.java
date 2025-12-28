@@ -17,18 +17,21 @@ import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
 public class MerchantView implements View {
+	private final SellButton sellButton;
 	private final Hero hero;
 	private final Merchant merchant; 
 	private final ItemsView shopView; 
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesServices; 
 	private final BackpackView backpackView; 
+	private final ItemDeleteView deleteView;
 	private final ItemPlacementView placementView; 
 	private final ManageBackpack management; 
 	private final MessageView message; 
 	private final Button mapButton; 
 	private final RotateButton rotateButton; 
-	
+	private boolean readyToReturnToMap = false;
+
 	private static final int imageSize = 200; 
 	
 	public MerchantView(Hero hero, Merchant merchant, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
@@ -38,19 +41,29 @@ public class MerchantView implements View {
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices; 
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
-		this.placementView = new ItemPlacementView(imagesItems); 
+		this.deleteView = new ItemDeleteView(imagesItems);
+		this.placementView = new ItemPlacementView(imagesItems, deleteView); 
 		this.management = new ManageBackpack(hero.backpack(), placementView, hero, merchant); 
 		this.message = new MessageView(); 
 		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
 		this.rotateButton = new RotateButton(); 
+		this.sellButton = new SellButton();
 	
 	}
+	
+	public void setReadyToReturnToMap(boolean ready) {
+    readyToReturnToMap = ready;
+	}
+	
+	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
+	
+	public MessageView messageView() {return message; }
+
 	
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
 	}
-	
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
 		int statX = context.getScreenInfo().width() / 5 + 40;
@@ -92,11 +105,13 @@ public class MerchantView implements View {
 		placementView.draw(graphics, context);
 		mapButton.draw(graphics);
 		rotateButton.draw(graphics, context);
+		sellButton.draw(graphics, context);
 		
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(mapButton.click(x, y)) {
-			controller.changeView(controller.mapView());
+			message.showMessage("Returning to the map...", 2000);
+			setReadyToReturnToMap(true);
 			return; 
 		}
 		Item fromBackpack = backpackView.click(x, y, context); 
@@ -107,12 +122,7 @@ public class MerchantView implements View {
 			placedItem.VisualRotation();
 			return; 
 		}
-		
-		Item fromPlacement = placementView.click(x, y, context); 
-		if(fromPlacement != null && !fromPlacement.isGold()) {
-			if(management.sell())message.showMessage("You sold " + fromPlacement.name(), 1000); 
-			return; 
-		}
+		if (sellButton.click(x, y, placementView, management, message)) return;
 		Item fromShop = shopView.click(x, y, context); 
 		if(fromShop != null) {
 			if(!management.clickFromShop(fromShop, shopView.items())) {

@@ -18,7 +18,10 @@ import fr.uge.map.*;
 public class Controller {	
   private final Hero hero;
   private final Merchant merchant; 
+  private final Healer healer;
   private final Enemies enemies;
+  private final Dungeon dungeon;
+  private Floor floor;
   private final Interactions interactions;
   private final ImageLoader imagesMap;
   private final ImageLoader imagesEnemies;
@@ -27,53 +30,36 @@ public class Controller {
   private final Items merchantItems; 
   private final ImageLoader imagesServices;
   private final MenuView menuView;
-  private final MapView mapView;
+  private MapView mapView;
   
-  private final Items lootItems; 
-  private final BattleView battleView;
   private final HealerView healerView;
-  private final ImageLoader imagesItemsLoot; 
   private final MerchantView merchantView;
-  private final Floor floor;
+  private TreasureView treasureView;
   private View view;
+  private BattleView battleView;
   private FightGraphics fightGraphics;
   
 	
-  public Controller(Hero hero, Merchant merchant, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices) {
+  public Controller(Hero hero, Merchant merchant, Healer healer, Dungeon dungeon, Floor floor, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices) {
 		this.hero = hero;
 		this.merchant = merchant; 
+		this.healer = healer;
 		this.enemies = enemies;
+		this.dungeon = dungeon;
+		this.floor = floor;
 		this.interactions = interactions;
 		this.imagesMap = imagesMap;
 		this.imagesEnemies = imagesEnemies;
 		this.imagesItems = imagesItems;		
 		this.imagesServices = imagesServices;
 		menuView = new MenuView();
-		floor = Floor.createFloors().get(0);
-		floor.initPlaceHero();
 		mapView = new MapView(hero, floor, imagesMap); 
 		view = menuView;
-		healerView = new HealerView(hero, imagesMap, imagesServices);
 		
-		imagesItemsLoot = new ImageLoader(
-				"data/", 
-				"Wooden_sword.png", 
-				"Arrow.png", 
-				"Rough_Buckler.png", 
-				"Tunic.png", 
-				"magic_wand.png", 
-				"mana_stone.png", 
-				"Gold.png"
-	  ); 
+		healerView = new HealerView(hero, healer, imagesMap, imagesServices, imagesItems);
 		merchantItems = new Items(); 
 		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItemsLoot);
-
-		lootItems = new Items(); 
-		lootItems.randomItems(3);
-		battleView = new BattleView(hero, lootItems, enemies, imagesMap, imagesEnemies, imagesItems, imagesItemsLoot);
-		fightGraphics = new FightGraphics(hero, enemies, battleView);
-		battleView.setFight(fightGraphics);
+		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
   }
 
 	public MenuView menuView() { return menuView; }
@@ -81,10 +67,39 @@ public class Controller {
 	public BattleView battleView() { return battleView; }
 	public HealerView healerView() { return healerView; }
 	public MerchantView merchantView() { return merchantView; }
+	public TreasureView treasureView() { return treasureView; }
 	public View view() { return view; }
   
 	public void changeView(View newView) {
 		view = newView;
+	}
+	
+	public void goToNextFloor() {
+		var next = dungeon.nextFloor(floor);
+		if (next == null) {
+			mapView.messageView().showMessage("You have cleared the dungeon !", 1000);
+			return;
+		}
+		floor = next;
+		floor.initPlaceHero();
+		mapView = new MapView(hero, floor, imagesMap);
+		changeView(mapView);
+		mapView.messageView().showMessage("You enter a new floor...", 2000);
+	}
+	
+	public void startFight(Enemies roomEnemies) {
+		var lootItems = new Items(); 
+		lootItems.randomItems(3);
+		
+		battleView = new BattleView(hero, lootItems, roomEnemies, imagesMap, imagesEnemies, imagesItems);
+		fightGraphics = new FightGraphics(hero, roomEnemies, battleView);
+		battleView.setFight(fightGraphics);
+	}
+	
+	public void startTreasure() {
+		var lootItems = new Items(); 
+		lootItems.randomItems(3);
+		treasureView = new TreasureView(hero, imagesMap, imagesItems);
 	}
 	
 	public FightGraphics fightGraphics() { return fightGraphics; }
@@ -111,13 +126,34 @@ public class Controller {
     while (running) {
     	context.renderFrame(graphics -> {
         view.draw(graphics, context);
-        if(view == battleView) {
+        if (view == battleView) {
         	fightGraphics.updateFight();
-          battleView.messageView().update();            
-          if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
-            changeView(mapView());
-            battleView.setReadyToReturnToMap(false);
-          }
+        	battleView.messageView().update();
+        	if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
+        		changeView(mapView);
+        		battleView.setReadyToReturnToMap(false);
+        	}
+        }
+        if (view == merchantView) {
+        	merchantView.messageView().update();
+        	if (!merchantView.messageView().isMessageActive() && merchantView.isReadyToReturnToMap()) {
+        		changeView(mapView);
+        		merchantView.setReadyToReturnToMap(false);
+        	}
+        }
+        if (view == healerView) {
+        	healerView.messageView().update();
+        	if (!healerView.messageView().isMessageActive() && healerView.isReadyToReturnToMap()) {
+        		changeView(mapView);
+        		healerView.setReadyToReturnToMap(false);
+        	}
+        }
+        if (view == treasureView) {
+        	treasureView.messageView().update();
+        	if (!treasureView.messageView().isMessageActive() && treasureView.isReadyToReturnToMap()) {
+        		changeView(mapView);
+        		treasureView.setReadyToReturnToMap(false);
+        	}
         }
     	});
     	running = gameLoop(context);

@@ -16,8 +16,7 @@ import java.awt.Graphics2D;
 import java.time.Instant;
 
 public class MapView implements View {
-	private String currentMessageError = null;
-	private Instant messageEndTime;
+	private final MessageView message;
 	private final Floor floor;
 	private final Hero hero; 
 	private final ImageLoader images;
@@ -30,7 +29,10 @@ public class MapView implements View {
 		this.hero = hero;
 		this.floor = floor;
 		this.images = images;
+		this.message = new MessageView(); 
 	}
+	
+	public MessageView messageView() { return message; }
 	
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
@@ -107,6 +109,11 @@ public class MapView implements View {
     graphics.drawRect(x, y, cellSize, cellSize);
 	}
 	
+	private boolean isHeroOnCell(int i, int j) {
+		var heroPos = floor.getPlaceHero();
+		return heroPos[0] == i && heroPos[1] == j;
+	}
+	
 	private void draw_map(Graphics2D graphics, ApplicationContext context, Floor floor) {
     var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
 		for (int i = 0; i < rows; i++) {
@@ -118,35 +125,22 @@ public class MapView implements View {
 					else color = room.isCorridor() ? Color.LIGHT_GRAY : Color.ORANGE;
 					drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, color);
 					if (room.hasDoor()) importDoorImageOnMap(i, j, start, graphics);
-					if (room.hasMerchant()) importMerchantOnMap(i, j, start, graphics);
-					if (room.hasAngel()) importHealerOnMap(i, j, start, graphics);
-					if (room.hasEnemies()) importEnemyOnMap(i, j, start, graphics);
-					if (room.hasTreasure()) importTreasureOnMap(i, j, start, graphics);
+					if (room.hasMerchant() && !isHeroOnCell(i, j)) importMerchantOnMap(i, j, start, graphics);
+					if (room.hasAngel() && !isHeroOnCell(i, j)) importHealerOnMap(i, j, start, graphics);
+					if (room.hasEnemies() && !isHeroOnCell(i, j)) importEnemyOnMap(i, j, start, graphics);
+					if (room.hasTreasure() && !isHeroOnCell(i, j)) importTreasureOnMap(i, j, start, graphics);
  				} else drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, Color.GRAY);
 			}
 		}
 	}
 	
-	private void drawMessage(Graphics2D graphics, ScreenInfo screenInfo) {
-    if (currentMessageError != null && Instant.now().isBefore(messageEndTime)) {
-        graphics.setColor(Color.RED);
-        graphics.setFont(new Font("Arial", Font.BOLD, 40));
-        var fontmetrics = graphics.getFontMetrics();
-        graphics.drawString(currentMessageError, (screenInfo.width() - fontmetrics.stringWidth(currentMessageError)) / 2, screenInfo.height() / 10);
-    } else currentMessageError = null; 
-	}
-	
-	private void showMessage(String msg, int duration) {
-    currentMessageError = msg;
-    messageEndTime = Instant.now().plusMillis(duration);
-	}
-	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		message.update(); 
 		background(graphics, context.getScreenInfo());
 		draw_map(graphics, context, floor);
 		importHeroImage(graphics, context);
 		importHeroImageOnMap(graphics, context);
-		drawMessage(graphics, context.getScreenInfo());
+		message.drawMessage(graphics, context);
 		heroStat(graphics, context);
 	}
 	 
@@ -161,19 +155,38 @@ public class MapView implements View {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				Room clickedRoom = floor.getRoom(i, j);
-				if (floor.hasRoom(i, j) && isRoomClicked(x, y, i, j, start)) {
+			 	if (floor.hasRoom(i, j) && isRoomClicked(x, y, i, j, start)) {
           if (clickedRoom.isCorridor()) {
-            showMessage("You can only move to rooms!", 2000);
+            message.showMessage("You can only move to rooms!", 2000);
             return;
           }
 					if (!floor.isAccessible(i, j)) {
-						showMessage("Step by step ... Follow the path", 2000);
+						message.showMessage("Step by step ... Follow the path", 2000);
 						return;
 					} 
 					floor.placeHero(i, j);
 					if (clickedRoom.hasAngel()) controller.changeView(controller.healerView());
 					if (clickedRoom.hasMerchant()) controller.changeView(controller.merchantView());
-					if (clickedRoom.hasEnemies()) controller.changeView(controller.battleView());
+					if (clickedRoom.hasTreasure()) {
+						if (!clickedRoom.hasVisited()) {
+							controller.startTreasure();
+							clickedRoom.setVisited(true);
+						}
+						controller.changeView(controller.treasureView());
+					}
+					if (clickedRoom.hasEnemies()) {
+						controller.changeView(controller.battleView());
+						if (clickedRoom.hasVisited()) controller.battleView().messageView().showMessage("Enemies defeated here already !", 2000);
+						else {
+							controller.startFight(clickedRoom.enemies());
+							controller.changeView(controller.battleView());
+							clickedRoom.setVisited(true);							
+						}
+					}
+					if (clickedRoom.hasDoor()) {
+						controller.goToNextFloor();
+						return;
+					}
 				}
 			}
 		}

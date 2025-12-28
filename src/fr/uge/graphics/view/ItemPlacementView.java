@@ -7,25 +7,33 @@ import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
+import java.util.Objects;
 
 public class ItemPlacementView implements ClickableItems{
 	private Item item; 
 	private boolean hasItem; 
 	
 	private final ImageLoader imagesItems; 
+	private final ItemDeleteView deleteView;
 	
 	private final int zoneWidth = 300; 
 	private final int zoneHeight = 300; 
 	
-	public ItemPlacementView(ImageLoader imagesItems) {
+	public ItemPlacementView(ImageLoader imagesItems, ItemDeleteView deleteView) {
+		Objects.requireNonNull(imagesItems, "imagesItems can't be null");
+		Objects.requireNonNull(deleteView, "deleteView can't be null");
 		this.imagesItems = imagesItems; 
+		this.deleteView = deleteView;
 		this.hasItem = false; 
 	}
+	
+	public ItemDeleteView deleteView() { return deleteView; }
 	
 	public boolean hasItem() {return hasItem;}
 	public Item item() {return item; }
 	
 	public void take(Item item) {
+		if (hasItem) return;
 		this.item = item; 
 		hasItem = true; 
 	}
@@ -34,6 +42,19 @@ public class ItemPlacementView implements ClickableItems{
 		this.item = null; 
 		hasItem = false; 
 	}
+	
+	public void moveToDeleted() {
+		if (item != null && deleteView != null) deleteView.add(item);
+	}
+	
+	public boolean takeFromDelete(Item item) {
+		if (hasItem || item == null) return false;
+		this.item = item;
+		hasItem = true;
+		if (deleteView != null) deleteView.remove(item);
+		return true;
+	}
+	
 	private int zoneX(ApplicationContext context) {
 		return context.getScreenInfo().width() - zoneWidth - 200; 
 	}

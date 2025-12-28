@@ -27,6 +27,7 @@ public class ManageBackpack {
 	
 	public boolean clickFromBackpack(Item item) {
 		if(item == null) return false; 
+		if (placementView.hasItem()) return false; 
 		backpack.delete(item);
 		placementView.take(item); 
 		return true; 
@@ -40,6 +41,7 @@ public class ManageBackpack {
 	}
 	
 	public void clickFromLoot(Item item, Items items) {
+		if (placementView.hasItem()) return;
 		items.deleteItem(items.index(item));
 		placementView.take(item); 
 	}

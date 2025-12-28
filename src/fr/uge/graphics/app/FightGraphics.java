@@ -12,87 +12,45 @@ public class FightGraphics {
 	private final BattleView battleView;
 	private final Hero hero;
   private final Enemies enemies; 
-  private int currentEnemyIndex = 0;	
 	private boolean heroTurn = true;
 	private boolean fightEnded = false;
-	private boolean nextEnemyAnnounced = false;
-	private final int levelBeforeFight;
-	
 	private boolean lootPhase = false; 
 	private Items lootItems = new Items(); 
 	
-
+	private final boolean[] enemyDefeatedMessageShown;
+	
 	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
 		this.hero = hero;
 		this.enemies = enemies;
 		this.battleView = battleView;
-		this.levelBeforeFight = hero.progression().level();
-    battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + currentEnemy().name() + " !", 1000);
+		hero.resetEnergy();
+		this.enemyDefeatedMessageShown = new boolean[enemies.getEnemies().size()];
+		if (enemies.getEnemies().size() == 1) battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().get(0).name() + "!", 1000);
+		else battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().size() + " enemies !", 1000);
 	}
 	
-  public Enemy currentEnemy() {
-    if (currentEnemyIndex < enemies.getEnemies().size()) {
-        return enemies.getEnemies().get(currentEnemyIndex);
+	public int getGoldReward() {
+		return enemies.getEnemies().size();
+	}
+	
+	public boolean isFightOver() {
+    if (hero.HP() <= 0) return true;
+    for (var enemy : enemies.getEnemies()) {
+    	if (enemy.HP() > 0) return false;
     }
-    return null;
-  }
-  
-  public void checkEnemyDefeated() {
-    Enemy enemy = currentEnemy();
-    if (enemy != null && enemy.HP() <= 0) {
-    	battleView.messageView().showMessage(enemy.name() + " was defeated!", 1000);
-    	hero.progression().WinXpGraphics(enemy);
-      currentEnemyIndex++;
-      nextEnemyAnnounced = false;
-      return;
-    }
-    Enemy next = currentEnemy();
-    if (next != null && !nextEnemyAnnounced && !battleView.messageView().isMessageActive()) { 
-      battleView.messageView().showMessage("A new enemy appears: " + next.name(), 1000);
-      nextEnemyAnnounced = true;    
-    }
-  }
-  
-  public void checkEndFight() {
-    if (fightEnded) return;
-    if (!isFightOver()) return;
-    fightEnded = true;
-    heroTurn = false;
-    if (heroWon()) {
-    	lootPhase = true; 
-      battleView.messageView().showMessage(hero.name() + " wins the fight!", 2000);
-      battleView.messageView().showMessage("Choose your loot !", 2000);
-      if (hero.progression().hasLeveledUpDuringFight()) {
-        int cases = hero.backpack().casesToUnlock();
-        hero.backpack().setUnlockCount(cases);
-        hero.backpack().setUnlockMode(true);
-        battleView.messageView().showMessage("You can unlock " + cases + " backpack cases!", 4000);
-        hero.progression().resetLevelUpFlag(); 
-      } 
-    } else {
-        battleView.messageView().showMessage(hero.name() + " was defeated...", 2000);
-        battleView.messageView().showMessage("Returning to the map...", 4000);
-        battleView.setReadyToReturnToMap(true);
-    }
-  }
-
-  public boolean isLootPhase() {return lootPhase;}
-  
-  public Items lootItems() {return lootItems;}
+    return true;
+	}
+	
   public boolean isHeroTurn() {
     return heroTurn;
   }
   
-	public boolean isFightOver() {
-	    return hero.HP() <= 0 || currentEnemy() == null;
-	}
-	
-	public boolean heroWon() {
-	    return hero.HP() > 0 && currentEnemy() == null;
-	}
-	
-	public void heroUseItem(Item item) {
-    Enemy enemy = currentEnemy();
+  public void endHeroTurn() {
+  	if (!heroTurn || isFightOver()) return;
+  	heroTurn = false;
+  }
+  
+	public void heroUseItem(Item item, Enemy enemy) {
     if (!heroTurn || isFightOver() || item == null || enemy == null || enemy.HP() <= 0) return;
     int value;
     switch(item.type()) {
@@ -111,19 +69,69 @@ public class FightGraphics {
     }
     if (hero.energy() <= 0) heroTurn = false;
 	}
+  
+  public void checkEnemyDefeated() {
+    for (var i = 0; i < enemies.getEnemies().size(); i++) {
+    	var enemy = enemies.getEnemies().get(i);
+    	if (enemy.HP() <= 0 && !enemyDefeatedMessageShown[i]) {
+    		battleView.messageView().showMessage(enemy.name() + " was defeated !", 1000);
+    		hero.progression().WinXpGraphics(enemy);
+    		enemyDefeatedMessageShown[i] = true;
+    	}
+    }
+  }
+  
+  public void checkEndFight() {
+    if (fightEnded) return;
+    if (!isFightOver()) return;
+    fightEnded = true;
+    heroTurn = false;
+    if (heroWon()) {
+      battleView.messageView().showMessage(hero.name() + " wins the fight!", 2000);
+      if (hero.progression().hasLeveledUpDuringFight()) {
+        int cases = hero.backpack().casesToUnlock();
+        hero.backpack().setUnlockCount(cases);
+        hero.backpack().setUnlockMode(true);
+        battleView.messageView().showMessage("You can unlock " + cases + " backpack cases!", 4000);
+        hero.progression().resetLevelUpFlag(); 
+      } else {
+      	lootPhase = true;
+        battleView.messageView().showMessage("Choose your loot !!", 4000);
 
+      }
+    } else {
+        battleView.messageView().showMessage(hero.name() + " was defeated...", 2000);
+        battleView.messageView().showMessage("Returning to the map...", 4000);
+        battleView.setReadyToReturnToMap(true);
+    }
+  }
+
+  public boolean isLootPhase() {return lootPhase;}
+	public void setLootPhase(boolean bool) { this.lootPhase = bool; }
+  public Items lootItems() {return lootItems;}
 	
-	public boolean heroTurnFinished() { return hero.energy() <= 0; }
-
+	public boolean heroWon() {
+	    if (hero.HP() <= 0) return false;
+	    for (var enemy : enemies.getEnemies()) {
+	    	if (enemy.HP() > 0) return false;
+	    }
+	    return true;
+	}
+	
 	public void enemyAction() {
     if (isFightOver() || heroTurn) return;
-    int action = currentEnemy().actionAnnounced();
-    if (action == 0) {
-      int damage = currentEnemy().attack(hero, null);
-      battleView.messageView().showMessage(currentEnemy().name() + " attacks and deals " + damage + " damage!", 1000);
-    } else {
-	      int blocked = currentEnemy().defense(null);
-	      battleView.messageView().showMessage(currentEnemy().name() + " defends and gains " + blocked + " protection!", 1000);
+    var time = 0;
+    for (var enemy : enemies.getEnemies()) {
+    	if (enemy.HP() <= 0) continue;
+    	int action = enemy.actionAnnounced();
+    	if (action == 0) {
+    		int damage = enemy.attack(hero, null);
+    		battleView.messageView().showMessage(enemy.name() + " attacks and deals " + damage + " damage !", 1000 + time);
+    	} else {
+    		int blocked = enemy.defense(null);
+    		battleView.messageView().showMessage(enemy.name() + " defends and gains " + blocked + " protection !", 1000 + time);
+    	}
+    	time += 1000; 
     }
     heroTurn = true;
     hero.resetEnergy();

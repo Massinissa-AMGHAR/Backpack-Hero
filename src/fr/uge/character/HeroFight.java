@@ -48,6 +48,16 @@ public class HeroFight {
 		return protection;
 	}
 	
+	public void addMana(int amount) {
+		mana += amount;
+		if (mana > manaMax) mana = manaMax;
+	}
+	
+	public void reduceMana(int amount) {
+		mana -= amount;
+		if (mana < 0) mana = 0;
+	}
+	
 	public int manaBonus(Item item) {
 	  if (mana < item.manaCost() || energy < item.energyCost()) {
 	    IO.println("You don't have enough resources to use " + item.name());

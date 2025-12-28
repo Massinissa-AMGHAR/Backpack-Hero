@@ -79,6 +79,7 @@ public class Item {
 	}
 	
 	public boolean isGold() {return type.equals("GOLD"); }
+	public boolean isMana() { return type.equals("MANA"); }
 	
 	public void addGold(int amount) {
 		if(!isGold()) {
@@ -125,7 +126,6 @@ public class Item {
 		};
 	}
 	
-	
 	private static final boolean[][] SHAPE_WOODEN_SWORD = {
 			{true}, 
 			{true}, 
@@ -161,11 +161,11 @@ public class Item {
 	}; 
 	public static final Item[] ALL_ITEM = {
 	  new Item("Wooden Sword", "MELEE", "COMMON", SHAPE_WOODEN_SWORD, 7, 0, 1, 0, 0, 0, 5, 0),
-		new Item("Arrow", "ARROW", "COMMON", SHAPE_ARROW, 2, 0, 0, 0, 0, 0, 1, 0),
+		new Item("Arrow", "ARROW", "COMMON", SHAPE_ARROW, 2, 0, 1, 0, 0, 0, 2, 0),
 		new Item("Rough Buckler", "SHIELD", "COMMON", SHAPE_ROUGH_BUCKLER, 0, 7, 1, 0, 0, 0, 2, 0),
-		new Item("Tunic", "ARMOR", "COMMON", SHAPE_TUNIC, 0, 5, 0, 0, 0, 0, 1, 0),
-		new Item("Magic Wand", "MAGIC", "COMMON", SHAPE_MAGIC_WAND, 3, 0, 0, 0, 2, 0, 3, 0),
-		new Item("Mana Stone", "MANA", "COMMON", SHAPE_MANA_STONE, 0, 0, 0, 0, 0, 2, 2, 0), 
+		new Item("Tunic", "ARMOR", "COMMON", SHAPE_TUNIC, 0, 5, 1, 0, 0, 0, 2, 0),
+		new Item("Magic Wand", "MAGIC", "COMMON", SHAPE_MAGIC_WAND, 3, 0, 1, 0, 2, 0, 3, 0),
+		new Item("Mana Stone", "MANA", "COMMON", SHAPE_MANA_STONE, 0, 0, 0, 0, 0, 1, 2, 0), 
 	};
 	
 	@Override

@@ -36,6 +36,7 @@ public class Hero implements Fighter{
   public int xp() {return progression.xp(); }
   public int nextLevelXp() { return progression.xpThreshold(); }
   public int level() { return progression.level(); }
+  public void heal(int heal) { heroFight.heal(heal); }
   public Backpack backpack() {return inventoryManager.backpack(); }
   public HeroProgression progression() { return progression; }
  
@@ -50,7 +51,8 @@ public class Hero implements Fighter{
   public void resetProtection() {heroFight.resetProtection();}
   public void resetEnergy() {heroFight.resetEnergy();}
   public void resetMana() {heroFight.resetMana();}
-  
+  public void addMana(int amount) { heroFight.addMana(amount); }
+  public void reduceMana(int amount) { heroFight.reduceMana(amount); }
   public boolean buy(int cost) {return economyManager.buy(cost); }
   public boolean winGold(int amount) { return economyManager.winGold(amount);}
   public boolean sellItem(Merchant merchant, Item item) {return economyManager.sellItem(merchant, item);}

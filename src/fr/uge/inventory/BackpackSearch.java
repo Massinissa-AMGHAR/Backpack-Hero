@@ -30,4 +30,14 @@ public record BackpackSearch(Backpack backpack) {
   	}
   	return null; 
   }
+  
+  public Item findManaItem() {
+  	for(int i = 0; i < backpack.maxLines(); i++) {
+  		for(int j = 0; j < backpack.maxColumns(); j++) {
+  			Item item = backpack.grid().get(i).get(j); 
+  			if(item != null && item.isMana())return item; 
+  		}
+  	}
+  	return null; 
+  }
 }

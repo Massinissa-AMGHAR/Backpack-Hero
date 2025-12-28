@@ -14,9 +14,9 @@ public class Main {
 	    GameGraphics gameGraphics = new GameGraphics(); 
 	    ImageLoader imagesMap = new ImageLoader("data", "hero.png", "minihero.png", "door.png", "enemymap.png", "minimerchant.png", "minihealer.png");
 	    ImageLoader  imagesEnemies = new ImageLoader("data", "enemy.png", "minienemy.png");
-	    ImageLoader imagesItems = new ImageLoader("data", "Wooden_sword.png");
+	    ImageLoader imagesItems = new ImageLoader("data/", "Wooden_sword.png", "Arrow.png", "Rough_Buckler.png", "Tunic.png", "magic_wand.png", "mana_stone.png", "Gold.png"); 
 	    ImageLoader imagesServices = new ImageLoader("data", "merchant.png", "healer.png");
-	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.merchant(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices);
+	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.merchant(), gameGraphics.healer(), gameGraphics.dungeon(), gameGraphics.floor(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices);
 	    Application.run(Color.DARK_GRAY, controller::game);
 		} else { 
 	    Interactions interaction = new Interactions(); 
@@ -25,3 +25,5 @@ public class Main {
 		}
 	}
 }
+
+
