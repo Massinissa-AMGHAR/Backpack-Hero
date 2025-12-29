@@ -149,7 +149,7 @@ public class TreasureView implements View {
 		
 		Item fromBackpack = backpackView.click(x, y, context); 
 		if(management.clickFromBackpack(fromBackpack)) {
-			if (fromBackpack.type().equals("MANA")) hero.reduceMana(fromBackpack.manaGained());
+			if (fromBackpack.isMana()) hero.reduceMana(fromBackpack.manaGained());
 			return;
 		}
 		
@@ -169,7 +169,7 @@ public class TreasureView implements View {
 		if(cell != null) {
 			var item = placementView.item();
 			if (management.placeInBackpack(cell[0], cell[1])) {
-				if (item.type().equals("MANA")) hero.addMana(item.manaGained());
+				if (item.isMana()) hero.addMana(item.manaGained());
 			}
 		}
 	}
