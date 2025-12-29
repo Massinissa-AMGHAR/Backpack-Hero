@@ -212,7 +212,7 @@ public class BattleView implements View {
 		var gold = backpack.findGoldItem();
 		if (gold != null) gold.addGold(reward);
 		else {
-			var newGold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, reward); 
+			var newGold = ItemRegistry.create(ItemRegistry.GOLD, reward); 
 			placementView.take(newGold);
 		}
 		goldPlaced = true;

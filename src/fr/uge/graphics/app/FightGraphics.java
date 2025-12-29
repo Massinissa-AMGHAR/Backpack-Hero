@@ -54,15 +54,15 @@ public class FightGraphics {
     if (!heroTurn || isFightOver() || item == null || enemy == null || enemy.HP() <= 0) return;
     int value;
     switch(item.type()) {
-	    case "MELEE", "ARROW", "MAGIC" -> {
+	    case MELEE, ARROW, MAGIC -> {
         value = hero.attack(enemy, item);
         battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and deals " + value + " damage to "  + enemy.name() + "!", 1000);
 	    }
-	    case "SHIELD", "ARMOR" -> {
+	    case SHIELD, ARMOR -> {
         value = hero.defense(item);
         battleView.messageView().showMessage(hero.name() + " blocks " + value + " damage!", 1000);
 	    }
-	    case "MANA" -> {
+	    case MANA -> {
         value = hero.manaBonus(item);
         battleView.messageView().showMessage(hero.name() + " recovers " + value + " mana!", 1000);
 	    }

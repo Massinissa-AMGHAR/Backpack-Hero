@@ -7,6 +7,7 @@ import fr.uge.graphics.view.ItemPlacementView;
 import fr.uge.graphics.view.MessageView;
 import fr.uge.inventory.Backpack;
 import fr.uge.inventory.Item;
+import fr.uge.inventory.ItemRegistry;
 import fr.uge.inventory.Items;
 
 public class ManageBackpack {
@@ -56,7 +57,7 @@ public class ManageBackpack {
 			goldItem.addGold(goldAmount);
 		}
 		else {
-			Item gold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, goldAmount); 
+			Item gold = ItemRegistry.create(ItemRegistry.GOLD, goldAmount); 
 			placementView.take(gold);
 		}
 	

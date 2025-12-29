@@ -4,6 +4,7 @@ import fr.uge.character.Hero;
 
 import fr.uge.inventory.Backpack;
 import fr.uge.inventory.Item;
+import fr.uge.inventory.ItemRegistry;
 import fr.uge.inventory.Items;
 import fr.uge.map.Dungeon;
 import fr.uge.map.Floor;
@@ -22,7 +23,7 @@ public class Game {
 		dungeon.createDungeon();
 		
 		Backpack backpack = new Backpack(); 
-		var item = Item.ALL_ITEM[0];
+		var item = ItemRegistry.create(ItemRegistry.WOODEN_SWORD);
 		item.setLeftPlacement(1, 2); 
 		backpack.add(item, 1, 2);
 		

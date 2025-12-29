@@ -38,8 +38,7 @@ public class Room {
     if(hasTreasure) {
     	treasure = new Items(); 
     	treasure.randomItems(2);
-    	var gold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, 10); 
-    	treasure.addItem(gold);
+    	treasure.addItem(ItemRegistry.create(ItemRegistry.GOLD, 10));
     }
     else treasure = null; 
   }

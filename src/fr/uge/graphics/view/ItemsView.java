@@ -67,7 +67,7 @@ public class ItemsView implements ClickableItems{
 		
 		graphics.setFont(itemInfos);
 		if(isShop)graphics.drawString(item.goldCost() + " gold", textX, textY + 20);
-		else graphics.drawString(item.rarity(), textX, textY + 20);
+		else graphics.drawString(item.rarity().name(), textX, textY + 20);
 		
 	}
 	

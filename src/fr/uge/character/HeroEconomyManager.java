@@ -2,6 +2,7 @@ package fr.uge.character;
 
 import java.util.Objects;
 import fr.uge.inventory.Item;
+import fr.uge.inventory.ItemRegistry;
 import fr.uge.inventory.Items;
 
 public class HeroEconomyManager {
@@ -27,7 +28,7 @@ public class HeroEconomyManager {
 	  	}
 	  	else {
 	  		Items list = new Items(); 
-	  		Item newGold = new Item("Gold", "GOLD", "COMMON", Item.SHAPE_GOLD, 0, 0, 0, 0, 0, 0, 0, amount); 
+	  		Item newGold = ItemRegistry.create(ItemRegistry.GOLD, amount); 
 	  		list.addItem(newGold);
 	  		if(!inventory.choicePlaceItem(newGold, list, 0)) return false; 
 	  		return true; 

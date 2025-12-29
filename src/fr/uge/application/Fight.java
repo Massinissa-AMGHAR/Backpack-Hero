@@ -72,15 +72,15 @@ public class Fight {
   private void useItem(Item item) {
     int value; 
     switch(item.type()) {
-      case "MELEE", "ARROW", "MAGIC" -> {
+      case MELEE, ARROW, MAGIC -> {
         value = hero.attack(enemy, item); 
         IO.println(hero.name() + " uses " + item.name() + " and deals " + value + " damage to " + enemy.name() + "!");
       }
-      case "SHIELD", "ARMOR" -> {
+      case SHIELD, ARMOR -> {
         value = hero.defense(item);
         IO.println(hero.name() + " uses " + item.name() + " and blocks " + value + " damage!");
       }
-      case "MANA" -> {
+      case MANA -> {
         value = hero.manaBonus(item);
         IO.println(hero.name() + " uses " + item.name() + " and recovers " + value + " mana!");
       }

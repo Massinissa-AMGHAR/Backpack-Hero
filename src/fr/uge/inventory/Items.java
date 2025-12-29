@@ -13,8 +13,8 @@ public class Items {
 	
 	public void randomItems(int count) {
 		for(int i = 0; i < count; i++) {
-      int position = rand.nextInt(Item.ALL_ITEM.length); 
-      items.add(Item.ALL_ITEM[position].copy()); 
+      int position = rand.nextInt(ItemRegistry.ALL_ITEMS.length); 
+      items.add(ItemRegistry.create(ItemRegistry.ALL_ITEMS[position])); 
     }
 	}
 	public int index(Item item) {
