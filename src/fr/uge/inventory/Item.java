@@ -2,6 +2,11 @@ package fr.uge.inventory;
 
 import java.util.Objects;
 
+import fr.uge.effect.ItemEffect;
+import fr.uge.interaction.ItemInteraction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item {
 	private final ItemData data; 
@@ -13,7 +18,9 @@ public class Item {
 	private int leftPlacementY = 0; 
 	private int graphicRotation = 0; 
 	private final ItemRotation rotation; 
-  
+  private final List<ItemEffect> effects = new ArrayList<>();
+  private final List<ItemInteraction> interactions = new ArrayList<>();
+	
 	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
 		Objects.requireNonNull(type, "type can't be null.");
@@ -38,6 +45,19 @@ public class Item {
 		this.goldAmount = goldAmount; 
 		this.rotation = new ItemRotation(this); 
 	}
+	
+	public void addEffect(ItemEffect effect) {
+		Objects.requireNonNull(effect);
+		effects.add(effect);
+	}
+	
+	public void addInteraction(ItemInteraction interaction) {
+		Objects.requireNonNull(interaction);
+		interactions.add(interaction);
+	}
+	
+	public List<ItemEffect> effects() { return effects; }
+	public List<ItemInteraction> interacions() { return interactions; }
 	  
 	public String name() { return data.name(); }
 	public ItemType type() { return data.type(); }

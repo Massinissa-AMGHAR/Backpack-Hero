@@ -10,6 +10,7 @@ public class Enemy implements Fighter {
 	private int HP; 
 	private int protection;
 	private final Random rand = new Random();
+	private int poisonCounter = 0;
 	
 	public Enemy(EnemyData data) {
 		Objects.requireNonNull(data, "Data cannot be null"); 
@@ -54,6 +55,18 @@ public class Enemy implements Fighter {
 	public void resetProtection() {
 		protection = 0;
 	}
+	
+	public void addPoison(int amount) {
+		poisonCounter += amount;
+	}
+	
+	public void applyPoison() {
+		if (poisonCounter > 0) {
+			receiveDamage(1);
+			poisonCounter--;
+		}
+	}
+	
 	@Override
 	public int attack(Fighter oppenent, Item item) {
 		if (!(oppenent instanceof Hero)) throw new IllegalArgumentException("Ennemy can only attack Hero");

@@ -48,6 +48,10 @@ public class HeroFight {
 		return protection;
 	}
 	
+	public void addBlock(int amount) {
+		protection += amount;
+	}
+	
 	public void addMana(int amount) {
 		mana += amount;
 		if (mana > manaMax) mana = manaMax;

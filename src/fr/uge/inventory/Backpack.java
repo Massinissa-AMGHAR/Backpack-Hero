@@ -1,4 +1,6 @@
 package fr.uge.inventory;
+
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -121,6 +123,25 @@ public class Backpack {
   	if(inside(line, column - 1)&& unlocked[line][column - 1]) return true; 
   	if(inside(line, column + 1) && unlocked[line][column + 1]) return true; 
   	return false; 
+  }
+  
+  public List<Item> getAdjacentItems(Item self) {
+  	List<Item> adjacents = new ArrayList<>();
+  	var startX = self.leftPlacementX();
+  	var startY = self.leftPlacementY();
+  	var width = self.width();
+  	var height = self.height();
+  	for (var i = startX - 1; i <= startX + width; i++) {
+  		for (var j = startY - 1; j <= startY + height; j++) {
+  			if (i < 0 || i >= maxLines || j < 0 || j >= maxColumns) continue;
+  			if (i >= startY && i < startY + height && j >= startX && j < startX + width) continue;
+  			var item = grid.get(i).get(j);
+  			if (item != null && !adjacents.contains(item)) {
+  				adjacents.add(item);
+  			}
+  		}
+  	}
+  	return adjacents;
   }
   
   @Override

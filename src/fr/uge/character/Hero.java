@@ -45,6 +45,7 @@ public class Hero implements Fighter{
   
   public int attack(Fighter enemy, Item item) { return heroFight.attack(enemy, item);}
   public int defense(Item item) { return heroFight.defense(item);}
+  public void addBlock(int amount) { heroFight.addBlock(amount); }
   public int manaBonus(Item item) { return heroFight.manaBonus(item);}
   public void receiveDamage(int damage) {heroFight.receiveDamage(damage);}
   public void receiveProtectionDamage(int damage) {heroFight.receiveProtectionDamage(damage);}

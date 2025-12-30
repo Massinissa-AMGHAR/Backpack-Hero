@@ -54,7 +54,7 @@ public class FightGraphics {
     if (!heroTurn || isFightOver() || item == null || enemy == null || enemy.HP() <= 0) return;
     int value;
     switch(item.type()) {
-	    case MELEE, ARROW, MAGIC -> {
+	    case WEAPON, ARROW, MAGIC -> {
         value = hero.attack(enemy, item);
         battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and deals " + value + " damage to "  + enemy.name() + "!", 1000);
 	    }
