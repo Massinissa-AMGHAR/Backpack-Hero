@@ -1,5 +1,7 @@
 package fr.uge.inventory;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -43,6 +45,8 @@ public class Backpack {
   
   // Placement/Suppression
   public boolean canPlaceItem(Item item, int line, int column) { return placement.canPlaceItem(item, line, column); }
+  public boolean canPlaceCurse(Item item, int line, int column) { return placement.canPlaceCurse(item, line, column); }
+  public boolean caseFree() {return placement.caseFree(maxLines, maxColumns);}
   public void add(Item item, int line, int column) { placement.add(item, line, column);}
   public void delete(Item item) { placement.delete(item);}
   public int lengthLine(int line, int column) {return placement.lengthLine(line, column);}
@@ -122,7 +126,13 @@ public class Backpack {
   	if(inside(line, column + 1) && unlocked[line][column + 1]) return true; 
   	return false; 
   }
-  
+  public int curseCount() {
+  	return (int) grid.stream().
+  			flatMap(List::stream)
+  			.filter(Objects::nonNull)
+  			.filter(item -> item.type() == ItemType.CURSE)
+  			.distinct().count();
+  }
   @Override
   public String toString() {
     var builder = new StringBuilder(); 

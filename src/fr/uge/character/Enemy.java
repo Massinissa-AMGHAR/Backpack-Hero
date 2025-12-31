@@ -55,9 +55,9 @@ public class Enemy implements Fighter {
 		protection = 0;
 	}
 	@Override
-	public int attack(Fighter oppenent, Item item) {
-		if (!(oppenent instanceof Hero)) throw new IllegalArgumentException("Ennemy can only attack Hero");
-		Hero hero = (Hero) oppenent;
+	public int attack(Fighter opponent, Item item) {
+		if (!(opponent instanceof Hero)) throw new IllegalArgumentException("Ennemy can only attack Hero");
+		Hero hero = (Hero) opponent;
 		int totalDamage = 0;
 		int attackDamage = attackDamage();
 		
@@ -82,12 +82,17 @@ public class Enemy implements Fighter {
 		
 	public int actionAnnounced() {
 	  Random rand = new Random(); 
-	  int action = rand.nextInt(2); 
+	  int action = rand.nextInt(3); 
 	  
-	  if(action == 0) IO.println("\nThe next action of " + this.name() + " will be a damage\n"); 
-	  else IO.println("\nThe next action of " + this.name() + " will be a defense\n"); 
-	  
+	 switch(action) {
+	 	case 0 -> IO.println(name() + "will attack"); 
+	 	case 1 -> IO.println(name() + "will defend"); 
+	 	case 2 -> IO.println(name() + "will curse you"); 
+	 }
 	  return action; 
+	}
+	public Item curse() {
+		return ItemRegistry.create(ItemRegistry.CURSE); 
 	}
 	
 	public static final EnemyData[] ALL_ENEMIES ={

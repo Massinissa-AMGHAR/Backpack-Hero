@@ -16,6 +16,7 @@ public class FightGraphics {
 	private boolean fightEnded = false;
 	private boolean lootPhase = false; 
 	private Items lootItems = new Items(); 
+	private Item expectedCurse; 
 	
 	private final boolean[] enemyDefeatedMessageShown;
 	
@@ -28,7 +29,8 @@ public class FightGraphics {
 		if (enemies.getEnemies().size() == 1) battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().get(0).name() + "!", 1000);
 		else battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().size() + " enemies !", 1000);
 	}
-	
+	public Item expectedCurse() {return expectedCurse;}
+	public void clearExpectedCurse() {expectedCurse = null;}
 	public int getGoldReward() {
 		return enemies.getEnemies().size();
 	}
@@ -56,11 +58,11 @@ public class FightGraphics {
     switch(item.type()) {
 	    case MELEE, ARROW, MAGIC -> {
         value = hero.attack(enemy, item);
-        battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and deals " + value + " damage to "  + enemy.name() + "!", 1000);
+        battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and deals " + value + " damages to "  + enemy.name() + "!", 1000);
 	    }
 	    case SHIELD, ARMOR -> {
         value = hero.defense(item);
-        battleView.messageView().showMessage(hero.name() + " blocks " + value + " damage!", 1000);
+        battleView.messageView().showMessage(hero.name() + " blocks " + value + " damages!", 1000);
 	    }
 	    case MANA -> {
         value = hero.manaBonus(item);
@@ -84,10 +86,10 @@ public class FightGraphics {
   public void checkEndFight() {
     if (fightEnded) return;
     if (!isFightOver()) return;
+    hero.endFightPenalty();
     fightEnded = true;
     heroTurn = false;
     if (heroWon()) {
-      battleView.messageView().showMessage(hero.name() + " wins the fight!", 2000);
       if (hero.progression().hasLeveledUpDuringFight()) {
         int cases = hero.backpack().casesToUnlock();
         hero.backpack().setUnlockCount(cases);
@@ -117,23 +119,44 @@ public class FightGraphics {
 	    }
 	    return true;
 	}
-	
+	private void giveCurse(Item curse) {
+		if(curse == null) return; 
+		expectedCurse = curse; 
+	}
+	private void cursesAttack(int time) {
+		 int curseCount = hero.backpack().curseCount(); 
+	    if(curseCount > 0) {
+	    	int damage = 2 * curseCount; 
+	      hero.receiveDamage(damage);
+	      battleView.messageView().showMessage(damage + " damages from curse!", 1000 + time);
+	    }
+	}
 	public void enemyAction() {
     if (isFightOver() || heroTurn) return;
     var time = 0;
     for (var enemy : enemies.getEnemies()) {
     	if (enemy.HP() <= 0) continue;
     	int action = enemy.actionAnnounced();
-    	if (action == 0) {
-    		int damage = enemy.attack(hero, null);
-    		battleView.messageView().showMessage(enemy.name() + " attacks and deals " + damage + " damage !", 1000 + time);
-    	} else {
+    	switch (action) {
+    		case 0 -> {
+    			int damage = enemy.attack(hero, null);
+    			battleView.messageView().showMessage(enemy.name() + " attacks and deals " + damage + " damage !", 1000 + time);
+    		}
+    		case 1 -> {
     		int blocked = enemy.defense(null);
     		battleView.messageView().showMessage(enemy.name() + " defends and gains " + blocked + " protection !", 1000 + time);
+    		}
+    		case 2 -> {
+    			Item curse = enemy.curse(); 
+    			battleView.messageView().showMessage(enemy.name() + " inflicts a curse ", 1000 + time);
+    			giveCurse(curse); 
+    		}
     	}
     	time += 1000; 
     }
+    if(hero.applyCursePenalty())battleView.messageView().showMessage("Penalty!", 1000 + time);
     heroTurn = true;
+    cursesAttack(time); 
     hero.resetEnergy();
 	}
 

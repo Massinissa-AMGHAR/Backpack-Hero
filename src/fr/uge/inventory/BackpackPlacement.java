@@ -47,6 +47,16 @@ public class BackpackPlacement {
 				}
 		return true; 
   }
+  public boolean canPlaceCurse(Item curse, int line, int column) {
+  	if(line < 0 || column < 0 || line + curse.height() > backpack.maxLines() || column + curse.width() > backpack.maxColumns()) return false;
+  	
+  	for(int i = 0; i < curse.height(); i++) {
+  		for(int j = 0; j < curse.width(); j++) {
+  			if(curse.shape()[i][j] && !backpack.unlocked()[line + i][column + j])return false; 
+  		}
+  	}
+  	return true; 
+  }
   
   public void add(Item item, int line, int column) { 
   	boolean[][] shape = item.shape(); 

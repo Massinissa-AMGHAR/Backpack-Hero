@@ -115,7 +115,7 @@ public class TreasureView implements View {
 		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		imagesHero.drawImage(graphics, imagesHero.get(0), heroX, heroY, imageSize, imageSize); // Hero
 	}
-	
+	@Override
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		background(graphics, context.getScreenInfo());
@@ -129,12 +129,12 @@ public class TreasureView implements View {
 		lootView.drawItems(graphics, context, false);
 		placementView.draw(graphics, context);
 		deleteView.draw(graphics, context);
-		mapButton.draw(graphics);
+		if(!placementView.hasItem()) mapButton.draw(graphics);
 		rotateButton.draw(graphics, context);
 		deleteButton.draw(graphics, context);
 		importHeroImage(graphics, context);   
 	}
-	
+	@Override
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);

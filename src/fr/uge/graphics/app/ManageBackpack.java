@@ -74,4 +74,25 @@ public class ManageBackpack {
 		}
 		return false; 
 	}
+	
+	public boolean placeCurseInBackpack(int line, int column) {
+		if(!placementView.hasItem()) return false; 
+		Item curse = placementView.item(); 
+		if(!backpack.canPlaceCurse(curse, line, column))return false; 
+		
+		int width = curse.width(); 
+		int height = curse.height(); 
+		for(int i = 0; i < height; i++) {
+			for(int j = 0; j < width; j++) {
+				int l = line + i; 
+				int c = column + j; 
+				Item existing = backpack.grid().get(l).get(c); 
+				if(existing != null) backpack.delete(existing);
+			}
+		}
+		
+		backpack.add(curse, line, column);
+		placementView.clear();
+		return true; 
+	}
 }

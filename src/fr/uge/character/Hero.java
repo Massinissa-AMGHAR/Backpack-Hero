@@ -33,12 +33,18 @@ public class Hero implements Fighter{
   public int energy() {return heroFight.energy(); }
   public int mana() {return heroFight.mana(); }
   public int manaMax() {return heroFight.manaMax(); }
+  public void addCursePenalty() {heroFight.addCursePenalty(); }
+  public boolean hasCursePenalty() {return heroFight.hasCursePenalty(); }
+  public boolean applyCursePenalty() {return heroFight.applyCursePenalty(); } 
+  public void endFightPenalty() {heroFight.endFightPenalty();}
   public int xp() {return progression.xp(); }
   public int nextLevelXp() { return progression.xpThreshold(); }
   public int level() { return progression.level(); }
   public void heal(int heal) { heroFight.heal(heal); }
   public Backpack backpack() {return inventoryManager.backpack(); }
   public HeroProgression progression() { return progression; }
+  public int cursePenalty() {return heroFight.cursePenalty();}
+  public int cursePenaltyStacks() {return heroFight.cursePenaltyStacks();}
  
   //Progression du héros
   public void winXp(Enemy enemy, Backpack backpack) { progression.winXp(enemy, backpack);}
@@ -57,7 +63,7 @@ public class Hero implements Fighter{
   public boolean winGold(int amount) { return economyManager.winGold(amount);}
   public boolean sellItem(Merchant merchant, Item item) {return economyManager.sellItem(merchant, item);}
   public void treat(Healer healer) {economyManager.treat(healer);}
-  
+
   public void manageBackpack(Items items, boolean isShop) {inventoryManager.manageBackpack(items,isShop);}
   
 	@Override

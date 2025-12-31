@@ -103,7 +103,7 @@ public class MerchantView implements View {
 		shopView.drawItems(graphics, context, true);
 		backpackView.drawBackpack(graphics, context); 
 		placementView.draw(graphics, context);
-		mapButton.draw(graphics);
+		if(!placementView.hasItem()) mapButton.draw(graphics);
 		rotateButton.draw(graphics, context);
 		sellButton.draw(graphics, context);
 		

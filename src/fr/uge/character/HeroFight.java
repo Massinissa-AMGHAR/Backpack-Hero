@@ -8,6 +8,8 @@ public class HeroFight {
   private int energy;
   private int mana;
   private final int manaMax;
+  private int cursePenalty = 0; 
+  private int cursePenaltyStacks = 0; 
   
   public HeroFight(int HP, int HPMAX, int protection, int energy, int manaMax, int mana) {
   	this.HP = HP; 
@@ -24,6 +26,9 @@ public class HeroFight {
   public int energy() { return energy; }
   public int mana() { return mana; }
   public int manaMax() { return manaMax; }
+  public int cursePenalty() {return cursePenalty;}
+  public int cursePenaltyStacks() {return cursePenaltyStacks;}
+  
   
   public void receiveDamage(int damage) {HP = Math.max(HP - damage, 0);}
 	public void receiveProtectionDamage(int damage) { protection = Math.max(protection - damage, 0);}
@@ -31,6 +36,26 @@ public class HeroFight {
   public void resetMana() { mana = manaMax; }
   public void resetEnergy() {energy = 3; }
   
+  public void addCursePenalty() {
+  	cursePenaltyStacks++; 
+  	cursePenalty = 2; 
+  }
+  public boolean hasCursePenalty() {return cursePenalty > 0;}
+  public boolean applyCursePenalty() {
+  	if(hasCursePenalty() && cursePenaltyStacks > 0) {
+  		receiveDamage(3 * cursePenaltyStacks); 
+  		return true; 
+  	}
+  	return false; 
+  }
+  public void endFightPenalty() {
+  	if(cursePenalty > 0) {
+  		cursePenalty--;
+  		if(cursePenalty == 0) {
+  			cursePenaltyStacks = 0; 
+  		}
+  	}
+  }
   public void heal(int hpBonus) {
 		HP += hpBonus; 
 		if(HP > HPMAX) HP = HPMAX; 

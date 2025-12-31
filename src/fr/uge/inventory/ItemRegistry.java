@@ -10,7 +10,7 @@ public class ItemRegistry {
 	public static final ItemData MAGIC_WAND = new ItemData("Magic Wand", ItemType.MAGIC, ItemRarity.COMMON, ItemShapes.MAGIC_WAND, 3, 0, 1, 0, 2, 0, 3); 
 	public static final ItemData MANA_STONE = new ItemData("Mana Stone", ItemType.MANA, ItemRarity.COMMON, ItemShapes.MANA_STONE, 0, 0, 0, 0, 0, 1, 2);  
 	public static final ItemData GOLD = new ItemData("Gold", ItemType.GOLD, ItemRarity.COMMON, ItemShapes.GOLD, 0, 0, 0, 0, 0, 0, 0); 
-	
+	public static final ItemData CURSE = new ItemData("Curse", ItemType.CURSE, ItemRarity.RARE, ItemShapes.CURSE, 0, 0, 0, 0, 0, 0, 0); 
 	
 	public static final ItemData[] ALL_ITEMS = {
 			WOODEN_SWORD, 

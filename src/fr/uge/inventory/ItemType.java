@@ -7,5 +7,6 @@ public enum ItemType {
 	ARMOR, 
 	MAGIC, 
 	MANA, 
-	GOLD
+	GOLD, 
+	CURSE
 }

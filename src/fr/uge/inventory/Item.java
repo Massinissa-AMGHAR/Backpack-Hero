@@ -114,6 +114,7 @@ public class Item {
 		 case "Magic Wand" -> 4; 
 		 case "Mana Stone" -> 5;
 		 case "Gold" -> 6; 
+		 case "Curse" -> 7; 
 		 default -> 0; 
 		};
 	}

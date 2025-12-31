@@ -25,8 +25,9 @@ public class ItemShapes {
 	}; 
 	
 	public static final boolean[][] MAGIC_WAND = {
-			{true, true}, 
-			{true, true}
+			{true}, 
+			{true}, 
+			{true}
 	}; 
 	
 	public static final boolean[][] MANA_STONE = {
@@ -35,5 +36,10 @@ public class ItemShapes {
 	
 	public static final boolean[][] GOLD = {
 			{true}
+	}; 
+	
+	public static final boolean[][] CURSE = {
+			{true, true, false}, 
+			{false, true, true}
 	}; 
 }
