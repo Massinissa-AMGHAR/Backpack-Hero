@@ -186,7 +186,15 @@ public class Backpack {
    return adjacents;
   }
 
-  
+  public int totalPrice() {
+  	int sum = 0; 
+  	for(var line : grid) {
+  		for(var item : line) {
+  			sum+= item.goldCost(); 
+  		}
+  	}
+  	return sum; 
+  }
   @Override
   public String toString() {
     var builder = new StringBuilder(); 

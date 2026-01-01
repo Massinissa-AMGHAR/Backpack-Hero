@@ -20,7 +20,7 @@ public class Hero implements Fighter{
     if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || manaMax < 0 || xp < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");
       this.name = name;  
       
-      this.progression = new HeroProgression(); 
+      this.progression = new HeroProgression(this); 
       this.heroFight = new HeroFight(HP, HPMAX, protection, energy, manaMax, mana); 
       this.inventoryManager = new HeroInventoryManager(backpack); 
       this.economyManager = new HeroEconomyManager(inventoryManager, heroFight); 
@@ -46,7 +46,7 @@ public class Hero implements Fighter{
   public HeroProgression progression() { return progression; }
   public int cursePenalty() {return heroFight.cursePenalty();}
   public int cursePenaltyStacks() {return heroFight.cursePenaltyStacks();}
- 
+  public void hpmaxAugmentation() {heroFight.hpmaxAugmentation();}
   //Progression du héros
   public void winXp(Enemy enemy, Backpack backpack) { progression.winXp(enemy, backpack);}
   
@@ -69,6 +69,7 @@ public class Hero implements Fighter{
 
   public void manageBackpack(Items items, boolean isShop) {inventoryManager.manageBackpack(items,isShop);}
   
+  public int score() {return heroFight.HPMAX() * 10 + inventoryManager.backpack().totalPrice(); }
 	@Override
 	public String toString() {
 		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana() + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | Level: " + this.level(); 

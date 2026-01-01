@@ -2,12 +2,12 @@ package fr.uge.character;
 import java.util.Objects;
 import fr.uge.inventory.Backpack;
 
-public class HeroProgression {
+public class HeroProgression { 
 	private int xp; 
 	private int level; 
 	private boolean leveledUpDuringFight = false;
 	
-	public HeroProgression() {
+	public HeroProgression(Hero hero) {
 		this.xp= 0;
 		this.level = 1; 
 	}
@@ -29,8 +29,6 @@ public class HeroProgression {
   	while(xp >= xpThreshold()) {
   		xp -= xpThreshold(); 
   		level++; 
-  		IO.println("You have reached level "+ level + " !"); 
-  		IO.println("Hero has " + xp + " experience points");
   		backpack.unlockCase(backpack.casesToUnlock()); 
   	}
   }

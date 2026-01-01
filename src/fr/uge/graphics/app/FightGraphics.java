@@ -147,6 +147,7 @@ public class FightGraphics {
     heroTurn = false;
     if (heroWon()) {
       if (hero.progression().hasLeveledUpDuringFight()) {
+      	hero.hpmaxAugmentation();
         int cases = hero.backpack().casesToUnlock();
         hero.backpack().setUnlockCount(cases);
         hero.backpack().setUnlockMode(true);
