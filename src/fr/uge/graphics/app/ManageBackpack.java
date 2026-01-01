@@ -8,6 +8,7 @@ import fr.uge.graphics.view.MessageView;
 import fr.uge.inventory.Backpack;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemRegistry;
+import fr.uge.inventory.ItemType;
 import fr.uge.inventory.Items;
 
 public class ManageBackpack {
@@ -29,6 +30,7 @@ public class ManageBackpack {
 	public boolean clickFromBackpack(Item item) {
 		if(item == null) return false; 
 		if (placementView.hasItem()) return false; 
+		if(item.type().equals(ItemType.CURSE)) return false; 
 		backpack.delete(item);
 		placementView.take(item); 
 		return true; 

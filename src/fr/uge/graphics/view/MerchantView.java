@@ -6,6 +6,7 @@ import fr.uge.graphics.app.*;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.BackpackPlacement;
 import fr.uge.inventory.Item;
+import fr.uge.inventory.ItemType;
 import fr.uge.inventory.Items;
 
 import java.awt.Color;
