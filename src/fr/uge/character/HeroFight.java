@@ -1,5 +1,6 @@
 package fr.uge.character;
 import fr.uge.inventory.Item;
+import fr.uge.inventory.ItemType;
 
 public class HeroFight {
 	private int HP;
@@ -8,6 +9,7 @@ public class HeroFight {
   private int energy;
   private int mana;
   private final int manaMax;
+  private int armorValue;
   
   public HeroFight(int HP, int HPMAX, int protection, int energy, int manaMax, int mana) {
   	this.HP = HP; 
@@ -25,9 +27,13 @@ public class HeroFight {
   public int mana() { return mana; }
   public int manaMax() { return manaMax; }
   
-  public void receiveDamage(int damage) {HP = Math.max(HP - damage, 0);}
+  public void receiveDamage(int damage) {
+  	int reduceDamage = Math.max(damage - armorValue, 0);
+  	HP = Math.max(HP - reduceDamage, 0);
+  }
 	public void receiveProtectionDamage(int damage) { protection = Math.max(protection - damage, 0);}
   public void resetProtection() {protection = 0;}
+  public void resetArmor() { armorValue = 0; }
   public void resetMana() { mana = manaMax; }
   public void resetEnergy() {energy = 3; }
   
@@ -35,6 +41,11 @@ public class HeroFight {
 		HP += hpBonus; 
 		if(HP > HPMAX) HP = HPMAX; 
 	}
+  
+  public void equipArmor(Item item) {
+  	if (item.type() != ItemType.ARMOR) return;
+  	armorValue = item.defense();
+  }
   
 	public int defense(Item item) {
 		if (mana < item.manaCost() || energy < item.energyCost()) {

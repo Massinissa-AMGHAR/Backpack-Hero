@@ -30,6 +30,7 @@ public class Hero implements Fighter{
   public int HP() {return heroFight.HP();}
   public int HPMAX() {return heroFight.HPMAX();}
   public int protection(){return heroFight.protection(); }
+  public void equipArmor(Item item) { heroFight.equipArmor(item); } 
   public int energy() {return heroFight.energy(); }
   public int mana() {return heroFight.mana(); }
   public int manaMax() {return heroFight.manaMax(); }
@@ -50,6 +51,7 @@ public class Hero implements Fighter{
   public void receiveDamage(int damage) {heroFight.receiveDamage(damage);}
   public void receiveProtectionDamage(int damage) {heroFight.receiveProtectionDamage(damage);}
   public void resetProtection() {heroFight.resetProtection();}
+  public void resetArmor() { heroFight.resetArmor(); }
   public void resetEnergy() {heroFight.resetEnergy();}
   public void resetMana() {heroFight.resetMana();}
   public void addMana(int amount) { heroFight.addMana(amount); }

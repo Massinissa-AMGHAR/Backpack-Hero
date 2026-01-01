@@ -27,6 +27,7 @@ public class BattleView implements View {
 	private FightGraphics fight;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesEnemies; 
+	private final ImageLoader imagesStatus;
 	private final int imageSize = 200;
 	private final Hero hero;
 	private final Enemies enemies;
@@ -42,13 +43,15 @@ public class BattleView implements View {
 	private final EndTurnButton endButton;
 	private Enemy selectedEnemy;
 	private boolean goldPlaced = false;
+	private boolean manaStonePlaced = false;
 	
-	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems) {
+	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
 
 		this.hero = hero;
 		this.enemies = enemies;
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
+		this.imagesStatus = imagesStatus;
 		
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 		this.lootView = new ItemsView(lootItems, imagesItems); 
@@ -84,11 +87,31 @@ public class BattleView implements View {
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
 	}
 	
+	private void heroDefense(Graphics2D graphics, ApplicationContext context, int statX, int statY) {
+		var oldFont = graphics.getFont();
+		var oldColor = graphics.getColor();
+    var statusSize = 30;
+    String pvText = hero.HP() + " / " + hero.HPMAX() + " PV";
+    int textWidth = graphics.getFontMetrics().stringWidth(pvText);
+    int defenseX = statX + textWidth + 10;
+    int defenseY = statY - statusSize + 10;
+    imagesStatus.drawImage(graphics, imagesStatus.get(2), defenseX, defenseY, statusSize, statusSize);
+    graphics.setFont(new Font("Arial", Font.BOLD, 20));
+    String protectionText = String.valueOf(hero.protection());
+    int textX = defenseX + (statusSize - graphics.getFontMetrics().stringWidth(protectionText)) / 2;
+    int textY = defenseY + statusSize - 8;
+    graphics.drawString(protectionText, textX, textY);
+    graphics.setFont(oldFont);
+    graphics.setColor(oldColor);
+	}
 	
 	private void heroPV(Graphics2D graphics, ApplicationContext context) {
-		var stat = hero.HP() + " / " + hero.HPMAX() + " PV";
 		int statX = context.getScreenInfo().width() / 5 + 40;
 		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
+		if (hero.protection() > 0) {
+	    heroDefense(graphics, context, statX, statY);
+		}
+		var stat = hero.HP() + " / " + hero.HPMAX() + " PV";
 		graphics.drawString(stat, statX, statY);
 	}
 	
@@ -129,20 +152,36 @@ public class BattleView implements View {
 	}
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
+		var oldFont = graphics.getFont();
+		var oldColor = graphics.getColor();
 		graphics.setColor(Color.WHITE);
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
     heroPV(graphics, context);
     heroEnergy(graphics, context);
     heroManaEnergy(graphics, context);
     heroLevel(graphics, context);
-    heroGold(graphics, context);
-    
+    heroGold(graphics, context); 
+    graphics.setFont(oldFont);
+    graphics.setColor(oldColor);
 	}
 	
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
 		int heroX = context.getScreenInfo().width() / 5;
 		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		imagesHero.drawImage(graphics, imagesHero.get(0), heroX, heroY, imageSize, imageSize); // Hero
+	}
+	
+	private void importEnemyDefense(Graphics2D graphics, ApplicationContext context, Enemy enemy, int statX, int statY) {
+		var statusSize = 40;
+		var defenseX = statX + graphics.getFontMetrics().stringWidth(enemy.HP() + " / " + enemy.HPMax() + " PV ") + 10;
+		var defenseY = statY - statusSize + 10;
+		imagesStatus.drawImage(graphics, imagesStatus.get(2), defenseX, defenseY, statusSize, statusSize);
+    graphics.setFont(new Font("Arial", Font.BOLD, 20));
+    String protectionText = String.valueOf(enemy.protection());
+    int textWidth = graphics.getFontMetrics().stringWidth(protectionText);
+    int textX = defenseX + (statusSize - textWidth) / 2;
+    int textY = defenseY + statusSize - 15; 
+    graphics.drawString(protectionText, textX, textY);
 	}
 	
 	private void enemyStat(Graphics2D graphics, ApplicationContext context, Enemy enemy, int index, int spacing) {
@@ -152,6 +191,9 @@ public class BattleView implements View {
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
     String stat = enemy.HP() + " / " + enemy.HPMax() + " PV ";
     graphics.drawString(stat, statX, statY);
+    if (enemy.protection() > 0) {
+      importEnemyDefense(graphics, context, enemy, statX, statY);
+    }
 	}
 	
 	private void drawTarget(Graphics2D graphics, int x, int y, int size) {
@@ -174,6 +216,24 @@ public class BattleView implements View {
 		graphics.setStroke(new BasicStroke(1));
 	} 
 	
+	private void importEnemyPoison(Graphics2D graphics, ApplicationContext context, Enemy enemy, int enemyX, int enemyY) {
+		if (enemy.isPoisoned()) {
+			var statusSize = 30;
+			var statusX = enemyX + imageSize - statusSize - 5;
+			var statusY = enemyY + 5;
+			imagesStatus.drawImage(graphics, imagesStatus.get(0), statusX, statusY, statusSize, statusSize);
+		}
+	}
+	
+	private void importEnemyAction(Graphics2D graphics, Enemy enemy, int enemyX, int enemyY) {
+		var action = enemy.getAction();
+		var statusSize = 30;
+		var statusX = enemyX + imageSize - statusSize - 5;
+		var statusY = enemyY - 50;
+		var imageIndex = (action == 0) ? 1 : 2;
+		imagesStatus.drawImage(graphics, imagesStatus.get(imageIndex), statusX, statusY, statusSize, statusSize);
+	}
+	
 	private void importEnemy(Graphics2D graphics, ApplicationContext context, List<Enemy> allEnemies, FightGraphics fight, int startX, int startY, int spacing) {
     for (int i = 0; i < allEnemies.size(); i++) {
       var enemy = allEnemies.get(i);
@@ -190,6 +250,8 @@ public class BattleView implements View {
       	int centerY = enemyY + imageSize / 2;
       	drawTarget(graphics, centerX, centerY, imageSize);
       }
+      importEnemyPoison(graphics, context, enemy, enemyX, enemyY);
+      importEnemyAction(graphics, enemy, enemyX, enemyY);
     }
 	}
 	
@@ -210,12 +272,22 @@ public class BattleView implements View {
 		var reward = fight.getGoldReward();
 		var backpack = backpackView.backpack();
 		var gold = backpack.findGoldItem();
-		if (gold != null) gold.addGold(reward);
-		else {
+		if (gold != null) {
+			gold.addGold(reward);
+		} else {
 			var newGold = ItemRegistry.create(ItemRegistry.GOLD, reward); 
 			placementView.take(newGold);
+			manaStonePlaced = false;
 		}
 		goldPlaced = true;
+	}
+	
+	private void manaStoneReward() {
+		if (!manaStonePlaced && !placementView.hasItem()) {
+			var manaStone = ItemRegistry.create(ItemRegistry.MANA_STONE, 1);
+			placementView.take(manaStone);
+			manaStonePlaced = true;
+		}
 	}
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
@@ -230,6 +302,7 @@ public class BattleView implements View {
 			placementView.draw(graphics, context);
 			deleteView.draw(graphics, context);
 			goldReward();
+			manaStoneReward();
 			mapButton.draw(graphics);
 			rotateButton.draw(graphics, context);
 			deleteButton.draw(graphics, context);
@@ -332,8 +405,19 @@ public class BattleView implements View {
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			var item = placementView.item();
+			if (item != null) {
+				if (item.isMana()) {
+					var manaStones = hero.backpack().findManaCount();
+					if (manaStones >= hero.manaMax()) {
+						messageView.showMessage("Maximum mana reached !", 1000);
+						return;
+					}
+				}			
+			}
 			if (management.placeInBackpack(cell[0], cell[1])) {
-				if (item.isMana()) hero.addMana(item.manaGained());
+				if (item.isMana()) {
+					hero.addMana(item.manaGained());
+				}
 			}
 		}
 	} 

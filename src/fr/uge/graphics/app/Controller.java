@@ -25,22 +25,23 @@ public class Controller {
   private final Interactions interactions;
   private final ImageLoader imagesMap;
   private final ImageLoader imagesEnemies;
+  private final ImageLoader imagesStatus;
   
   private final ImageLoader imagesItems;
-  private final Items merchantItems; 
+  private Items merchantItems; 
   private final ImageLoader imagesServices;
   private final MenuView menuView;
   private MapView mapView;
   
   private final HealerView healerView;
-  private final MerchantView merchantView;
+  private MerchantView merchantView;
   private TreasureView treasureView;
   private View view;
   private BattleView battleView;
   private FightGraphics fightGraphics;
   
 	
-  public Controller(Hero hero, Merchant merchant, Healer healer, Dungeon dungeon, Floor floor, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices) {
+  public Controller(Hero hero, Merchant merchant, Healer healer, Dungeon dungeon, Floor floor, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
 		this.hero = hero;
 		this.merchant = merchant; 
 		this.healer = healer;
@@ -52,6 +53,7 @@ public class Controller {
 		this.imagesEnemies = imagesEnemies;
 		this.imagesItems = imagesItems;		
 		this.imagesServices = imagesServices;
+		this.imagesStatus = imagesStatus;
 		menuView = new MenuView();
 		mapView = new MapView(hero, floor, imagesMap); 
 		view = menuView;
@@ -83,6 +85,9 @@ public class Controller {
 		floor = next;
 		floor.initPlaceHero();
 		mapView = new MapView(hero, floor, imagesMap);
+		merchantItems = new Items();
+		merchantItems.randomItems(3);
+		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
 		changeView(mapView);
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
 	}
@@ -91,7 +96,7 @@ public class Controller {
 		var lootItems = new Items(); 
 		lootItems.randomItems(3);
 		
-		battleView = new BattleView(hero, lootItems, roomEnemies, imagesMap, imagesEnemies, imagesItems);
+		battleView = new BattleView(hero, lootItems, roomEnemies, imagesMap, imagesEnemies, imagesItems, imagesStatus);
 		fightGraphics = new FightGraphics(hero, roomEnemies, battleView);
 		battleView.setFight(fightGraphics);
 	}

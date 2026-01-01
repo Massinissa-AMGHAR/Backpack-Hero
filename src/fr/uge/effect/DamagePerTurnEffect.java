@@ -12,8 +12,7 @@ public class DamagePerTurnEffect implements ItemEffect {
 	}
 	
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item item) {
-		if (enemy != null) {
-			enemy.receiveDamage(damagePerTurn);
-		}
+		item.addBonusDamage(damagePerTurn);
+		fight.battleView().messageView().showMessage(item.name() + " gains " + damagePerTurn + " bonus this turn !", 1500);
 	}
 }

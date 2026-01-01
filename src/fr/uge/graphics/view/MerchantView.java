@@ -125,6 +125,10 @@ public class MerchantView implements View {
 		if (sellButton.click(x, y, placementView, management, message)) return;
 		Item fromShop = shopView.click(x, y, context); 
 		if(fromShop != null) {
+			if (fromShop.isMana() && hero.backpack().findManaCount() >= hero.manaMax()) {
+				message.showMessage("Maximum mana reached !", 1000);
+				return;
+			}
 			if(!management.clickFromShop(fromShop, shopView.items())) {
 				message.showMessage("You don't have enough money !", 1000);
 			}

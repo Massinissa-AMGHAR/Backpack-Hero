@@ -5,5 +5,5 @@ import fr.uge.graphics.app.FightGraphics;
 import fr.uge.inventory.Item;
 
 public interface ItemInteraction {
-	void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self, Item other);
+	void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self);
 }

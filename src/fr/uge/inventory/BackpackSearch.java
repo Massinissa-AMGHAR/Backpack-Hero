@@ -40,4 +40,14 @@ public record BackpackSearch(Backpack backpack) {
   	}
   	return null; 
   }
+  
+  public int findManaCount() {
+		var manaStones = 0;
+		for (var item : backpack().allItems()) {
+			if (item.isMana()) {
+				manaStones += item.manaGained();
+			}
+		}
+		return manaStones;
+  }
 }

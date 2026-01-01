@@ -24,11 +24,14 @@ public class FightGraphics {
 		this.enemies = enemies;
 		this.battleView = battleView;
 		hero.resetEnergy();
+		hero.resetArmor();
+		hero.backpack().resetItemsBonusDamage();
 		this.enemyDefeatedMessageShown = new boolean[enemies.getEnemies().size()];
 		if (enemies.getEnemies().size() == 1) battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().get(0).name() + "!", 1000);
 		else battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().size() + " enemies !", 1000);
 	}
 	
+	public BattleView battleView() { return battleView; }
 	public int getGoldReward() {
 		return enemies.getEnemies().size();
 	}
@@ -50,23 +53,74 @@ public class FightGraphics {
   	heroTurn = false;
   }
   
+  private void applyPoisonToEnemy(Enemy enemy) {
+  	if (enemy == null || enemy.HP() <= 0) return;
+  	var damage = enemy.applyPoison();
+  	if (damage > 0) {
+  		battleView.messageView().showMessage(enemy.name() + " takes " + damage + " poison damage !", 2000);
+  	}
+  }
+  
+  private int applyItemEffects(Item item, Enemy enemy) {
+  	var effects = 0;
+  	for (var effect : item.effects()) {
+  		effect.apply(hero, enemy, this, item);
+  		effects++;
+  	}
+  	return effects;
+  }
+  
+  private int applyItemInteractions(Item item, Enemy enemy) {
+    int interactions = 0;
+    for (var interaction : item.interactions()) {
+        interaction.apply(hero, enemy, this, item);
+        interactions++;
+    }
+    return interactions;
+  }
+
+  private boolean hasEnoughResources(Item item) {
+    if (hero.energy() < item.energyCost() || hero.mana() < item.manaCost()) {
+    	battleView.messageView().showMessage("Not enough energy/mana to use " + item.name(), 1000);
+    	return false;
+    }
+    return true;
+  }
+  
+  private boolean consumeManaStones(Item item) {
+  	if (item.manaCost() <= 0) return true;
+  	var ok = hero.backpack().consumeManaStones(item.manaCost());
+  	if (!ok) {
+  		return false;
+  	}
+  	return true;
+  }
+  
 	public void heroUseItem(Item item, Enemy enemy) {
     if (!heroTurn || isFightOver() || item == null || enemy == null || enemy.HP() <= 0) return;
-    int value;
+    if (!hasEnoughResources(item)) return;
+    if (!consumeManaStones(item)) return;
+    int value = 0;
     switch(item.type()) {
-	    case WEAPON, ARROW, MAGIC -> {
+	    case WEAPON, MAGIC -> {
         value = hero.attack(enemy, item);
-        battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and deals " + value + " damage to "  + enemy.name() + "!", 1000);
+        if (value > 0 ) {
+          battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and deals " + value + " damage to "  + enemy.name() + "!", 1000);
+        }
 	    }
-	    case SHIELD, ARMOR -> {
+	    case SHIELD -> {
         value = hero.defense(item);
-        battleView.messageView().showMessage(hero.name() + " blocks " + value + " damage!", 1000);
+        battleView.messageView().showMessage(hero.name() + " blocks " + value + " damage!", 1000);	    		
 	    }
-	    case MANA -> {
-        value = hero.manaBonus(item);
-        battleView.messageView().showMessage(hero.name() + " recovers " + value + " mana!", 1000);
+	    case ARMOR -> {
+	    	hero.equipArmor(item);
+	    	battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " for passive damage reduction of " + item.defense() + "!", 1000);
 	    }
+	    case GOLD, MANA, CONSUMABLE, KEY -> {}
     }
+    applyItemEffects(item, enemy);
+    applyItemInteractions(item, enemy);
+    applyPoisonToEnemy(enemy);
     if (hero.energy() <= 0) heroTurn = false;
 	}
   
@@ -123,7 +177,7 @@ public class FightGraphics {
     var time = 0;
     for (var enemy : enemies.getEnemies()) {
     	if (enemy.HP() <= 0) continue;
-    	int action = enemy.actionAnnounced();
+    	int action = enemy.getAction();
     	if (action == 0) {
     		int damage = enemy.attack(hero, null);
     		battleView.messageView().showMessage(enemy.name() + " attacks and deals " + damage + " damage !", 1000 + time);
@@ -132,9 +186,11 @@ public class FightGraphics {
     		battleView.messageView().showMessage(enemy.name() + " defends and gains " + blocked + " protection !", 1000 + time);
     	}
     	time += 1000; 
+    	enemy.resetAction();
     }
     heroTurn = true;
     hero.resetEnergy();
+    hero.resetProtection();
 	}
 
 	public void updateFight() {
