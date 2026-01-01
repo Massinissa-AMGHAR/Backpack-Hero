@@ -59,7 +59,6 @@ public class BattleView implements View {
 		
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 		this.lootView = new ItemsView(lootItems, imagesItems); 
-		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView);
 		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null); 
@@ -242,7 +241,12 @@ public class BattleView implements View {
 		var statusSize = 30;
 		var statusX = enemyX + imageSize - statusSize - 5;
 		var statusY = enemyY - 50;
-		var imageIndex = (action == 0) ? 1 : 2;
+		int imageIndex = 0;
+		switch(action) {
+			case 0 -> imageIndex = 1;
+			case 1 -> imageIndex = 2;
+			case 2 -> imageIndex = 3;
+		}
 		imagesStatus.drawImage(graphics, imagesStatus.get(imageIndex), statusX, statusY, statusSize, statusSize);
 	}
 	

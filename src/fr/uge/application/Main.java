@@ -18,7 +18,7 @@ public class Main {
 																								"Cleaver.png", "Cursed_Blade.png", "Dagger.png", "Gold_Cleaver.png", "Heavy_Blade.png", "Key_Sword.png", "Poison_Arrow.png", "Tilted_Sword.png", "Vampiric_Axe.png",
 																								"Robo_Buckler.png", "Iron_Helmet.png", "Knight_Armor.png", "Knight_Shield.png", "Manastone_Bow.png", "Electric_Wand.png", "Dark_Wand.png", "Robin's_Wand.png", "Keys.png", "curse.png");
 	    ImageLoader imagesServices = new ImageLoader("data", "merchant.png", "healer.png");
-	    ImageLoader imagesStatus = new ImageLoader("data", "Status_Poison.png", "fight.png", "defense.png", "curse.png");
+	    ImageLoader imagesStatus = new ImageLoader("data", "Status_Poison.png", "fight.png", "defense.png", "curse_action.png");
 	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.merchant(), gameGraphics.healer(), gameGraphics.dungeon(), gameGraphics.floor(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices, imagesStatus);
 	    Application.run(Color.DARK_GRAY, controller::game);
 		} else { 

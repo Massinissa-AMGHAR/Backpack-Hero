@@ -187,6 +187,7 @@ public class FightGraphics {
 	      battleView.messageView().showMessage(damage + " damages from curse!", 1000 + time);
 	    }
 	}
+	
 	public void enemyAction() {
     if (isFightOver() || heroTurn) return;
     var time = 0;
