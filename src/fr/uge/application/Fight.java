@@ -72,7 +72,7 @@ public class Fight {
   private void useItem(Item item) {
     int value; 
     switch(item.type()) {
-      case MELEE, ARROW, MAGIC -> {
+      case WEAPON, MAGIC -> {
         value = hero.attack(enemy, item); 
         IO.println(hero.name() + " uses " + item.name() + " and deals " + value + " damage to " + enemy.name() + "!");
       }

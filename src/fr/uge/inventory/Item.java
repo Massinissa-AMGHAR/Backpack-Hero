@@ -2,6 +2,11 @@ package fr.uge.inventory;
 
 import java.util.Objects;
 
+import fr.uge.effect.ItemEffect;
+import fr.uge.interaction.ItemInteraction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item {
 	private final ItemData data; 
@@ -13,7 +18,10 @@ public class Item {
 	private int leftPlacementY = 0; 
 	private int graphicRotation = 0; 
 	private final ItemRotation rotation; 
-  
+	private int bonusDamage = 0;
+  private final List<ItemEffect> effects = new ArrayList<>();
+  private final List<ItemInteraction> interactions = new ArrayList<>();
+	
 	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
 		Objects.requireNonNull(type, "type can't be null.");
@@ -38,6 +46,19 @@ public class Item {
 		this.goldAmount = goldAmount; 
 		this.rotation = new ItemRotation(this); 
 	}
+	
+	public void addEffect(ItemEffect effect) {
+		Objects.requireNonNull(effect);
+		effects.add(effect);
+	}
+	
+	public void addInteraction(ItemInteraction interaction) {
+		Objects.requireNonNull(interaction);
+		interactions.add(interaction);
+	}
+	
+	public List<ItemEffect> effects() { return effects; }
+	public List<ItemInteraction> interactions() { return interactions; }
 	  
 	public String name() { return data.name(); }
 	public ItemType type() { return data.type(); }
@@ -45,7 +66,7 @@ public class Item {
 	public boolean[][] shape() {return shape; }
 	public int width() { return shape[0].length; }
 	public int height() { return shape.length; }
-	public int damage() { return data.damage(); }
+	public int damage() { return data.damage() + bonusDamage; }
 	public int defense() { return data.defense(); }
 	public int energyCost() { return data.energyCost(); }
 	public int energyGained() { return data.energyGained(); }
@@ -56,6 +77,14 @@ public class Item {
 	public int goldAmount() {return goldAmount;}
 	public int leftPlacementX() {return leftPlacementX; }
 	public int leftPlacementY() {return leftPlacementY; }
+	
+	public void addBonusDamage(int amount) {
+		bonusDamage += amount;
+	}
+	
+	public void resetBonusDamage() {
+		bonusDamage = 0;
+	}
 	
 	public void VisualRotation() {
 		graphicRotation += 90; 
@@ -114,7 +143,25 @@ public class Item {
 		 case "Magic Wand" -> 4; 
 		 case "Mana Stone" -> 5;
 		 case "Gold" -> 6; 
-		 case "Curse" -> 7; 
+		 case "Cleaver" -> 7;
+		 case "Cursed Blade" -> 8;
+		 case "Dagger" -> 9;
+		 case "Gold Cleaver" -> 10;
+		 case "Heavy Blade" -> 11;
+		 case "Key Sword" -> 12;
+		 case "Poison Arrow" -> 13;
+		 case "Tilted Sword" -> 14;
+		 case "Vampiric Axe" -> 15;
+		 case "Robo Buckler" -> 16;
+		 case "Iron Helmet" -> 17;
+		 case "Knight Armor" -> 18;
+		 case "Knight Shield" -> 19;
+		 case "Manastone Bow" -> 20;
+		 case "Electric Wand" -> 21;
+		 case "Dark Wand" -> 22;
+		 case "Robin Wand" -> 23;
+		 case "Key" -> 24;
+		 case "Curse" -> 25; 
 		 default -> 0; 
 		};
 	}

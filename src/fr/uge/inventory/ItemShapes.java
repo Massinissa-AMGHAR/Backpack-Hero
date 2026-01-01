@@ -3,38 +3,37 @@ package fr.uge.inventory;
 public class ItemShapes {
 	private ItemShapes() {}
 	
-	public static final boolean[][] WOODEN_SWORD = {
+	public static final boolean[][] SIZE_3x1 = {
 			{true}, 
 			{true}, 
 			{true}
 	}; 
 	
-	public static final boolean[][] ARROW = {
+	public static final boolean[][] SIZE_2x1 = {
+			{true}, 
+			{true}
+	}; 
+	
+	public static final boolean[][] SIZE_1x3 = {
 			{true, true, true}
 	}; 
 	
-	public static final boolean[][] ROUGH_BUCKLER = {
+	public static final boolean[][] SIZE_1x2 = {
+			{true, true}
+	}; 
+	
+	public static final boolean[][] SIZE_2x2 = {
 			{true, true}, 
 			{true, true}, 
 	}; 
 	
-	public static final boolean[][] TUNIC = {
+	public static final boolean[][] SIZE_3x2 = {
 			{true, true}, 
 			{true, true}, 
 			{true, true}
 	}; 
 	
-	public static final boolean[][] MAGIC_WAND = {
-			{true}, 
-			{true}, 
-			{true}
-	}; 
-	
-	public static final boolean[][] MANA_STONE = {
-			{true}
-	}; 
-	
-	public static final boolean[][] GOLD = {
+	public static final boolean[][] SIZE_1x1 = {
 			{true}
 	}; 
 	
@@ -42,4 +41,5 @@ public class ItemShapes {
 			{true, true, false}, 
 			{false, true, true}
 	}; 
+
 }

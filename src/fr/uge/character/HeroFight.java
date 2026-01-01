@@ -1,5 +1,6 @@
 package fr.uge.character;
 import fr.uge.inventory.Item;
+import fr.uge.inventory.ItemType;
 
 public class HeroFight {
 	private int HP;
@@ -10,6 +11,7 @@ public class HeroFight {
   private final int manaMax;
   private int cursePenalty = 0; 
   private int cursePenaltyStacks = 0; 
+  private int armorValue;
   
   public HeroFight(int HP, int HPMAX, int protection, int energy, int manaMax, int mana) {
   	this.HP = HP; 
@@ -30,9 +32,13 @@ public class HeroFight {
   public int cursePenaltyStacks() {return cursePenaltyStacks;}
   
   
-  public void receiveDamage(int damage) {HP = Math.max(HP - damage, 0);}
+  public void receiveDamage(int damage) {
+  	int reduceDamage = Math.max(damage - armorValue, 0);
+  	HP = Math.max(HP - reduceDamage, 0);
+  }
 	public void receiveProtectionDamage(int damage) { protection = Math.max(protection - damage, 0);}
   public void resetProtection() {protection = 0;}
+  public void resetArmor() { armorValue = 0; }
   public void resetMana() { mana = manaMax; }
   public void resetEnergy() {energy = 3; }
   
@@ -61,6 +67,11 @@ public class HeroFight {
 		if(HP > HPMAX) HP = HPMAX; 
 	}
   
+  public void equipArmor(Item item) {
+  	if (item.type() != ItemType.ARMOR) return;
+  	armorValue = item.defense();
+  }
+  
 	public int defense(Item item) {
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println("You don't have enough resources to use " + item.name());
@@ -71,6 +82,10 @@ public class HeroFight {
 		energy -= item.energyCost(); 
 		mana -= item.manaCost(); 
 		return protection;
+	}
+	
+	public void addBlock(int amount) {
+		protection += amount;
 	}
 	
 	public void addMana(int amount) {

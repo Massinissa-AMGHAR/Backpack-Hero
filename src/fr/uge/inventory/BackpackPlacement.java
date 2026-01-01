@@ -67,6 +67,7 @@ public class BackpackPlacement {
 				}
 			}
 		}
+		item.setLeftPlacement(column, line);
   }
   
   public void delete(Item item) {
@@ -76,5 +77,22 @@ public class BackpackPlacement {
         if(current != null && current.id() == item.id()) backpack.grid().get(i).set(j, null); 
       }
     }
+  }
+  
+  public boolean consumeManaStones(int amount) {
+  	var temp = amount;
+  	for (var i = 0; i < backpack.maxLines(); i++) {
+  		for (var j = 0; j < backpack.maxColumns(); j++) {
+  			var item = backpack.grid().get(i).get(j);
+  			if (item != null && item.type() == ItemType.MANA) {
+  				delete(item);
+  				temp--;
+  				if (temp == 0) {
+  					return true;
+  				}
+  			}
+  		}
+  	}
+  	return false;
   }
 }

@@ -1,11 +1,12 @@
 package fr.uge.inventory;
 
 public enum ItemType {
-	MELEE, 
-	ARROW, 
+	WEAPON, 
 	SHIELD, 
 	ARMOR, 
 	MAGIC, 
+	KEY,
+	CONSUMABLE,
 	MANA, 
 	GOLD, 
 	CURSE

@@ -168,8 +168,17 @@ public class TreasureView implements View {
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			var item = placementView.item();
+			if (item.isMana()) {
+				var manaStones = hero.backpack().findManaCount();
+				if (manaStones >= hero.manaMax()) {
+					messageView.showMessage("Maximum mana reached !", 1000);
+					return;
+				}
+			}
 			if (management.placeInBackpack(cell[0], cell[1])) {
-				if (item.isMana()) hero.addMana(item.manaGained());
+				if (item.isMana()) {
+					hero.addMana(item.manaGained());
+				}
 			}
 		}
 	}
