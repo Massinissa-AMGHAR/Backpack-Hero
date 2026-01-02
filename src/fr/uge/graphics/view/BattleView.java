@@ -328,7 +328,7 @@ public class BattleView implements View {
 			deleteView.draw(graphics, context);
 			goldReward();
 			manaStoneReward();
-			mapButton.draw(graphics);
+			if(!placementView.hasItem())mapButton.draw(graphics);
 			rotateButton.draw(graphics, context);
 			deleteButton.draw(graphics, context);
 		}
