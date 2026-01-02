@@ -22,9 +22,7 @@ public class GameGraphics {
 
     Backpack backpack = new Backpack();
     var item = ItemRegistry.create(ItemRegistry.WOODEN_SWORD);
-    var item2 = ItemRegistry.create(ItemRegistry.KEY);
     backpack.add(item, 1, 2);
-    backpack.add(item2, 1, 3);
 
     hero = new Hero("Mouse", 40, 40, 0, 3, 5, 0, 0, 0, backpack, interaction);
     enemies = new Enemies();
@@ -33,7 +31,6 @@ public class GameGraphics {
 
     floor = dungeon.getFloor(0);
     floor.initPlaceHero();
-    floor.placeHero(3, 6);
   }
 
   public Hero hero() { return hero; }

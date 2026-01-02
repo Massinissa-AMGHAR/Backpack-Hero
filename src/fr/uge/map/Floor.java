@@ -113,6 +113,7 @@ public class Floor {
 			case 4 -> randomRoom = new Room(false, false, false, false, true, false);
 			default -> randomRoom = new Room(false, false, false, false, false, false);
 		}
+		randomRoom.getLoot();
 		gridRoom.setGeneratedRoom(randomRoom);
 		return randomRoom;
 	}

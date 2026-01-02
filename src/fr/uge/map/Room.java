@@ -1,11 +1,19 @@
 package fr.uge.map;
 import fr.uge.character.*;
+import fr.uge.graphics.app.FightGraphics;
+import fr.uge.graphics.image.ImageLoader;
+import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
 public class Room {
+	private TreasureView treasureView;
+	private MerchantView merchantView;
+	private BattleView battleView;
+	private FightGraphics fightGraphics;
+	private HealerView healerView;
 	private Items loot;
   private boolean lootGenerated = false;
   private boolean hasEnemies; 
@@ -21,7 +29,7 @@ public class Room {
   private final Healer healer; 
   private final ArrayList<Room> neighbors = new ArrayList<>(); 
   private Room generatedRoom;
-  private boolean generatedVisited = false;
+  private boolean gridJustUnlocked = false;
 
   public Room(boolean hasEnemies, boolean hasMerchant, boolean hasAngel, boolean hasTreasure, boolean hasDoor, boolean hasGrid) {
     this.hasEnemies = hasEnemies;
@@ -43,6 +51,45 @@ public class Room {
     
   }
   
+  public BattleView getBattleView(Hero hero, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
+    if (!hasEnemies) return null;
+    if (battleView == null) {
+        battleView = new BattleView(hero, getLoot(), enemies, imagesHero, imagesEnemies, imagesItems, imagesStatus);
+    }
+    if (fightGraphics == null) {
+      fightGraphics = new FightGraphics(hero, enemies, battleView);
+      battleView.setFight(fightGraphics);
+    }
+    if (visited) {
+      battleView.messageView().showMessage("Enemies defeated here already!", 2000);
+    }
+    return battleView;
+  } 
+  
+  public TreasureView getTreasureView(Hero hero, ImageLoader images, ImageLoader imagesItems) {
+  	if (treasureView == null) {
+  		treasureView = new TreasureView(hero, getLoot(), images, imagesItems);
+  	}
+  	return treasureView;
+  }
+  
+  public HealerView getHealerView(Hero hero, ImageLoader imagesMap, ImageLoader imagesServices, ImageLoader imagesItems) {
+    if (!hasAngel) return null; 
+    if (healerView == null) {
+        healerView = new HealerView(hero, angel(), imagesMap, imagesServices, imagesItems);
+    }
+    return healerView;
+  }
+  
+  public MerchantView getMerchantView(Hero hero, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+    if (!hasMerchant) return null;
+    if (merchantView == null) {
+        merchantView = new MerchantView(hero, merchant, getLoot(), imagesHero, imagesServices, imagesItems);
+    }
+    return merchantView;
+  }
+
+  
   public Items getLoot() {
   	if (!lootGenerated) {
   		generateLoot();
@@ -56,14 +103,6 @@ public class Room {
   	loot.randomItems(3);
   }
   
-  public boolean generatedVisited() {
-  	return generatedVisited;
-  }
-  
-  public void setGeneratedVisited(boolean bool) {
-  	generatedVisited = bool;
-  }
-  
   public Room getGeneratedRoom() {
   	return generatedRoom;
   }
@@ -75,6 +114,9 @@ public class Room {
   public void resetGeneratedRoom() {
   	generatedRoom = null;
   }
+  
+  public boolean gridJustUnlocked() { return gridJustUnlocked; }
+  public void setGridJustUnlocked(boolean bool) { gridJustUnlocked = bool; }
   
   public boolean hasEnemies() {return hasEnemies; }
   public boolean hasMerchant() {return hasMerchant;}

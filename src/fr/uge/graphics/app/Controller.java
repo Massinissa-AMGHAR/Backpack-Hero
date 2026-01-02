@@ -34,12 +34,11 @@ public class Controller {
   private final MenuView menuView;
   private MapView mapView;
   
-  private final HealerView healerView;
+  private HealerView healerView;
   private MerchantView merchantView;
   private TreasureView treasureView;
   private View view;
   private BattleView battleView;
-  private FightGraphics fightGraphics;
   
 	
   public Controller(Hero hero, Merchant merchant, Healer healer, Dungeon dungeon, Floor floor, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
@@ -56,10 +55,8 @@ public class Controller {
 		this.imagesServices = imagesServices;
 		this.imagesStatus = imagesStatus;
 		menuView = new MenuView();
-		mapView = new MapView(hero, floor, imagesMap); 
+		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
 		view = menuView;
-		
-		healerView = new HealerView(hero, healer, imagesMap, imagesServices, imagesItems);
   }
 
 	public MenuView menuView() { return menuView; }
@@ -76,38 +73,29 @@ public class Controller {
 	
 	public void enterGridRoom(Room gridRoom, int i, int j) {
 		floor.placeHero(i, j);
+
 		var randomRoom = floor.generateRandomRoom(gridRoom);
 		
     if (randomRoom.hasEnemies()) {
-			changeView(battleView);
-			if (randomRoom.generatedVisited()) battleView.messageView().showMessage("Enemies defeated here already !", 2000);
-			else {
-				startFight(randomRoom.enemies(), randomRoom);
-				changeView(battleView);
-				randomRoom.setGeneratedVisited(true);	
-			}
-			return;
-    } 
+      startFight(randomRoom.enemies(), randomRoom);
+      randomRoom.setVisited(true);
+      return;
+    }
     if (randomRoom.hasMerchant()) {
-      if (!randomRoom.generatedVisited()) {
-      	startMerchant();
-      	randomRoom.setGeneratedVisited(true);
-      }
-      changeView(merchantView);
+      startMerchant(randomRoom);
+      randomRoom.setVisited(true);
       return;
-    } 
+    }
     if (randomRoom.hasAngel()) {
-      changeView(healerView);
-      return;
-    } 
+      startHealer(randomRoom);
+      randomRoom.setVisited(true);
+    	return;
+    }
     if (randomRoom.hasTreasure()) {
-			if (!randomRoom.generatedVisited()) {
-				startTreasure(randomRoom);
-				randomRoom.setGeneratedVisited(true);
-			}
-			changeView(treasureView);
-			return;
-    } 
+      startTreasure(randomRoom);
+      randomRoom.setVisited(true);
+      return;
+    }
     if (randomRoom.hasDoor()) {
       goToNextFloor();
       return;
@@ -123,32 +111,35 @@ public class Controller {
 		floor = next;
 		floor.initPlaceHero();
 		//floor.resetGeneratedRoom();
-		mapView = new MapView(hero, floor, imagesMap);
+		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus);
 		changeView(mapView);
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
 	}
 	
 	public void startFight(Enemies roomEnemies, Room room) {
-		var lootItems = room.getLoot();
-		
-		battleView = new BattleView(hero, lootItems, roomEnemies, imagesMap, imagesEnemies, imagesItems, imagesStatus);
-		fightGraphics = new FightGraphics(hero, roomEnemies, battleView);
-		battleView.setFight(fightGraphics);
+		battleView = room.getBattleView(hero, imagesMap, imagesEnemies, imagesItems, imagesStatus);
+		if (battleView.fight() == null) {
+			var fg = new FightGraphics(hero, roomEnemies, battleView);
+			battleView.setFight(fg);
+		}
+		changeView(battleView);
 	}
 	
-	public void startMerchant() {
-		merchantItems = new Items();
-		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
-
+	public void startMerchant(Room room) {
+		merchantView = room.getMerchantView(hero, imagesMap, imagesServices, imagesItems);
+		changeView(merchantView);
+	}
+	
+	public void startHealer(Room room) {
+		healerView = room.getHealerView(hero, imagesMap, imagesServices, imagesItems);
+		changeView(healerView);
 	}
 	
 	public void startTreasure(Room room) {
-		var lootItems = new Items(room.getLoot()); 
-		treasureView = new TreasureView(hero, lootItems, imagesMap, imagesItems);
+		treasureView = room.getTreasureView(hero, imagesMap, imagesItems);
+		changeView(treasureView);
 	}
 	
-	public FightGraphics fightGraphics() { return fightGraphics; }
 	
 	private boolean gameLoop(ApplicationContext context) {
 		var event = context.pollOrWaitEvent(10);
@@ -173,7 +164,7 @@ public class Controller {
     	context.renderFrame(graphics -> {
         view.draw(graphics, context);
         if (view == battleView) {
-        	fightGraphics.updateFight();
+        	battleView.fight().updateFight();
         	battleView.messageView().update();
         	if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
         		changeView(mapView);

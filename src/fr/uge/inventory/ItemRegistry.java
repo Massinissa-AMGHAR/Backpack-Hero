@@ -4,6 +4,7 @@ import fr.uge.effect.DamagePerTurnEffect;
 import fr.uge.effect.PoisonArrowEffect;
 import fr.uge.effect.PoisonEffect;
 import fr.uge.interaction.AdjacentArmorBlockInteraction;
+import fr.uge.interaction.CurseBladeInteraction;
 import fr.uge.interaction.RoboBucklerInteraction;
 import fr.uge.interaction.GoldCleaverInteraction;
 import fr.uge.interaction.KeySwordInteraction;
@@ -74,7 +75,6 @@ public class ItemRegistry {
 		
 	public static final ItemData[] ALL_ITEMS = {
 			WOODEN_SWORD,
-			/*
 			CLEAVER,
 			GOLD_CLEAVER,
 			DAGGER,
@@ -97,13 +97,10 @@ public class ItemRegistry {
 			DARK_WAND,
 			ROBIN_WAND,
 			MANA_STONE,
-			*/
 			KEY,
-			/*
 			MEAL,
 			COOL_DRINK,
 			STEAK
-			*/
 	}; 
 	
 	private static void addEffects(Item item) {
@@ -122,6 +119,7 @@ public class ItemRegistry {
 		case "Knight Shield", "Iron Helmet", "Tunic" -> item.addInteraction(new AdjacentArmorBlockInteraction(1));
 		case "Knight Armor" -> item.addInteraction(new AdjacentArmorBlockInteraction(2));
 		case "Robo Buckler" -> item.addInteraction(new RoboBucklerInteraction());
+		case "Cursed Blade" -> item.addInteraction(new CurseBladeInteraction());
 		}
 	}
 	

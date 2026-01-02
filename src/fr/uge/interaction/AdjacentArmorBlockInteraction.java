@@ -12,7 +12,6 @@ public class AdjacentArmorBlockInteraction implements ItemInteraction {
       this.blockPerArmor = blockPerArmor;
   }
 
-  @Override
   public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
   	var adjacentItems = hero.backpack().getAdjacentItems(self);
   	var bonusBlock = 0;

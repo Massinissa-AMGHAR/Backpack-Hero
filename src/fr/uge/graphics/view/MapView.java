@@ -21,15 +21,23 @@ public class MapView implements View {
 	private final Floor floor;
 	private final Hero hero; 
 	private final ImageLoader images;
+	private final ImageLoader imagesItems;
+	private final ImageLoader imagesServices;
+	private final ImageLoader imagesEnemies;
+	private final ImageLoader imagesStatus;
 	private final int cellSize = 75;
 	private final int imageSize = 200;
 	private final int cols = 11;
 	private final int rows = 5;
 	
-	public MapView(Hero hero, Floor floor, ImageLoader images) {
+	public MapView(Hero hero, Floor floor, ImageLoader images, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesEnemies, ImageLoader imagesStatus) {
 		this.hero = hero;
 		this.floor = floor;
 		this.images = images;
+		this.imagesItems = imagesItems;
+		this.imagesServices = imagesServices;
+		this.imagesEnemies = imagesEnemies;
+		this.imagesStatus = imagesStatus;
 		this.message = new MessageView(); 
 	}
 	
@@ -173,35 +181,29 @@ public class MapView implements View {
 					if (clickedRoom.hasGrid()) {
 						var unlocked = floor.tryUnlockGrid(clickedRoom, hero);
 						if (!unlocked) {
-							message.showMessage("You need a key to enter thid grid !", 1500);
+							message.showMessage("You need a key to enter this grid !", 1500);
 							return;
 						}
-						message.showMessage("You use a key. The grid opens...", 2000);
 						controller.enterGridRoom(clickedRoom, i, j);
 						return;
 					} 
 					floor.placeHero(i, j);
-					if (clickedRoom.hasAngel()) controller.changeView(controller.healerView());
-					if (clickedRoom.hasMerchant()) {
-						if (!clickedRoom.hasVisited()) {
-							controller.startMerchant();
-							clickedRoom.setVisited(true);
-						}
-						controller.changeView(controller.merchantView());
+					if (clickedRoom.hasAngel()) {
+						controller.startHealer(clickedRoom);
+						clickedRoom.setVisited(true);
 					}
+					if (clickedRoom.hasMerchant()) {
+						controller.startMerchant(clickedRoom);
+						clickedRoom.setVisited(true);
+					}
+
 					if (clickedRoom.hasTreasure()) {
-					  controller.startTreasure(clickedRoom); // TOUJOURS
-					  controller.changeView(controller.treasureView());
-					  clickedRoom.setVisited(true); // optionnel pour autre logique
+						controller.startTreasure(clickedRoom);
+						clickedRoom.setVisited(true);   
 					}
 					if (clickedRoom.hasEnemies()) {
-						controller.changeView(controller.battleView());
-						if (clickedRoom.hasVisited()) controller.battleView().messageView().showMessage("Enemies defeated here already !", 2000);
-						else {
-							controller.startFight(clickedRoom.enemies(), clickedRoom);
-							controller.changeView(controller.battleView());
-							clickedRoom.setVisited(true);							
-						}
+				    controller.startFight(clickedRoom.enemies(), clickedRoom);
+				    clickedRoom.setVisited(true);
 					}
 					if (clickedRoom.hasDoor()) {
 						controller.goToNextFloor();

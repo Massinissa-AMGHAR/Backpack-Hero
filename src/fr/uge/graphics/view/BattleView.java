@@ -9,6 +9,7 @@ import com.github.forax.zen.ApplicationContext;
 
 import com.github.forax.zen.ScreenInfo;
 
+import fr.uge.application.Fight;
 import fr.uge.character.*;
 import fr.uge.inventory.*;
 
@@ -24,7 +25,7 @@ import java.util.List;
 public class BattleView implements View {
 	
 	private final MessageView messageView;
-	private FightGraphics fight;
+	private FightGraphics fightGraphics;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesEnemies; 
 	private final ImageLoader imagesStatus;
@@ -79,12 +80,12 @@ public class BattleView implements View {
 	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
 	
 	public void setFight(FightGraphics fight) {
-    this.fight = fight;
+    this.fightGraphics = fight;
     updateSelectedEnemy();
 	}
 
 	public FightGraphics fight() {
-    return fight;
+    return fightGraphics;
 	}
 
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
@@ -280,12 +281,12 @@ public class BattleView implements View {
 	
 	private void importEnemiesImages(Graphics2D graphics, ApplicationContext context) {
 		var layout = getEnemiesLayout(context);
-		importEnemy(graphics, context, enemies.getEnemies(), fight, layout[0], layout[1], layout[2]);
+		importEnemy(graphics, context, enemies.getEnemies(), fightGraphics, layout[0], layout[1], layout[2]);
 	}
 	 
 	private void goldReward() {
-		if (goldPlaced || !fight.isLootPhase()) return;
-		var reward = fight.getGoldReward();
+		if (goldPlaced || !fightGraphics.isLootPhase()) return;
+		var reward = fightGraphics.getGoldReward();
 		var backpack = backpackView.backpack();
 		var gold = backpack.findGoldItem();
 		if (gold != null) {
@@ -308,8 +309,8 @@ public class BattleView implements View {
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
-		if(fight != null && fight.expectedCurse() != null && curseView == null) {
-			startCursePhase(fight.expectedCurse()); 
+		if(fightGraphics != null && fightGraphics.expectedCurse() != null && curseView == null) {
+			startCursePhase(fightGraphics.expectedCurse()); 
 		}
 		background(graphics, context.getScreenInfo());
 		messageView.drawMessage(graphics, context); 
@@ -321,7 +322,7 @@ public class BattleView implements View {
 		backpackView.drawBackpack(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);  
-		if(fight.isLootPhase()) {
+		if(fightGraphics.isLootPhase()) {
 			lootView.drawItems(graphics, context, false);
 			placementView.draw(graphics, context);
 			deleteView.draw(graphics, context);
@@ -332,7 +333,7 @@ public class BattleView implements View {
 			deleteButton.draw(graphics, context);
 		}
 		else {
-			if (!fight.isFightOver()) endButton.draw(graphics, context);
+			if (!fightGraphics.isFightOver()) endButton.draw(graphics, context);
 			importEnemiesImages(graphics, context); 
 		}
 	}
@@ -350,7 +351,7 @@ public class BattleView implements View {
       	backpack.setUnlockMode(false);
       	messageView.showMessage("All backpack slots unlocked!", 2000);
       	messageView.showMessage("Choose your loot !!", 3500);
-      	fight.setLootPhase(true);
+      	fightGraphics.setLootPhase(true);
       }
     }
 	}
@@ -381,7 +382,7 @@ public class BattleView implements View {
 		return null; 
 	}
 	private void ClickFight(int x, int y, Controller controller, ApplicationContext context) {
-    var fight = controller.fightGraphics();
+    var fight = fightGraphics;
     if (fight == null) return;       
     var backpack = backpackView.backpack(); 
     var start = backpackView.calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
@@ -463,7 +464,7 @@ public class BattleView implements View {
 	private void startCursePhase(Item curseItem) {
 		if(curseItem == null || curseView != null)return; 
 		curseView = new CurseView(hero, curseItem, imagesHero, imagesItems, refuseCount); 
-		fight.clearExpectedCurse();
+		fightGraphics.clearExpectedCurse();
 	}
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
@@ -474,9 +475,9 @@ public class BattleView implements View {
 			return; 
 		}
 		
-		if (!fight.isLootPhase() && fight.isHeroTurn()) {
+		if (!fightGraphics.isLootPhase() && fightGraphics.isHeroTurn()) {
 			if (endButton.click(x, y)) {
-				fight.endHeroTurn();
+				fightGraphics.endHeroTurn();
 				return;
 			}
 		}
@@ -484,7 +485,7 @@ public class BattleView implements View {
 			ClickFight(x, y, controller, context);
 			return;
 		}
-		if(fight.isLootPhase() && !backpackView.backpack().isUnlockMode()) clickLootPhase(x, y, controller, context); 
+		if(fightGraphics.isLootPhase() && !backpackView.backpack().isUnlockMode()) clickLootPhase(x, y, controller, context); 
 		else ClickFight(x, y, controller, context); 
 	}
 }
