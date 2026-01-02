@@ -11,6 +11,14 @@ public class Items {
 	
 	}
 	
+	public Items(Items other) {
+	  this.rand = new Random();
+	  this.items = new ArrayList<>();
+	  for (Item item : other.getItems()) {
+	    this.items.add(item); // même Item, mais nouvelle liste
+	  }
+	}
+	
 	public void randomItems(int count) {
 		for(int i = 0; i < count; i++) {
       int position = rand.nextInt(ItemRegistry.ALL_ITEMS.length); 

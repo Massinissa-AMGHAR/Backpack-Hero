@@ -403,6 +403,9 @@ public class BattleView implements View {
     if (ClickedEnemy != null) selectedEnemy = ClickedEnemy;
     if (item != null && selectedEnemy != null) {
     	fight.heroUseItem(item, selectedEnemy); 
+    	if (item.type() == ItemType.CONSUMABLE) {
+    		backpack.delete(item);
+    	}
     	if (selectedEnemy.HP() <= 0) updateSelectedEnemy();
     }
 	}

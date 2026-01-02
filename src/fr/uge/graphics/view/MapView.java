@@ -2,6 +2,7 @@ package fr.uge.graphics.view;
 
 import fr.uge.graphics.app.*;
 import fr.uge.graphics.image.*;
+import fr.uge.inventory.Item;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -76,6 +77,18 @@ public class MapView implements View {
 		images.drawImage(graphics, images.get(1), heroPosX, heroPosY, cellSize, cellSize); 
 	}
 	
+	private void importTreasureOnMap(int i, int j, int[] start, Graphics2D graphics) {
+    int TreasuretX = start[0] + j * cellSize;
+    int TreasureY = start[1] + i * cellSize;
+    images.drawImage(graphics, images.get(6), TreasuretX, TreasureY, cellSize, cellSize); 
+	}	
+	
+	private void importGridOnMap(int i, int j, int[] start, Graphics2D graphics) {
+    int GridX = start[0] + j * cellSize;
+    int GridY = start[1] + i * cellSize;
+    images.drawImage(graphics, images.get(7), GridX, GridY, cellSize, cellSize); 
+	}	
+	
 	private void importMerchantOnMap(int i, int j, int[] start, Graphics2D graphics) {
     int MerchantX = start[0] + j * cellSize;
     int MerchantY = start[1] + i * cellSize;
@@ -92,14 +105,6 @@ public class MapView implements View {
     int EnemyX = start[0] + j * cellSize;
     int EnemyY = start[1] + i * cellSize;
     images.drawImage(graphics, images.get(3), EnemyX, EnemyY, cellSize, cellSize); 
-	}
-	
-	private void importTreasureOnMap(int i, int j, int[] start, Graphics2D graphics) {
-		int MerchantX = start[0] + j * cellSize + cellSize / 4 + 4;
-		int MerchantY = start[1] + i * cellSize + 3 * cellSize / 4;
-    graphics.setColor(Color.WHITE); 
-    graphics.setFont(new Font("Arial", Font.BOLD, cellSize / 2));
-    graphics.drawString("T", MerchantX, MerchantY);
 	}
 	
 	private void drawRec(Graphics2D graphics, int x, int y, int cellSize, Color fillColor) {
@@ -129,6 +134,7 @@ public class MapView implements View {
 					if (room.hasAngel() && !isHeroOnCell(i, j)) importHealerOnMap(i, j, start, graphics);
 					if (room.hasEnemies() && !isHeroOnCell(i, j)) importEnemyOnMap(i, j, start, graphics);
 					if (room.hasTreasure() && !isHeroOnCell(i, j)) importTreasureOnMap(i, j, start, graphics);
+					if (room.hasGrid() && !isHeroOnCell(i, j)) importGridOnMap(i, j, start, graphics);
  				} else drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, Color.GRAY);
 			}
 		}
@@ -164,21 +170,35 @@ public class MapView implements View {
 						message.showMessage("Step by step ... Follow the path", 2000);
 						return;
 					} 
+					if (clickedRoom.hasGrid()) {
+						var unlocked = floor.tryUnlockGrid(clickedRoom, hero);
+						if (!unlocked) {
+							message.showMessage("You need a key to enter thid grid !", 1500);
+							return;
+						}
+						message.showMessage("You use a key. The grid opens...", 2000);
+						controller.enterGridRoom(clickedRoom, i, j);
+						return;
+					} 
 					floor.placeHero(i, j);
 					if (clickedRoom.hasAngel()) controller.changeView(controller.healerView());
-					if (clickedRoom.hasMerchant()) controller.changeView(controller.merchantView());
-					if (clickedRoom.hasTreasure()) {
+					if (clickedRoom.hasMerchant()) {
 						if (!clickedRoom.hasVisited()) {
-							controller.startTreasure();
+							controller.startMerchant();
 							clickedRoom.setVisited(true);
 						}
-						controller.changeView(controller.treasureView());
+						controller.changeView(controller.merchantView());
+					}
+					if (clickedRoom.hasTreasure()) {
+					  controller.startTreasure(clickedRoom); // TOUJOURS
+					  controller.changeView(controller.treasureView());
+					  clickedRoom.setVisited(true); // optionnel pour autre logique
 					}
 					if (clickedRoom.hasEnemies()) {
 						controller.changeView(controller.battleView());
 						if (clickedRoom.hasVisited()) controller.battleView().messageView().showMessage("Enemies defeated here already !", 2000);
 						else {
-							controller.startFight(clickedRoom.enemies());
+							controller.startFight(clickedRoom.enemies(), clickedRoom);
 							controller.changeView(controller.battleView());
 							clickedRoom.setVisited(true);							
 						}

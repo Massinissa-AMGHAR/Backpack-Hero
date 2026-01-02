@@ -31,6 +31,18 @@ public record BackpackSearch(Backpack backpack) {
   	return null; 
   }
   
+  public Item findKeyItem() {
+  	for (int i = 0; i < backpack.maxLines(); i++) {
+  		for (int j = 0; j < backpack.maxColumns(); j++) {
+  			var item = backpack.grid().get(i).get(j);
+  			if (item != null && item.type() == ItemType.KEY) {
+  				return item;
+  			}
+  		}
+  	}
+  	return null;
+  }
+  
   public Item findManaItem() {
   	for(int i = 0; i < backpack.maxLines(); i++) {
   		for(int j = 0; j < backpack.maxColumns(); j++) {

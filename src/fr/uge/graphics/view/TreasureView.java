@@ -23,6 +23,7 @@ public class TreasureView implements View {
 	private final MessageView messageView;
 	private boolean readyToReturnToMap = false;
 	private final Hero hero;
+	private final Items lootItems;
 	private final BackpackView backpackView; 
 	private final ImageLoader imagesHero;
 	private final int imageSize = 200;
@@ -34,13 +35,12 @@ public class TreasureView implements View {
 	private final DeleteButton deleteButton;
 	private final ManageBackpack management; 
 
-	public TreasureView(Hero hero, ImageLoader imagesHero, ImageLoader imagesItems) {
+	public TreasureView(Hero hero, Items lootItems, ImageLoader imagesHero, ImageLoader imagesItems) {
 		this.hero = hero;
 		this.imagesHero = imagesHero;
 		this.messageView = new MessageView(); 
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
-		var lootItems = new Items(); 
-		lootItems.randomItems(3);
+		this.lootItems = lootItems;
 		this.lootView = new ItemsView(lootItems, imagesItems); 
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView);
@@ -129,11 +129,12 @@ public class TreasureView implements View {
 		lootView.drawItems(graphics, context, false);
 		placementView.draw(graphics, context);
 		deleteView.draw(graphics, context);
-		if(!placementView.hasItem()) mapButton.draw(graphics);
+		mapButton.draw(graphics);
 		rotateButton.draw(graphics, context);
 		deleteButton.draw(graphics, context);
 		importHeroImage(graphics, context);   
 	}
+	
 	@Override
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(mapButton.click(x, y)) {

@@ -4,6 +4,7 @@ import fr.uge.graphics.view.*;
 import java.awt.Color;
 
 import java.awt.Graphics2D;
+import java.util.Random;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.KeyboardEvent;
@@ -59,9 +60,6 @@ public class Controller {
 		view = menuView;
 		
 		healerView = new HealerView(hero, healer, imagesMap, imagesServices, imagesItems);
-		merchantItems = new Items(); 
-		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
   }
 
 	public MenuView menuView() { return menuView; }
@@ -76,6 +74,46 @@ public class Controller {
 		view = newView;
 	}
 	
+	public void enterGridRoom(Room gridRoom, int i, int j) {
+		floor.placeHero(i, j);
+		var randomRoom = floor.generateRandomRoom(gridRoom);
+		
+    if (randomRoom.hasEnemies()) {
+			changeView(battleView);
+			if (randomRoom.generatedVisited()) battleView.messageView().showMessage("Enemies defeated here already !", 2000);
+			else {
+				startFight(randomRoom.enemies(), randomRoom);
+				changeView(battleView);
+				randomRoom.setGeneratedVisited(true);	
+			}
+			return;
+    } 
+    if (randomRoom.hasMerchant()) {
+      if (!randomRoom.generatedVisited()) {
+      	startMerchant();
+      	randomRoom.setGeneratedVisited(true);
+      }
+      changeView(merchantView);
+      return;
+    } 
+    if (randomRoom.hasAngel()) {
+      changeView(healerView);
+      return;
+    } 
+    if (randomRoom.hasTreasure()) {
+			if (!randomRoom.generatedVisited()) {
+				startTreasure(randomRoom);
+				randomRoom.setGeneratedVisited(true);
+			}
+			changeView(treasureView);
+			return;
+    } 
+    if (randomRoom.hasDoor()) {
+      goToNextFloor();
+      return;
+    }
+	}
+	
 	public void goToNextFloor() {
 		var next = dungeon.nextFloor(floor);
 		if (next == null) {
@@ -84,27 +122,30 @@ public class Controller {
 		}
 		floor = next;
 		floor.initPlaceHero();
+		//floor.resetGeneratedRoom();
 		mapView = new MapView(hero, floor, imagesMap);
-		merchantItems = new Items();
-		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
 		changeView(mapView);
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
 	}
 	
-	public void startFight(Enemies roomEnemies) {
-		var lootItems = new Items(); 
-		lootItems.randomItems(3);
+	public void startFight(Enemies roomEnemies, Room room) {
+		var lootItems = room.getLoot();
 		
 		battleView = new BattleView(hero, lootItems, roomEnemies, imagesMap, imagesEnemies, imagesItems, imagesStatus);
 		fightGraphics = new FightGraphics(hero, roomEnemies, battleView);
 		battleView.setFight(fightGraphics);
 	}
 	
-	public void startTreasure() {
-		var lootItems = new Items(); 
-		lootItems.randomItems(3);
-		treasureView = new TreasureView(hero, imagesMap, imagesItems);
+	public void startMerchant() {
+		merchantItems = new Items();
+		merchantItems.randomItems(3);
+		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
+
+	}
+	
+	public void startTreasure(Room room) {
+		var lootItems = new Items(room.getLoot()); 
+		treasureView = new TreasureView(hero, lootItems, imagesMap, imagesItems);
 	}
 	
 	public FightGraphics fightGraphics() { return fightGraphics; }
