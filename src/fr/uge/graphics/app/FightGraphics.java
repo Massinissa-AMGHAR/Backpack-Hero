@@ -15,6 +15,7 @@ public class FightGraphics {
 	private boolean heroTurn = true;
 	private boolean fightEnded = false;
 	private boolean lootPhase = false; 
+	private HallOfFame hof = new HallOfFame(); 
 	private Items lootItems = new Items(); 
 	private Item expectedCurse; 
 	
@@ -159,6 +160,8 @@ public class FightGraphics {
 
       }
     } else {
+    		int score = hero.score(); 
+				hof.addScore(score);
         battleView.messageView().showMessage(hero.name() + " was defeated...", 2000);
         battleView.messageView().showMessage("Returning to the map...", 4000);
         battleView.setReadyToReturnToMap(true);

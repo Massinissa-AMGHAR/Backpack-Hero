@@ -14,11 +14,12 @@ public class Game {
 	
 	private final Interactions interaction; 
 	private final Dungeon dungeon; 
-	private final Hero hero; 
+	private final Hero hero;
+	private final HallOfFame hallOfFame; 
 	
 	public Game(Interactions interaction) {
 		this.interaction = interaction; 
-		
+		hallOfFame = new HallOfFame(); 
 		dungeon = new Dungeon(2); 
 		dungeon.createDungeon();
 		

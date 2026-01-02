@@ -50,7 +50,7 @@ public class ItemRegistry {
 	// 4 + 2 POUR CHAQUE ARMOR ADJACENT
 	public static final ItemData KNIGHT_ARMOR = new ItemData("Knight Armor", ItemType.ARMOR, ItemRarity.UNCOMMON, ItemShapes.SIZE_2x2, 0, 4, 1, 0, 0, 0, 4);
 	// RIEN
-	public static final ItemData MAGIC_WAND = new ItemData("Magic Wand", ItemType.MAGIC, ItemRarity.COMMON, ItemShapes.SIZE_2x2, 3, 0, 1, 0, 1, 0, 3); 
+	public static final ItemData MAGIC_WAND = new ItemData("Magic Wand", ItemType.MAGIC, ItemRarity.COMMON, ItemShapes.SIZE_3x1, 3, 0, 1, 0, 1, 0, 3); 
 	// RIEN
 	public static final ItemData MANASTONE_BOW = new ItemData("Manastone Bow", ItemType.MAGIC, ItemRarity.UNCOMMON, ItemShapes.SIZE_3x1, 5, 0, 1, 0, 1, 0, 5);
 	// RIEN

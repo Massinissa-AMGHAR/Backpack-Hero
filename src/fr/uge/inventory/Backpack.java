@@ -190,7 +190,9 @@ public class Backpack {
   	int sum = 0; 
   	for(var line : grid) {
   		for(var item : line) {
-  			sum+= item.goldCost(); 
+  			if(item != null) {
+  				sum+= item.goldCost(); 
+  			}
   		}
   	}
   	return sum; 

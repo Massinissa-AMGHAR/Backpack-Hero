@@ -13,6 +13,7 @@ import java.util.List;
 
 public class MenuView implements View {
 	private int playX, playY, playWidth, playHeight;
+	private int hofX, hofY, hofWidth, hofHeight; 
 	private boolean nextFloor = false;
 	
 	public int playX() { return playX; }
@@ -52,25 +53,50 @@ public class MenuView implements View {
     graphics.drawString(l.get(1), (screenInfo.width() - fontmetric2.stringWidth(l.get(1))) / 2, screenInfo.height()/2);
 	}
 	
+	private void hallOfFame(Graphics2D graphics, List<String> l, ScreenInfo screenInfo) {
+		hofX = playX;
+    hofY = playY + playHeight + 20;
+    hofWidth = playWidth;
+    hofHeight = playHeight;
+    
+    graphics.setColor(Color.LIGHT_GRAY);
+    graphics.fillRect(hofX, hofY, hofWidth, hofHeight); 
+    graphics.setFont(new Font("Arial", Font.BOLD, 50));
+    graphics.setColor(Color.WHITE);
+    var fontMetrics = graphics.getFontMetrics();
+    
+    String text = l.get(2); 
+    graphics.drawString(text, (screenInfo.width() - fontMetrics.stringWidth(text)) /2, hofY + hofHeight/2 + fontMetrics.getAscent() /2 - 5);
+   
+	}
+	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		var screenInfo = context.getScreenInfo();
-		 var l = List.of("BACKPACK HERO", "START GAME");
+		 var l = List.of("BACKPACK HERO", "START GAME", "HALL OF FAME");
 		// BackGround
 		background(graphics, screenInfo);
     // Title
     title(graphics, context, l, screenInfo);
     //Button
     play(graphics, l, screenInfo);
+    
+    hallOfFame(graphics, l, screenInfo); 
 	}
 	
 	private boolean isPlayButton(int x, int y) {
     return x >= playX && x <= playX + playWidth && y >= playY && y <= playY + playHeight;
 	}
-	
+	private boolean isHofButton(int x, int y) {
+    return x >= hofX && x <= hofX + hofWidth && y >= hofY && y <= hofY + hofHeight;
+	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (isPlayButton(x, y)) {
 			controller.changeView(controller.mapView());
 			controller.mapView().messageView().showMessage("Welcome to the dungeon !", 2000);
+		}
+		
+		if (isHofButton(x, y)) {
+			controller.changeView(controller.hofView());
 		}
 	}
 	

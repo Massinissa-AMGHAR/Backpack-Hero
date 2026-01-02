@@ -19,6 +19,7 @@ public class Controller {
   private final Hero hero;
   private final Merchant merchant; 
   private final Healer healer;
+  private final HallOfFame hof; 
   private final Enemies enemies;
   private final Dungeon dungeon;
   private Floor floor;
@@ -31,6 +32,7 @@ public class Controller {
   private Items merchantItems; 
   private final ImageLoader imagesServices;
   private final MenuView menuView;
+  private final HallOfFameView hofView; 
   private MapView mapView;
   
   private final HealerView healerView;
@@ -39,6 +41,7 @@ public class Controller {
   private View view;
   private BattleView battleView;
   private FightGraphics fightGraphics;
+  private boolean dungeonFinished = false; 
   
 	
   public Controller(Hero hero, Merchant merchant, Healer healer, Dungeon dungeon, Floor floor, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
@@ -55,9 +58,10 @@ public class Controller {
 		this.imagesServices = imagesServices;
 		this.imagesStatus = imagesStatus;
 		menuView = new MenuView();
+		hofView = new HallOfFameView(); 
 		mapView = new MapView(hero, floor, imagesMap); 
 		view = menuView;
-		
+		hof = new HallOfFame(); 
 		healerView = new HealerView(hero, healer, imagesMap, imagesServices, imagesItems);
 		merchantItems = new Items(); 
 		merchantItems.randomItems(3);
@@ -65,6 +69,7 @@ public class Controller {
   }
 
 	public MenuView menuView() { return menuView; }
+	public HallOfFameView hofView() {return hofView; }
 	public MapView mapView() { return mapView; }
 	public BattleView battleView() { return battleView; }
 	public HealerView healerView() { return healerView; }
@@ -80,6 +85,7 @@ public class Controller {
 		var next = dungeon.nextFloor(floor);
 		if (next == null) {
 			mapView.messageView().showMessage("You have cleared the dungeon !", 1000);
+			dungeonFinished = true; 
 			return;
 		}
 		floor = next;
@@ -130,6 +136,11 @@ public class Controller {
     boolean running = true;
     while (running) {
     	context.renderFrame(graphics -> {
+    		if(dungeonFinished) {
+    			int score = hero.score(); 
+    			hof.addScore(score);
+    			dungeonFinished = false; 
+    		}
         view.draw(graphics, context);
         if (view == battleView) {
         	fightGraphics.updateFight();
@@ -162,7 +173,7 @@ public class Controller {
         }
     	});
     	running = gameLoop(context);
-    }
+    } 
     context.dispose();
 	}
 }
