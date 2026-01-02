@@ -121,7 +121,19 @@ public class FightGraphics {
 	    	hero.equipArmor(item);
 	    	battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " for passive damage reduction of " + item.defense() + "!", 1000);
 	    }
-	    case GOLD, MANA, CONSUMABLE, KEY -> {}
+	    case CONSUMABLE -> {
+	    	var healedHP = item.hpGained();
+	    	var energyGained = item.energyGained();
+	    	if (healedHP > 0) {
+	    		hero.heal(healedHP);
+	    		battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and recovers " + healedHP + " HP !", 1000);
+	    	}
+	    	if (energyGained > 0) {
+	    		hero.addEnergy(energyGained);
+	    		battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " and gains " + energyGained + " energy !", 1000);
+	    	}
+	    }
+	    case GOLD, MANA, KEY, CURSE -> {}
     }
     applyItemEffects(item, enemy);
     applyItemInteractions(item, enemy);

@@ -22,7 +22,7 @@ public class Item {
   private final List<ItemEffect> effects = new ArrayList<>();
   private final List<ItemInteraction> interactions = new ArrayList<>();
 	
-	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int goldCost, int goldAmount) {
+	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int hpGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
 		Objects.requireNonNull(type, "type can't be null.");
 		Objects.requireNonNull(rarity, "rarity can't be null.");
@@ -39,7 +39,8 @@ public class Item {
 				energyGained, 
 				manaNeeded, 
 				manaGained,
-				goldCost
+				goldCost,
+				hpGained
 		); 
 		this.shape = shape; 
 	  this.id = counter++;
@@ -72,6 +73,7 @@ public class Item {
 	public int energyGained() { return data.energyGained(); }
 	public int manaCost() { return data.manaCost(); }
 	public int manaGained() { return data.manaGained(); }
+	public int hpGained() { return data.hpGained(); }
 	public int goldCost() { return data.goldCost(); }
 	public int id() { return id; }
 	public int goldAmount() {return goldAmount;}
@@ -131,7 +133,7 @@ public class Item {
 				newShape[i][j] = shape[i][j]; 
 			}
 		}
-		return new Item(data.name(), data.type().name(), data.rarity().name(), newShape, data.damage(), data.defense(), data.energyCost(), data.energyGained(), data.manaCost(), data.manaGained(), data.goldCost(), goldAmount);
+		return new Item(data.name(), data.type().name(), data.rarity().name(), newShape, data.damage(), data.defense(), data.energyCost(), data.energyGained(), data.manaCost(), data.manaGained(), data.hpGained(), data.goldCost(), goldAmount);
 	}
 	
 	public int imageIndex() {
@@ -161,7 +163,10 @@ public class Item {
 		 case "Dark Wand" -> 22;
 		 case "Robin Wand" -> 23;
 		 case "Key" -> 24;
-		 case "Curse" -> 25; 
+		 case "Curse" -> 25;
+		 case "Cool Drink" -> 26;
+		 case "Meal" -> 27;
+		 case "Steak" -> 28;
 		 default -> 0; 
 		};
 	}

@@ -49,7 +49,7 @@ public class MerchantView implements View {
 		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
 		this.rotateButton = new RotateButton(); 
 		this.sellButton = new SellButton();
-	
+		message.showMessage("Welcome to the Merchant !", 2000);
 	}
 	
 	public void setReadyToReturnToMap(boolean ready) {
@@ -104,7 +104,7 @@ public class MerchantView implements View {
 		shopView.drawItems(graphics, context, true);
 		backpackView.drawBackpack(graphics, context); 
 		placementView.draw(graphics, context);
-		if(!placementView.hasItem()) mapButton.draw(graphics);
+		mapButton.draw(graphics);
 		rotateButton.draw(graphics, context);
 		sellButton.draw(graphics, context);
 		

@@ -21,7 +21,7 @@ public class GameGraphics {
     dungeon.createDungeon();
 
     Backpack backpack = new Backpack();
-    var item = ItemRegistry.create(ItemRegistry.WOODEN_SWORD); 
+    var item = ItemRegistry.create(ItemRegistry.WOODEN_SWORD);
     backpack.add(item, 1, 2);
 
     hero = new Hero("Mouse", 40, 40, 0, 3, 5, 0, 0, 0, backpack, interaction);

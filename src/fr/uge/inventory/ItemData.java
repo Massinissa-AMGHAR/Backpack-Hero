@@ -13,7 +13,8 @@ public record ItemData(
 		int energyGained, 
 		int manaCost, 
 		int manaGained, 
-		int goldCost) {
+		int goldCost,
+		int hpGained) {
 	
 	public ItemData{
 		Objects.requireNonNull(name); 

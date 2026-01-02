@@ -48,6 +48,8 @@ public class HealerView implements View {
 
 		this.messageView = new MessageView(); 
 		this.healButton = new HealButton();
+		messageView.showMessage("Welcome to the Healer !", 2000);
+
 	}
 	
 	public void setReadyToReturnToMap(boolean ready) {

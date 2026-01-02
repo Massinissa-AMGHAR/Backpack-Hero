@@ -40,10 +40,11 @@ public class HeroFight {
   public void resetProtection() {protection = 0;}
   public void resetArmor() { armorValue = 0; }
   public void resetMana() { mana = manaMax; }
+  public void addEnergy(int amount) { energy += amount; }
   public void resetEnergy() {energy = 3; }
   
   public void hpmaxAugmentation() {
-  	HPMAX += 10; 
+  	HPMAX += 2; 
   }
   public void addCursePenalty() {
   	cursePenaltyStacks++; 

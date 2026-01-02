@@ -60,6 +60,7 @@ public class Backpack {
   public Item choice(int line, int column) {return search.choice(line, column); }
   public Item findGoldItem() {return search.findGoldItem();}
   public Item findManaItem() { return search.findManaItem(); }
+  public Item findKeyItem() { return search.findKeyItem(); }
   
   public int findManaCount() { return search.findManaCount(); }
   public int unlockCount() { return unlockCount; }

@@ -4,6 +4,7 @@ import fr.uge.graphics.view.*;
 import java.awt.Color;
 
 import java.awt.Graphics2D;
+import java.util.Random;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.KeyboardEvent;
@@ -35,7 +36,7 @@ public class Controller {
   private final HallOfFameView hofView; 
   private MapView mapView;
   
-  private final HealerView healerView;
+  private HealerView healerView;
   private MerchantView merchantView;
   private TreasureView treasureView;
   private View view;
@@ -58,14 +59,16 @@ public class Controller {
 		this.imagesServices = imagesServices;
 		this.imagesStatus = imagesStatus;
 		menuView = new MenuView();
+
 		hofView = new HallOfFameView(); 
-		mapView = new MapView(hero, floor, imagesMap); 
-		view = menuView;
 		hof = new HallOfFame(); 
 		healerView = new HealerView(hero, healer, imagesMap, imagesServices, imagesItems);
 		merchantItems = new Items(); 
 		merchantItems.randomItems(3);
 		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
+
+		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
+		view = menuView;
   }
 
 	public MenuView menuView() { return menuView; }
@@ -81,6 +84,37 @@ public class Controller {
 		view = newView;
 	}
 	
+	public void enterGridRoom(Room gridRoom, int i, int j) {
+		floor.placeHero(i, j);
+
+		var randomRoom = floor.generateRandomRoom(gridRoom);
+		
+    if (randomRoom.hasEnemies()) {
+      startFight(randomRoom.enemies(), randomRoom);
+      randomRoom.setVisited(true);
+      return;
+    }
+    if (randomRoom.hasMerchant()) {
+      startMerchant(randomRoom);
+      randomRoom.setVisited(true);
+      return;
+    }
+    if (randomRoom.hasAngel()) {
+      startHealer(randomRoom);
+      randomRoom.setVisited(true);
+    	return;
+    }
+    if (randomRoom.hasTreasure()) {
+      startTreasure(randomRoom);
+      randomRoom.setVisited(true);
+      return;
+    }
+    if (randomRoom.hasDoor()) {
+      goToNextFloor();
+      return;
+    }
+	}
+	
 	public void goToNextFloor() {
 		var next = dungeon.nextFloor(floor);
 		if (next == null) {
@@ -90,30 +124,36 @@ public class Controller {
 		}
 		floor = next;
 		floor.initPlaceHero();
-		mapView = new MapView(hero, floor, imagesMap);
-		merchantItems = new Items();
-		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
+		//floor.resetGeneratedRoom();
+		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus);
 		changeView(mapView);
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
 	}
 	
-	public void startFight(Enemies roomEnemies) {
-		var lootItems = new Items(); 
-		lootItems.randomItems(3);
-		
-		battleView = new BattleView(hero, lootItems, roomEnemies, imagesMap, imagesEnemies, imagesItems, imagesStatus);
-		fightGraphics = new FightGraphics(hero, roomEnemies, battleView);
-		battleView.setFight(fightGraphics);
+	public void startFight(Enemies roomEnemies, Room room) {
+		battleView = room.getBattleView(hero, imagesMap, imagesEnemies, imagesItems, imagesStatus);
+		if (battleView.fight() == null) {
+			var fg = new FightGraphics(hero, roomEnemies, battleView);
+			battleView.setFight(fg);
+		}
+		changeView(battleView);
 	}
 	
-	public void startTreasure() {
-		var lootItems = new Items(); 
-		lootItems.randomItems(3);
-		treasureView = new TreasureView(hero, imagesMap, imagesItems);
+	public void startMerchant(Room room) {
+		merchantView = room.getMerchantView(hero, imagesMap, imagesServices, imagesItems);
+		changeView(merchantView);
 	}
 	
-	public FightGraphics fightGraphics() { return fightGraphics; }
+	public void startHealer(Room room) {
+		healerView = room.getHealerView(hero, imagesMap, imagesServices, imagesItems);
+		changeView(healerView);
+	}
+	
+	public void startTreasure(Room room) {
+		treasureView = room.getTreasureView(hero, imagesMap, imagesItems);
+		changeView(treasureView);
+	}
+	
 	
 	private boolean gameLoop(ApplicationContext context) {
 		var event = context.pollOrWaitEvent(10);
@@ -143,7 +183,7 @@ public class Controller {
     		}
         view.draw(graphics, context);
         if (view == battleView) {
-        	fightGraphics.updateFight();
+        	battleView.fight().updateFight();
         	battleView.messageView().update();
         	if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
         		changeView(mapView);

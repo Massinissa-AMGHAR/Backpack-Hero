@@ -59,6 +59,7 @@ public class Hero implements Fighter{
   public void resetProtection() {heroFight.resetProtection();}
   public void resetArmor() { heroFight.resetArmor(); }
   public void resetEnergy() {heroFight.resetEnergy();}
+  public void addEnergy(int amount) { heroFight.addEnergy(amount); }
   public void resetMana() {heroFight.resetMana();}
   public void addMana(int amount) { heroFight.addMana(amount); }
   public void reduceMana(int amount) { heroFight.reduceMana(amount); }
