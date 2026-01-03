@@ -120,7 +120,7 @@ public class HealerView implements View {
 		messageView.drawMessage(graphics, context);
 		backpackView.drawBackpack(graphics, context);
 		placementView.draw(graphics, context);
-		if(!placementView.hasItem())mapButton.draw(graphics);
+		mapButton.draw(graphics);
 		healButton.draw(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);

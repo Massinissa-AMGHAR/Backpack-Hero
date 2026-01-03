@@ -44,10 +44,8 @@ public class BattleView implements View {
 	private final DeleteButton deleteButton;
 	private final EndTurnButton endButton;
 	private Enemy selectedEnemy;
-	private boolean goldPlaced = false; 
 	private final ImageLoader imagesItems; 
 	private int refuseCount = 0; 
-	private boolean manaStonePlaced = false;
 	
 	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
 
@@ -285,7 +283,8 @@ public class BattleView implements View {
 	}
 	 
 	private void goldReward() {
-		if (goldPlaced || !fightGraphics.isLootPhase()) return;
+		if (!fightGraphics.isLootPhase()) return;
+		if(fightGraphics.goldRewardConsumed()) return; 
 		var reward = fightGraphics.getGoldReward();
 		var backpack = backpackView.backpack();
 		var gold = backpack.findGoldItem();
@@ -294,17 +293,17 @@ public class BattleView implements View {
 		} else {
 			var newGold = ItemRegistry.create(ItemRegistry.GOLD, reward); 
 			placementView.take(newGold);
-			manaStonePlaced = false;
 		}
-		goldPlaced = true;
+		fightGraphics.consumeGoldReward();
 	}
 	
 	private void manaStoneReward() {
-		if (!manaStonePlaced && !placementView.hasItem()) {
-			var manaStone = ItemRegistry.create(ItemRegistry.MANA_STONE, 1);
-			placementView.take(manaStone);
-			manaStonePlaced = true;
-		}
+		if(!fightGraphics.isLootPhase())return; 
+		if(fightGraphics.manaRewardConsumed()) return; 
+		if(placementView.hasItem())return; 
+		var manaStone = ItemRegistry.create(ItemRegistry.MANA_STONE, 1); 
+		placementView.take(manaStone);
+		fightGraphics.consumeManaReward();
 	}
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
@@ -328,7 +327,7 @@ public class BattleView implements View {
 			deleteView.draw(graphics, context);
 			goldReward();
 			manaStoneReward();
-			if(!placementView.hasItem())mapButton.draw(graphics);
+			mapButton.draw(graphics);
 			rotateButton.draw(graphics, context);
 			deleteButton.draw(graphics, context);
 		}
@@ -414,6 +413,9 @@ public class BattleView implements View {
 	private void clickLootPhase(int x, int y, Controller controller, ApplicationContext context) {
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);
+			fightGraphics.consumeManaReward();
+			fightGraphics.consumeGoldReward();
+			placementView.clear();  
 			setReadyToReturnToMap(true);
 			return; 
 		}
