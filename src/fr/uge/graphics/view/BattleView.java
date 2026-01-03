@@ -70,7 +70,6 @@ public class BattleView implements View {
 		
 	}
 	public MessageView messageView() {return messageView; }
-	
 	public void setReadyToReturnToMap(boolean ready) {
     readyToReturnToMap = ready;
 	}
@@ -309,7 +308,11 @@ public class BattleView implements View {
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		if(fightGraphics != null && fightGraphics.expectedCurse() != null && curseView == null) {
-			startCursePhase(fightGraphics.expectedCurse()); 
+			if(!fightGraphics.curseShown()) {
+				startCursePhase(fightGraphics.expectedCurse()); 
+				fightGraphics.setCurseShown(true);
+			}
+			
 		}
 		background(graphics, context.getScreenInfo());
 		messageView.drawMessage(graphics, context); 
@@ -466,14 +469,16 @@ public class BattleView implements View {
 	private void startCursePhase(Item curseItem) {
 		if(curseItem == null || curseView != null)return; 
 		curseView = new CurseView(hero, curseItem, imagesHero, imagesItems, refuseCount); 
-		fightGraphics.clearExpectedCurse();
 	}
 	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(curseView != null) {
 			curseView.Click(x, y, controller, context);
 			refuseCount = curseView.refuseCount(); 
-			if(curseView.endPlacement()) curseView = null; 
+			if(curseView.madeChoice()) {
+				if(curseView.curseAccepted()) fightGraphics.clearExpectedCurse(); 
+				curseView = null; 
+			}	 
 			return; 
 		}
 		

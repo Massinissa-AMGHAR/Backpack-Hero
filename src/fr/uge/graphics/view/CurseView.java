@@ -27,7 +27,8 @@ public class CurseView implements View{
 	private int refuseCount; 
 	private final int imageSize = 200;
 	
-	private boolean choiceMade = false;  
+	private boolean curseAccepted = false;
+	private boolean madeChoice = false; 
 	
 	public CurseView(Hero hero, Item curse, ImageLoader imageHero, ImageLoader imagesItems, int refuseCount) {
 		this.hero = hero; 
@@ -44,16 +45,16 @@ public class CurseView implements View{
 		this.refuseCount = refuseCount; 
 		this.imageHero = imageHero; 
 	}
+	public boolean curseAccepted() {return curseAccepted; }
 	public int refuseCount() {return refuseCount;}
+	public Item getCurse() {return curse;}
+	public boolean madeChoice() {return madeChoice; }
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
 		int heroX = context.getScreenInfo().width() / 5;
 		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		imageHero.drawImage(graphics, imageHero.get(0), heroX, heroY, imageSize, imageSize); // Hero
 	}
 	
-	public boolean endPlacement() {
-		return choiceMade; 
-	}
 	@Override
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
@@ -71,14 +72,16 @@ public class CurseView implements View{
 		if(refuseButton.click(x, y)) {
 			refuseCount++; 
 			hero.receiveDamage(refuseCount);
-			choiceMade = true; 
+			messageView.showMessage(refuseCount + " damage ! " + "It will be reproposed next turn.", 1000);
+			madeChoice = true; 
 			return; 
 		}
 		
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			if (management.placeCurseInBackpack(cell[0], cell[1])){
-				choiceMade = true; 
+				curseAccepted = true; 
+				madeChoice = true; 
 				placementView.clear();
 			}
 		}

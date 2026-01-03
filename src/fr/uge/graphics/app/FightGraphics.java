@@ -22,7 +22,8 @@ public class FightGraphics {
 	private final boolean[] enemyDefeatedMessageShown;
 	private boolean goldRewardConsumed = false; 
 	private boolean manaRewardConsumed = false; 
-	
+	private boolean curseLaunched = false; 
+	private boolean curseShown = false; 
 	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
 		this.hero = hero;
 		this.enemies = enemies;
@@ -34,6 +35,8 @@ public class FightGraphics {
 		if (enemies.getEnemies().size() == 1) battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().get(0).name() + "!", 1000);
 		else battleView.messageView().showMessage("The fight starts between " + hero.name() + " and " + enemies.getEnemies().size() + " enemies !", 1000);
 	}
+	public boolean curseShown() {return curseShown;}
+	public void setCurseShown(boolean value) {curseShown = value;}
 	public Item expectedCurse() {return expectedCurse;}
 	public void clearExpectedCurse() {expectedCurse = null;}
 	public boolean goldRewardConsumed() {return goldRewardConsumed; }
@@ -45,7 +48,6 @@ public class FightGraphics {
 	public int getGoldReward() {
 		return enemies.getEnemies().size();
 	}
-	
 	public boolean isFightOver() {
     if (hero.HP() <= 0) return true;
     for (var enemy : enemies.getEnemies()) {
@@ -61,6 +63,7 @@ public class FightGraphics {
   public void endHeroTurn() {
   	if (!heroTurn || isFightOver()) return;
   	heroTurn = false;
+
   }
   
   private void applyPoisonToEnemy(Enemy enemy) {
@@ -183,6 +186,7 @@ public class FightGraphics {
         battleView.messageView().showMessage("Returning to the map...", 4000);
         battleView.setReadyToReturnToMap(true);
     }
+    curseLaunched = false; 
   }
 
   public boolean isLootPhase() {return lootPhase;}
@@ -215,6 +219,7 @@ public class FightGraphics {
     for (var enemy : enemies.getEnemies()) {
     	if (enemy.HP() <= 0) continue;
     	int action = enemy.getAction();
+    	if(curseLaunched && action == 2)action = 0; 
     	switch (action) {
     		case 0 -> {
     			int damage = enemy.attack(hero, null);
@@ -228,6 +233,7 @@ public class FightGraphics {
     			Item curse = enemy.curse(); 
     			battleView.messageView().showMessage(enemy.name() + " inflicts a curse ", 1000 + time);
     			giveCurse(curse); 
+    			curseLaunched = true; 
     		}
     	}
     	time += 1000; 
@@ -235,6 +241,7 @@ public class FightGraphics {
     }
     if(hero.applyCursePenalty()) battleView.messageView().showMessage("Penalty!", 1000 + time);
     heroTurn = true;
+  	curseShown = false; 
     cursesAttack(time); 
     hero.resetEnergy();
     hero.resetProtection();

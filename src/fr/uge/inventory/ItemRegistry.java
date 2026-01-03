@@ -155,8 +155,8 @@ public class ItemRegistry {
 				data.energyCost(), 
 				data.energyGained(), 
 				data.manaCost(), 
-				data.hpGained(),
 				data.manaGained(), 
+				data.hpGained(),
 				data.goldCost(), 
 				goldAmount
 		); 		
