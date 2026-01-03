@@ -28,7 +28,7 @@ public class Game {
 		item.setLeftPlacement(1, 2); 
 		backpack.add(item, 1, 2);
 		
-		hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack, interaction);
+		hero = new Hero("Mouse", 40, 40, 0, 3, 5, 5,  0, 0, backpack);
 	}
 	
 	public void start() {

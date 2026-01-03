@@ -45,7 +45,7 @@ public class Room {
     if(hasMerchant) merchant = new Merchant(); 
     else merchant = null; 
     
-    if(hasAngel) healer = new Healer(10, 5); 
+    if(hasAngel) healer = new Healer(1, 10); 
     else healer = null;
     
   }

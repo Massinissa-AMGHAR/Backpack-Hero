@@ -18,19 +18,13 @@ import fr.uge.map.*;
 
 public class Controller {	
   private final Hero hero;
-  private final Merchant merchant; 
-  private final Healer healer;
   private final HallOfFame hof; 
-  private final Enemies enemies;
   private final Dungeon dungeon;
   private Floor floor;
-  private final Interactions interactions;
   private final ImageLoader imagesMap;
   private final ImageLoader imagesEnemies;
   private final ImageLoader imagesStatus;
-  
   private final ImageLoader imagesItems;
-  private Items merchantItems; 
   private final ImageLoader imagesServices;
   private final MenuView menuView;
   private final HallOfFameView hofView; 
@@ -45,14 +39,10 @@ public class Controller {
   private boolean dungeonFinished = false; 
   
 	
-  public Controller(Hero hero, Merchant merchant, Healer healer, Dungeon dungeon, Floor floor, Enemies enemies, Interactions interactions, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
+  public Controller(Hero hero, Dungeon dungeon, Floor floor, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
 		this.hero = hero;
-		this.merchant = merchant; 
-		this.healer = healer;
-		this.enemies = enemies;
 		this.dungeon = dungeon;
 		this.floor = floor;
-		this.interactions = interactions;
 		this.imagesMap = imagesMap;
 		this.imagesEnemies = imagesEnemies;
 		this.imagesItems = imagesItems;		
@@ -62,10 +52,6 @@ public class Controller {
 
 		hofView = new HallOfFameView(); 
 		hof = new HallOfFame(); 
-		healerView = new HealerView(hero, healer, imagesMap, imagesServices, imagesItems);
-		merchantItems = new Items(); 
-		merchantItems.randomItems(3);
-		merchantView = new MerchantView(hero, merchant, merchantItems, imagesMap, imagesServices, imagesItems);
 
 		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
 		view = menuView;

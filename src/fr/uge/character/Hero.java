@@ -14,7 +14,7 @@ public class Hero implements Fighter{
   private final HeroEconomyManager economyManager; 
 
   
-  public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int xp,  int level, Backpack backpack, Interactions interaction) {
+  public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int xp,  int level, Backpack backpack) {
     Objects.requireNonNull(name, "name can't be null");
     Objects.requireNonNull(backpack, "backpack can't be null");
     if (HP < 0 || HPMAX < 0 || protection < 0 || energy < 0 || mana < 0 || manaMax < 0 || xp < 0 || level < 0) throw new IllegalArgumentException("Integer must be >= 0");

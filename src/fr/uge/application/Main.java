@@ -20,7 +20,7 @@ public class Main {
 																								"Cool_Drink.png", "Meal.png", "Steak.png");
 	    ImageLoader imagesServices = new ImageLoader("data", "merchant.png", "healer.png");
 	    ImageLoader imagesStatus = new ImageLoader("data", "Status_Poison.png", "fight.png", "defense.png", "curse_action.png");
-	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.merchant(), gameGraphics.healer(), gameGraphics.dungeon(), gameGraphics.floor(), gameGraphics.enemies(), gameGraphics.interaction(), imagesMap, imagesEnemies, imagesItems, imagesServices, imagesStatus);
+	    Controller controller = new Controller(gameGraphics.hero(), gameGraphics.dungeon(), gameGraphics.floor(), imagesMap, imagesEnemies, imagesItems, imagesServices, imagesStatus);
 	    Application.run(Color.DARK_GRAY, controller::game);
 		} else { 
 	    Interactions interaction = new Interactions(); 
