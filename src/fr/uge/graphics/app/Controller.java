@@ -17,9 +17,9 @@ import fr.uge.inventory.*;
 import fr.uge.map.*;
 
 public class Controller {	
-  private final Hero hero;
-  private final HallOfFame hof; 
-  private final Dungeon dungeon;
+  private Hero hero;
+  private HallOfFame hof; 
+  private Dungeon dungeon;
   private Floor floor;
   private final ImageLoader imagesMap;
   private final ImageLoader imagesEnemies;
@@ -56,7 +56,17 @@ public class Controller {
 		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
 		view = menuView;
   }
-
+  public void startNewGame() {
+  	GameGraphics newGame = new GameGraphics(); 
+  	hero = newGame.hero(); 
+  	dungeon = newGame.dungeon(); 
+  	floor = newGame.floor(); 
+  	mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
+  	changeView(mapView); 
+  	dungeonFinished = false; 
+  	mapView().messageView().showMessage("Welcome to the dungeon !", 2000);
+  	
+  }
 	public MenuView menuView() { return menuView; }
 	public HallOfFameView hofView() {return hofView; }
 	public MapView mapView() { return mapView; }
@@ -165,12 +175,20 @@ public class Controller {
     		if(dungeonFinished) {
     			int score = hero.score(); 
     			hof.addScore(score);
-    			dungeonFinished = false; 
+    			changeView(menuView); 
+    			return; 
     		}
         view.draw(graphics, context);
         if (view == battleView) {
         	battleView.fight().updateFight();
         	battleView.messageView().update();
+        	if(hero.isDead()) {
+        		battleView.messageView().showMessage("You lost this game...", 0); 
+        		int score = hero.score(); 
+      			hof.addScore(score);
+      			changeView(menuView); 
+      			return; 
+        	}
         	if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
         		changeView(mapView);
         		battleView.setReadyToReturnToMap(false);

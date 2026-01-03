@@ -91,8 +91,7 @@ public class MenuView implements View {
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (isPlayButton(x, y)) {
-			controller.changeView(controller.mapView());
-			controller.mapView().messageView().showMessage("Welcome to the dungeon !", 2000);
+			controller.startNewGame();
 		}
 		
 		if (isHofButton(x, y)) {

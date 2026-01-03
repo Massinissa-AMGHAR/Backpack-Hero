@@ -28,6 +28,7 @@ public class Hero implements Fighter{
   
   public String name() { return name; }
   public int HP() {return heroFight.HP();}
+  public boolean isDead() {return heroFight.HP() == 0;}
   public int HPMAX() {return heroFight.HPMAX();}
   public int protection(){return heroFight.protection(); }
   public void equipArmor(Item item) { heroFight.equipArmor(item); } 
