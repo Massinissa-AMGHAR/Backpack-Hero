@@ -29,7 +29,6 @@ public class Room {
   private final Healer healer; 
   private final ArrayList<Room> neighbors = new ArrayList<>(); 
   private Room generatedRoom;
-  private boolean gridJustUnlocked = false;
 
   public Room(boolean hasEnemies, boolean hasMerchant, boolean hasAngel, boolean hasTreasure, boolean hasDoor, boolean hasGrid) {
     this.hasEnemies = hasEnemies;
@@ -110,13 +109,6 @@ public class Room {
   public void setGeneratedRoom(Room room) {
   	this.generatedRoom = room;
   }
-  
-  public void resetGeneratedRoom() {
-  	generatedRoom = null;
-  }
-  
-  public boolean gridJustUnlocked() { return gridJustUnlocked; }
-  public void setGridJustUnlocked(boolean bool) { gridJustUnlocked = bool; }
   
   public boolean hasEnemies() {return hasEnemies; }
   public boolean hasMerchant() {return hasMerchant;}

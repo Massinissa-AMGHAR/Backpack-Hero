@@ -179,9 +179,13 @@ public class MapView implements View {
 						return;
 					} 
 					if (clickedRoom.hasGrid()) {
-						var unlocked = floor.tryUnlockGrid(clickedRoom, hero);
-						if (!unlocked) {
-							message.showMessage("You need a key to enter this grid !", 1500);
+						if (!clickedRoom.hasVisited()) {
+							var unlocked = floor.tryUnlockGrid(clickedRoom, hero);
+							if (!unlocked) {
+								message.showMessage("You need a key to enter this grid !", 1500);
+								return;
+							}
+							message.showMessage("You use a key. The grid opens...", 2000);
 							return;
 						}
 						controller.enterGridRoom(clickedRoom, i, j);

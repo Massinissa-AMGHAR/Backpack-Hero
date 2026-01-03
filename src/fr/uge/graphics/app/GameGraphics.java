@@ -23,11 +23,11 @@ public class GameGraphics {
     Backpack backpack = new Backpack();
     var item = ItemRegistry.create(ItemRegistry.WOODEN_SWORD);
     backpack.add(item, 1, 2);
-
+    
     hero = new Hero("Mouse", 40, 40, 0, 3, 5, 0, 0, 0, backpack, interaction);
     enemies = new Enemies();
     merchant = new Merchant(); 
-    healer = new Healer(1, 50);
+    healer = new Healer(5, 10);
 
     floor = dungeon.getFloor(0);
     floor.initPlaceHero();
