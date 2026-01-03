@@ -20,6 +20,8 @@ public class FightGraphics {
 	private Item expectedCurse; 
 	
 	private final boolean[] enemyDefeatedMessageShown;
+	private boolean goldRewardConsumed = false; 
+	private boolean manaRewardConsumed = false; 
 	
 	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
 		this.hero = hero;
@@ -34,7 +36,10 @@ public class FightGraphics {
 	}
 	public Item expectedCurse() {return expectedCurse;}
 	public void clearExpectedCurse() {expectedCurse = null;}
-	
+	public boolean goldRewardConsumed() {return goldRewardConsumed; }
+	public void consumeGoldReward() {goldRewardConsumed = true; }
+	public boolean manaRewardConsumed() {return manaRewardConsumed; }
+	public void consumeManaReward() {manaRewardConsumed = true; }
 	public BattleView battleView() { return battleView; }
 	
 	public int getGoldReward() {

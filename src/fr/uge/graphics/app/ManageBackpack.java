@@ -31,8 +31,8 @@ public class ManageBackpack {
 		if(item == null) return false; 
 		if (placementView.hasItem()) return false; 
 		if(item.type().equals(ItemType.CURSE)) return false; 
+		placementView.take(item);
 		backpack.delete(item);
-		placementView.take(item); 
 		return true; 
 	}
 	
