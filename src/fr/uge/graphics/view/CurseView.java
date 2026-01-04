@@ -7,6 +7,7 @@ import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.character.Hero;
 import fr.uge.graphics.app.Controller;
+import fr.uge.graphics.app.FightGraphics;
 import fr.uge.graphics.app.ManageBackpack;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
@@ -29,12 +30,13 @@ public class CurseView implements View{
 	
 	private boolean curseAccepted = false;
 	private boolean madeChoice = false; 
+	private final FightGraphics fight;
 	
-	public CurseView(Hero hero, Item curse, ImageLoader imageHero, ImageLoader imagesItems, int refuseCount) {
+	public CurseView(Hero hero, Item curse, FightGraphics fight, ImageLoader imageHero, ImageLoader imagesItems, int refuseCount) {
 		this.hero = hero; 
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
 		this.curse = curse; 
-		
+		this.fight = fight;
 		this.deleteView = new ItemDeleteView(imagesItems); 
 		this.placementView = new ItemPlacementView(imagesItems, deleteView); 
 		placementView.take(curse);
@@ -77,6 +79,7 @@ public class CurseView implements View{
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			if (management.placeCurseInBackpack(cell[0], cell[1])){
+				fight.setCurseLaunced(false);
 				curseAccepted = true; 
 				madeChoice = true; 
 				placementView.clear();

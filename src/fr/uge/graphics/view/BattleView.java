@@ -541,7 +541,7 @@ public class BattleView implements View {
 	
 	private void startCursePhase(Item curseItem) {
 		if(curseItem == null || curseView != null)return; 
-		curseView = new CurseView(hero, curseItem, imagesHero, imagesItems, refuseCount); 
+		curseView = new CurseView(hero, curseItem, fightGraphics, imagesHero, imagesItems, refuseCount); 
 	}
 	
 	private boolean curseViewClick(int x, int y, Controller controller, ApplicationContext context) {

@@ -16,7 +16,6 @@ public class FightGraphics {
 	private boolean heroTurn = true;
 	private boolean fightEnded = false;
 	private boolean lootPhase = false; 
-	private final Random rand = new Random();
 	private HallOfFame hof = new HallOfFame(); 
 	private Items lootItems = new Items(); 
 	private Item expectedCurse; 
@@ -43,6 +42,7 @@ public class FightGraphics {
 	
 	public boolean curseShown() { return curseShown; }
 	public boolean curseLaunched() { return curseLaunched; }
+	public void setCurseLaunced(boolean bool) { curseLaunched = bool; }
 	public void setCurseShown(boolean value) { curseShown = value;}
 	public Item expectedCurse() { return expectedCurse;}
 	public void clearExpectedCurse() { expectedCurse = null;}
@@ -289,7 +289,7 @@ public class FightGraphics {
 			curseLaunched = true; 
 		}
    }
-	}
+	} 
 	
 	private void playEnemies(int time) {
     for (var enemy : enemies.getEnemies()) {
