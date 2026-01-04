@@ -25,7 +25,9 @@ public record BackpackSearch(Backpack backpack) {
   	for(int i = 0; i < backpack.maxLines(); i++) {
   		for(int j = 0; j < backpack.maxColumns(); j++) {
   			Item item = backpack.grid().get(i).get(j); 
-  			if(item != null && item.isGold())return item; 
+  			if(item != null && item.isGold()) {
+  				return item; 
+  			}
   		}
   	}
   	return null; 
@@ -47,7 +49,9 @@ public record BackpackSearch(Backpack backpack) {
   	for(int i = 0; i < backpack.maxLines(); i++) {
   		for(int j = 0; j < backpack.maxColumns(); j++) {
   			Item item = backpack.grid().get(i).get(j); 
-  			if(item != null && item.isMana())return item; 
+  			if(item != null && item.isMana()) {
+  				return item; 
+  			}
   		}
   	}
   	return null; 

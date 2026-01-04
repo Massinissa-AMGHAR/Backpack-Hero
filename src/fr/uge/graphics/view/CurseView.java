@@ -2,6 +2,7 @@ package fr.uge.graphics.view;
 
 import java.awt.Graphics2D;
 
+
 import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.character.Hero;
@@ -9,7 +10,6 @@ import fr.uge.graphics.app.Controller;
 import fr.uge.graphics.app.ManageBackpack;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
-import fr.uge.inventory.Items;
 
 public class CurseView implements View{
 	private final Hero hero;
@@ -40,22 +40,22 @@ public class CurseView implements View{
 		placementView.take(curse);
 		
 		this.refuseButton = new RefuseButton(); 
-		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, null); 
 		this.messageView = new MessageView(); 
 		this.refuseCount = refuseCount; 
 		this.imageHero = imageHero; 
 	}
-	public boolean curseAccepted() {return curseAccepted; }
-	public int refuseCount() {return refuseCount;}
-	public Item getCurse() {return curse;}
-	public boolean madeChoice() {return madeChoice; }
+	public boolean curseAccepted() { return curseAccepted; }
+	public int refuseCount() { return refuseCount;}
+	public Item getCurse() { return curse;}
+	public boolean madeChoice() { return madeChoice; }
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
-		int heroX = context.getScreenInfo().width() / 5;
-		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
-		imageHero.drawImage(graphics, imageHero.get(0), heroX, heroY, imageSize, imageSize); // Hero
+	int heroX = context.getScreenInfo().width() / 5;
+	int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
+	imageHero.drawImage(graphics, imageHero.get(0), heroX, heroY, imageSize, imageSize); 
 	}
 	
-	@Override
+	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		messageView.drawMessage(graphics, context);
@@ -66,9 +66,7 @@ public class CurseView implements View{
 		importHeroImage(graphics, context);   
 	}
 	
-	@Override
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
-		
 		if(refuseButton.click(x, y)) {
 			refuseCount++; 
 			hero.receiveDamage(refuseCount);
@@ -76,7 +74,6 @@ public class CurseView implements View{
 			madeChoice = true; 
 			return; 
 		}
-		
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			if (management.placeCurseInBackpack(cell[0], cell[1])){
@@ -86,6 +83,4 @@ public class CurseView implements View{
 			}
 		}
 	}
-	
-	
 }

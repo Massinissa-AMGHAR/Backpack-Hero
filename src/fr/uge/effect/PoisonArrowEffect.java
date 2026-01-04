@@ -7,7 +7,9 @@ import fr.uge.inventory.Item;
 public class PoisonArrowEffect implements ItemEffect {
 private final int basePoison = 2;	
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item item) {
-		if (enemy == null) return;
+		if (enemy == null) {
+			return;
+		}
 		var totalPoison = basePoison;
 		var backpack = hero.backpack();
 		var x = item.leftPlacementX();

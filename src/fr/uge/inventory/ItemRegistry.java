@@ -9,9 +9,7 @@ import fr.uge.interaction.RoboBucklerInteraction;
 import fr.uge.interaction.GoldCleaverInteraction;
 import fr.uge.interaction.KeySwordInteraction;
 
-public class ItemRegistry {
-	private ItemRegistry() {}
-	
+public class ItemRegistry {	
 
 	// RIEN
 	public static final ItemData WOODEN_SWORD = new ItemData("Wooden Sword", ItemType.WEAPON, ItemRarity.COMMON, ItemShapes.SIZE_3x1, 7, 0, 1, 0, 0, 0, 5, 0);

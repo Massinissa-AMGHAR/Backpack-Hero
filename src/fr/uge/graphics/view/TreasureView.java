@@ -44,11 +44,10 @@ public class TreasureView implements View {
 		this.lootView = new ItemsView(lootItems, imagesItems); 
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView);
-		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, null); 
 		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
 		this.rotateButton = new RotateButton(); 
 		this.deleteButton = new DeleteButton();
-		
 	}
 	
 	public MessageView messageView() {return messageView; }
@@ -115,7 +114,7 @@ public class TreasureView implements View {
 		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		imagesHero.drawImage(graphics, imagesHero.get(0), heroX, heroY, imageSize, imageSize); // Hero
 	}
-	@Override
+	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		background(graphics, context.getScreenInfo());
@@ -135,37 +134,59 @@ public class TreasureView implements View {
 		importHeroImage(graphics, context);   
 	}
 	
-	@Override
-	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+	private boolean clickMapButton(int x, int y) {
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);
 			setReadyToReturnToMap(true);
-			return; 
+			return true;
 		}
-		
+		return false;
+	}
+	
+	private boolean clickDeleteView(int x, int y, ApplicationContext context) {
 		Item fromDelete = deleteView.click(x, y, context);
 		if (fromDelete != null) {
-			if (placementView.takeFromDelete(fromDelete)) return;
+			if (placementView.takeFromDelete(fromDelete)) {
+				return true;
+			}
 		}
-		
+		return false;
+	}
+	
+	private boolean clickBackpackView(int x, int y, ApplicationContext context) {
 		Item fromBackpack = backpackView.click(x, y, context); 
 		if(management.clickFromBackpack(fromBackpack)) {
-			if (fromBackpack.isMana()) hero.reduceMana(fromBackpack.manaGained());
-			return;
+			if (fromBackpack.isMana()) {
+				hero.reduceMana(fromBackpack.manaGained());
+			}
+			return true;
 		}
-		
+		return false;
+	}
+	
+	private boolean clickRotateButton(int x, int y) {
 		Item placedItem = placementView.item(); 
 		if(rotateButton.click(x, y, placedItem)) {
 			placedItem.VisualRotation();
-			return; 
+			return true;
 		}
-		
-		if (deleteButton.click(x, y, placementView, messageView)) return;
+		return false;
+	}
+	
+	private boolean clickDeleteButton(int x, int y) {
+		return deleteButton.click(x, y, placementView, messageView);
+	}
+	
+	private boolean clickLootView(int x, int y, ApplicationContext context) {
 		Item fromLoot = lootView.click(x, y, context); 
 		if(fromLoot != null) {
 			management.clickFromLoot(fromLoot, lootView.items()); 
-			return; 
+			return true;
 		}
+		return false;
+	}
+	
+	private void clickBackpackCell(int x, int y, ApplicationContext context) {
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			var item = placementView.item();
@@ -185,4 +206,25 @@ public class TreasureView implements View {
 		}
 	}
 	
+	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		if (clickMapButton(x, y)) {
+			return;
+		}
+		if (clickDeleteView(x, y, context)) {
+			return;
+		}
+		if (clickBackpackView(x, y, context)) {
+			return;
+		}
+		if (clickRotateButton(x, y)) {
+			return;
+		}
+		if (clickDeleteButton(x, y)) {
+			return;
+		}
+		if (clickLootView(x, y, context)) {
+			return;
+		}
+		clickBackpackCell(x, y, context);
+	}
 }

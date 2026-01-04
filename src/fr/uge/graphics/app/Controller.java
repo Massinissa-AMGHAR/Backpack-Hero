@@ -1,19 +1,15 @@
 package fr.uge.graphics.app;
 import fr.uge.graphics.image.*;
-import fr.uge.graphics.view.*;
-import java.awt.Color;
 
-import java.awt.Graphics2D;
-import java.util.Random;
+import fr.uge.graphics.view.*;
+
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.KeyboardEvent;
-import com.github.forax.zen.KeyboardEvent.Key;
 import com.github.forax.zen.PointerEvent;
 
 import fr.uge.application.*;
 import fr.uge.character.*;
-import fr.uge.inventory.*;
 import fr.uge.map.*;
 
 public class Controller {	
@@ -35,7 +31,6 @@ public class Controller {
   private TreasureView treasureView;
   private View view;
   private BattleView battleView;
-  private FightGraphics fightGraphics;
   private boolean dungeonFinished = false; 
   
 	
@@ -65,10 +60,10 @@ public class Controller {
   	changeView(mapView); 
   	dungeonFinished = false; 
   	mapView().messageView().showMessage("Welcome to the dungeon !", 2000);
-  	
   }
+  
 	public MenuView menuView() { return menuView; }
-	public HallOfFameView hofView() {return hofView; }
+	public HallOfFameView hofView() { return hofView; }
 	public MapView mapView() { return mapView; }
 	public BattleView battleView() { return battleView; }
 	public HealerView healerView() { return healerView; }
@@ -80,11 +75,7 @@ public class Controller {
 		view = newView;
 	}
 	
-	public void enterGridRoom(Room gridRoom, int i, int j) {
-		floor.placeHero(i, j);
-
-		var randomRoom = floor.generateRandomRoom(gridRoom);
-		
+	private void enterRoom(Room randomRoom) {
     if (randomRoom.hasEnemies()) {
       startFight(randomRoom.enemies(), randomRoom);
       randomRoom.setVisited(true);
@@ -111,6 +102,12 @@ public class Controller {
     }
 	}
 	
+	public void enterGridRoom(Room gridRoom, int i, int j) {
+		floor.placeHero(i, j);
+		var randomRoom = floor.generateRandomRoom(gridRoom);
+		enterRoom(randomRoom);
+	}
+	
 	public void goToNextFloor() {
 		var next = dungeon.nextFloor(floor);
 		if (next == null) {
@@ -120,7 +117,6 @@ public class Controller {
 		}
 		floor = next;
 		floor.initPlaceHero();
-		//floor.resetGeneratedRoom();
 		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus);
 		changeView(mapView);
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
@@ -153,10 +149,14 @@ public class Controller {
 	
 	private boolean gameLoop(ApplicationContext context) {
 		var event = context.pollOrWaitEvent(10);
-		if (event == null) return true;
+		if (event == null) {
+			return true;
+		}
 		switch(event) {
 		case KeyboardEvent key -> {
-			if (key.key() == KeyboardEvent.Key.Q) return false;
+			if (key.key() == KeyboardEvent.Key.Q) {
+				return false;
+			}
 		}
 		case PointerEvent pe -> {
 			if (pe.action() == PointerEvent.Action.POINTER_DOWN) {
@@ -168,53 +168,69 @@ public class Controller {
 		return true;
 	}
 	
+	private void endGame() {
+		int score = hero.score(); 
+		hof.addScore(score);
+		changeView(menuView); 
+	}
+	
+	private void updateView() {
+		if (view == battleView) {
+			updateBattle();
+			return;
+		}
+		updateRoomView(view);
+	}
+	
+	private void updateBattle() {
+  	battleView.fight().updateFight();
+  	battleView.messageView().update();
+  	if(hero.isDead() && !battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
+  		endGame();
+			return; 
+  	}
+  	if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
+  		changeView(mapView);
+  		battleView.setReadyToReturnToMap(false);
+  	}
+	}
+	
+	private void updateRoomView(View view) {
+    if (view == merchantView) {
+    	merchantView.messageView().update();
+    	if (!merchantView.messageView().isMessageActive() && merchantView.isReadyToReturnToMap()) {
+    		changeView(mapView);
+    		merchantView.setReadyToReturnToMap(false);
+    	}
+    }
+    if (view == healerView) {
+    	healerView.messageView().update();
+    	if (!healerView.messageView().isMessageActive() && healerView.isReadyToReturnToMap()) {
+    		changeView(mapView);
+    		healerView.setReadyToReturnToMap(false);
+    	}
+    }
+    if (view == treasureView) {
+    	treasureView.messageView().update();
+    	if (!treasureView.messageView().isMessageActive() && treasureView.isReadyToReturnToMap()) {
+    		changeView(mapView);
+    		treasureView.setReadyToReturnToMap(false);
+    	}
+    }
+	}
+	
 	public void game(ApplicationContext context) {
     boolean running = true;
     while (running) {
     	context.renderFrame(graphics -> {
     		if(dungeonFinished) {
-    			int score = hero.score(); 
-    			hof.addScore(score);
-    			changeView(menuView); 
+    			dungeonFinished = false;
+    			endGame();
     			return; 
     		}
         view.draw(graphics, context);
-        if (view == battleView) {
-        	battleView.fight().updateFight();
-        	battleView.messageView().update();
-        	if(hero.isDead()) {
-        		battleView.messageView().showMessage("You lost this game...", 0); 
-        		int score = hero.score(); 
-      			hof.addScore(score);
-      			changeView(menuView); 
-      			return; 
-        	}
-        	if (!battleView.messageView().isMessageActive() && battleView.isReadyToReturnToMap()) {
-        		changeView(mapView);
-        		battleView.setReadyToReturnToMap(false);
-        	}
-        }
-        if (view == merchantView) {
-        	merchantView.messageView().update();
-        	if (!merchantView.messageView().isMessageActive() && merchantView.isReadyToReturnToMap()) {
-        		changeView(mapView);
-        		merchantView.setReadyToReturnToMap(false);
-        	}
-        }
-        if (view == healerView) {
-        	healerView.messageView().update();
-        	if (!healerView.messageView().isMessageActive() && healerView.isReadyToReturnToMap()) {
-        		changeView(mapView);
-        		healerView.setReadyToReturnToMap(false);
-        	}
-        }
-        if (view == treasureView) {
-        	treasureView.messageView().update();
-        	if (!treasureView.messageView().isMessageActive() && treasureView.isReadyToReturnToMap()) {
-        		changeView(mapView);
-        		treasureView.setReadyToReturnToMap(false);
-        	}
-        }
+        updateView();
+
     	});
     	running = gameLoop(context);
     } 

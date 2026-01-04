@@ -41,16 +41,19 @@ public class HeroFight {
   public void resetArmor() { armorValue = 0; }
   public void resetMana() { mana = manaMax; }
   public void addEnergy(int amount) { energy += amount; }
-  public void resetEnergy() {energy = 3; }
+  public void resetEnergy() { energy = 3; }
   
   public void hpmaxAugmentation() {
   	HPMAX += 2; 
   }
+  
   public void addCursePenalty() {
   	cursePenaltyStacks++; 
   	cursePenalty = 2; 
   }
-  public boolean hasCursePenalty() {return cursePenalty > 0;}
+  
+  public boolean hasCursePenalty() { return cursePenalty > 0; }
+  
   public boolean applyCursePenalty() {
   	if(hasCursePenalty() && cursePenaltyStacks > 0) {
   		receiveDamage(3 * cursePenaltyStacks); 
@@ -58,6 +61,7 @@ public class HeroFight {
   	}
   	return false; 
   }
+  
   public void endFightPenalty() {
   	if(cursePenalty > 0) {
   		cursePenalty--;
@@ -68,11 +72,15 @@ public class HeroFight {
   }
   public void heal(int hpBonus) {
 		HP += hpBonus; 
-		if(HP > HPMAX) HP = HPMAX; 
+		if(HP > HPMAX) {
+			HP = HPMAX; 
+		}
 	}
   
   public void equipArmor(Item item) {
-  	if (item.type() != ItemType.ARMOR) return;
+  	if (item.type() != ItemType.ARMOR) {
+  		return;
+  	}
   	armorValue = item.defense();
   }
   
@@ -94,54 +102,49 @@ public class HeroFight {
 	
 	public void addMana(int amount) {
 		mana += amount;
-		if (mana > manaMax) mana = manaMax;
+		if (mana > manaMax) {
+			mana = manaMax;
+		}
 	}
 	
 	public void reduceMana(int amount) {
 		mana -= amount;
-		if (mana < 0) mana = 0;
-	}
-	
-	public int manaBonus(Item item) {
-	  if (mana < item.manaCost() || energy < item.energyCost()) {
-	    IO.println("You don't have enough resources to use " + item.name());
-		return 0;
-	  }
-	  mana -= item.manaCost(); 
-	  energy -= item.energyCost(); 
-	  if(mana < 0) mana = 0; 
-	  mana += item.manaGained(); 
-	  if(mana > manaMax) mana = manaMax; 
-	  
-	  return mana;
-	}
-	
-	public int attack(Fighter opponent, Item item) {
-		if (!(opponent instanceof Enemy)) throw new IllegalArgumentException("Hero can only attack Ennemy");
-		if (mana < item.manaCost() || energy < item.energyCost()) {
-			IO.println("You don't have enough resources to use " + item.name());
-			return 0;
+		if (mana < 0) {
+			mana = 0;
 		}
-		Enemy ennemy = (Enemy) opponent;
+	}
+	
+	private int dealDamage(Enemy enemy, Item item) {
 		int totalDamage = 0;
 		int attackDamage = item.damage();
 		
-		int protection = ennemy.protection();
+		int protection = enemy.protection();
 		int damageToProtection = Math.min(attackDamage, protection);
 	    
-	  ennemy.receiveProtectionDamage(damageToProtection); 
+	  enemy.receiveProtectionDamage(damageToProtection); 
 	    
 		attackDamage -= damageToProtection;
 		totalDamage += damageToProtection;
 		
 		if (attackDamage > 0) {
-			ennemy.receiveDamage(attackDamage);
+			enemy.receiveDamage(attackDamage);
 			totalDamage += attackDamage;
 		}
-		energy -= item.energyCost(); 
-		mana -= item.manaCost();
-		
 		return totalDamage;
 	}
 	
+	public int attack(Fighter opponent, Item item) {
+		if (!(opponent instanceof Enemy)) {
+			throw new IllegalArgumentException("Hero can only attack Ennemy");
+		}
+		if (mana < item.manaCost() || energy < item.energyCost()) {
+			IO.println("You don't have enough resources to use " + item.name());
+			return 0;
+		}
+		Enemy enemy = (Enemy) opponent;
+		var totalDamage = dealDamage(enemy, item);
+		energy -= item.energyCost(); 
+		mana -= item.manaCost();
+		return totalDamage;
+	}
 }

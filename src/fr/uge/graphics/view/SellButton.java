@@ -24,7 +24,9 @@ public class SellButton {
 	public boolean click(int mouseX, int mouseY, ItemPlacementView placementView, ManageBackpack management, MessageView message) {
 		var item = placementView.item();
 		if (item != null && !item.isGold() && button.click(mouseX, mouseY)) {
-			if (management.sell()) message.showMessage("You sold " + item.name(), 1000);
+			if (management.sell()) {
+				message.showMessage("You sold " + item.name(), 1000);
+			}
 			return true; 
 		}
 		return false;

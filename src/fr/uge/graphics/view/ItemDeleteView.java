@@ -52,16 +52,7 @@ public class ItemDeleteView implements ClickableItems {
 		graphics.drawRect(x, y, zoneWidth, zoneHeight);
 	}
 	
-	private void drawItem(Graphics2D graphics, int x, int y, Item item, int index) {
-		if(item == null) return; 
-		
-		int itemWidth = zoneWidth / columns - 10;
-		int itemHeight = zoneHeight / rows - 10;
-		int col = index % columns;
-		int row = index / columns;
-		int itemX = x + col * (itemWidth + 5) + 5;
-		int itemY = y + row * (itemHeight + 5) + 5;
-		
+	private void drawRotatedItem(Graphics2D graphics, Item item, int itemX, int itemY, int itemWidth, int itemHeight) {
 		int w = itemWidth;
 		int h = itemHeight; 
 	 
@@ -79,6 +70,20 @@ public class ItemDeleteView implements ClickableItems {
 		imagesItems.drawImage(g2, imagesItems.get(item.imageIndex()), itemX, itemY, w, h);
 		
 		g2.dispose();
+	}
+	
+	private void drawItem(Graphics2D graphics, int x, int y, Item item, int index) {
+		if(item == null) {
+			return; 
+		}
+		int itemWidth = zoneWidth / columns - 10;
+		int itemHeight = zoneHeight / rows - 10;
+		int col = index % columns;
+		int row = index / columns;
+		int itemX = x + col * (itemWidth + 5) + 5;
+		int itemY = y + row * (itemHeight + 5) + 5;
+		drawRotatedItem(graphics, item, itemX, itemY, itemWidth, itemHeight);
+
 	}
 
 	public void draw(Graphics2D graphics, ApplicationContext context) {

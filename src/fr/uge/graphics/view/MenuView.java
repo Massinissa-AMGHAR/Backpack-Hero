@@ -14,7 +14,6 @@ import java.util.List;
 public class MenuView implements View {
 	private int playX, playY, playWidth, playHeight;
 	private int hofX, hofY, hofWidth, hofHeight; 
-	private boolean nextFloor = false;
 	
 	public int playX() { return playX; }
 	public int playY() { return playY; }
@@ -72,14 +71,10 @@ public class MenuView implements View {
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		var screenInfo = context.getScreenInfo();
-		 var l = List.of("BACKPACK HERO", "START GAME", "HALL OF FAME");
-		// BackGround
+		var l = List.of("BACKPACK HERO", "START GAME", "HALL OF FAME");
 		background(graphics, screenInfo);
-    // Title
     title(graphics, context, l, screenInfo);
-    //Button
-    play(graphics, l, screenInfo);
-    
+    play(graphics, l, screenInfo);    
     hallOfFame(graphics, l, screenInfo); 
 	}
 	
@@ -93,10 +88,8 @@ public class MenuView implements View {
 		if (isPlayButton(x, y)) {
 			controller.startNewGame();
 		}
-		
 		if (isHofButton(x, y)) {
 			controller.changeView(controller.hofView());
 		}
 	}
-	
 }

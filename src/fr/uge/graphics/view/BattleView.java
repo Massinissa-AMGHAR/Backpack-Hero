@@ -3,13 +3,13 @@ package fr.uge.graphics.view;
 import fr.uge.graphics.app.*;
 
 
+
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
 
 import com.github.forax.zen.ScreenInfo;
 
-import fr.uge.application.Fight;
 import fr.uge.character.*;
 import fr.uge.inventory.*;
 
@@ -17,8 +17,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -60,7 +58,7 @@ public class BattleView implements View {
 		this.lootView = new ItemsView(lootItems, imagesItems); 
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView);
-		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, null); 
 		this.messageView = new MessageView(); 
 		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
 		this.rotateButton = new RotateButton(); 
@@ -70,11 +68,14 @@ public class BattleView implements View {
 		
 	}
 	public MessageView messageView() {return messageView; }
+	
 	public void setReadyToReturnToMap(boolean ready) {
     readyToReturnToMap = ready;
 	}
 	
-	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
+	public boolean isReadyToReturnToMap() { 
+		return readyToReturnToMap; 
+	}
 	
 	public void setFight(FightGraphics fight) {
     this.fightGraphics = fight;
@@ -137,6 +138,7 @@ public class BattleView implements View {
     var mY = context.getScreenInfo().height() / 6 + 150;
     graphics.drawString(penalty, mX, mY);
 	}
+	
 	private void heroGold(Graphics2D graphics, ApplicationContext context) {
 		var gold = backpackView.backpack().findGoldItem(); 
 		String goldText; 
@@ -235,7 +237,7 @@ public class BattleView implements View {
 	}
 	
 	private void importEnemyAction(Graphics2D graphics, Enemy enemy, int enemyX, int enemyY) {
-		var action = enemy.getAction();
+		var action = enemy.getAction(fightGraphics.curseLaunched());
 		var statusSize = 30;
 		var statusX = enemyX + imageSize - statusSize - 5;
 		var statusY = enemyY - 50;
@@ -305,8 +307,7 @@ public class BattleView implements View {
 		fightGraphics.consumeManaReward();
 	}
 	
-	public void draw(Graphics2D graphics, ApplicationContext context) {
-		messageView.update(); 
+	private void drawCursePhase(Graphics2D graphics, ApplicationContext context) {
 		if(fightGraphics != null && fightGraphics.expectedCurse() != null && curseView == null) {
 			if(!fightGraphics.curseShown()) {
 				startCursePhase(fightGraphics.expectedCurse()); 
@@ -314,6 +315,22 @@ public class BattleView implements View {
 			}
 			
 		}
+	}
+	
+	private void drawLootPhase(Graphics2D graphics, ApplicationContext context) {
+		lootView.drawItems(graphics, context, false);
+		placementView.draw(graphics, context);
+		deleteView.draw(graphics, context);
+		goldReward();
+		manaStoneReward();
+		mapButton.draw(graphics);
+		rotateButton.draw(graphics, context);
+		deleteButton.draw(graphics, context);
+	}
+	
+	public void draw(Graphics2D graphics, ApplicationContext context) {
+		messageView.update(); 
+		drawCursePhase(graphics, context);
 		background(graphics, context.getScreenInfo());
 		messageView.drawMessage(graphics, context); 
 		
@@ -325,17 +342,11 @@ public class BattleView implements View {
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);  
 		if(fightGraphics.isLootPhase()) {
-			lootView.drawItems(graphics, context, false);
-			placementView.draw(graphics, context);
-			deleteView.draw(graphics, context);
-			goldReward();
-			manaStoneReward();
-			mapButton.draw(graphics);
-			rotateButton.draw(graphics, context);
-			deleteButton.draw(graphics, context);
-		}
-		else {
-			if (!fightGraphics.isFightOver()) endButton.draw(graphics, context);
+			drawLootPhase(graphics, context);
+		} else {
+			if (!fightGraphics.isFightOver()) {
+				endButton.draw(graphics, context);
+			}
 			importEnemiesImages(graphics, context); 
 		}
 	}
@@ -352,7 +363,7 @@ public class BattleView implements View {
       if (backpack.unlockCount() == 0) {
       	backpack.setUnlockMode(false);
       	messageView.showMessage("All backpack slots unlocked!", 2000);
-      	messageView.showMessage("Choose your loot !!", 3500);
+      	messageView.showMessage("Choose your loot !!", 3000);
       	fightGraphics.setLootPhase(true);
       }
     }
@@ -378,11 +389,41 @@ public class BattleView implements View {
 		}
 		return null;
 	}
+	
 	private Item getClickedCurse(int line, int column) {
 		Item item = hero.backpack().choice(line, column); 
 		if(item != null && item.type().equals(ItemType.CURSE)) return item; 
 		return null; 
 	}
+	
+	private boolean applyCurseIfClicked(int line, int column) {
+    Item curse = getClickedCurse(line, column);
+    if(curse != null) {
+    	hero.backpack().delete(curse);
+    	hero.receiveDamage(2); 
+    	messageView.showMessage(2 + " damage from the curse !", 1500); 
+    	hero.addCursePenalty(); 
+    	return true;
+    }
+    return false;
+	}
+	
+	private void useItemOnEnemy(int x, int y, int line, int column, ApplicationContext context) {
+    var item = fightGraphics.Hero().backpack().choice(line, column);
+    var layout = getEnemiesLayout(context);
+    var ClickedEnemy = getClickedEnemy(x, y, fightGraphics.Enemies().getEnemies(), layout[0], layout[1], layout[2]);
+    if (ClickedEnemy != null) {
+    	selectedEnemy = ClickedEnemy;
+    }
+    if (item != null && selectedEnemy != null) {
+    	fightGraphics.heroUseItem(item, selectedEnemy); 
+    	if (item.type() == ItemType.CONSUMABLE) {
+    		hero.backpack().delete(item);
+    	}
+    	if (selectedEnemy.HP() <= 0) updateSelectedEnemy();
+    }
+	}
+	
 	private void ClickFight(int x, int y, Controller controller, ApplicationContext context) {
     var fight = fightGraphics;
     if (fight == null) return;       
@@ -390,62 +431,72 @@ public class BattleView implements View {
     var start = backpackView.calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
     int line = (y - start[1]) / backpackView.cellSize();
     int column = (x - start[0]) / backpackView.cellSize();
-    Item curse = getClickedCurse(line, column);
-    if(curse != null) {
-    	hero.backpack().delete(curse);
-    	hero.receiveDamage(2); 
-    	messageView.showMessage(2 + " damage", 1500); 
-    	hero.addCursePenalty(); 
-    	return; 
+    if (applyCurseIfClicked(line, column)) {
+    	return;
     }
     ClickUnlockCase(backpack, line, column, controller, context); 
-    if (fight.isFightOver() || !fight.isHeroTurn()) return;
-    var item = fight.Hero().backpack().choice(line, column);
-    var layout = getEnemiesLayout(context);
-    var ClickedEnemy = getClickedEnemy(x, y, fight.Enemies().getEnemies(), layout[0], layout[1], layout[2]);
-    if (ClickedEnemy != null) selectedEnemy = ClickedEnemy;
-    if (item != null && selectedEnemy != null) {
-    	fight.heroUseItem(item, selectedEnemy); 
-    	if (item.type() == ItemType.CONSUMABLE) {
-    		backpack.delete(item);
-    	}
-    	if (selectedEnemy.HP() <= 0) updateSelectedEnemy();
+    if (fight.isFightOver() || !fight.isHeroTurn()) {
+    	return;
     }
+    useItemOnEnemy(x, y, line, column, context);
 	}
 	
-	private void clickLootPhase(int x, int y, Controller controller, ApplicationContext context) {
+	private boolean clickMapButton(int x, int y) {
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);
 			fightGraphics.consumeManaReward();
 			fightGraphics.consumeGoldReward();
 			placementView.clear();  
 			setReadyToReturnToMap(true);
-			return; 
+			return true;
 		}
-		
+		return false;
+	}
+	
+	private boolean clickDeleteView(int x, int y, ApplicationContext context) {
 		Item fromDelete = deleteView.click(x, y, context);
 		if (fromDelete != null) {
-			if (placementView.takeFromDelete(fromDelete)) return;
+			if (placementView.takeFromDelete(fromDelete)) {
+				return true;
+			}
 		}
-		
+		return false;
+	}
+	
+	private boolean clickBackpackView(int x, int y, ApplicationContext context) {
 		Item fromBackpack = backpackView.click(x, y, context); 
 		if(management.clickFromBackpack(fromBackpack)) {
-			if (fromBackpack.isMana()) hero.reduceMana(fromBackpack.manaGained());
-			return;
+			if (fromBackpack.isMana()) {
+				hero.reduceMana(fromBackpack.manaGained());
+			}
+			return true;
 		}
-		
+		return false;
+	}
+	
+	private boolean clickRotateButton(int x, int y) {
 		Item placedItem = placementView.item(); 
 		if(rotateButton.click(x, y, placedItem)) {
 			placedItem.VisualRotation();
-			return; 
+			return true;
 		}
-		
-		if (deleteButton.click(x, y, placementView, messageView)) return;
+		return false;
+	}
+	
+	private boolean clickDeleteButton(int x, int y) {
+		return deleteButton.click(x, y, placementView, messageView);
+	}
+	
+	private boolean clickLootView(int x, int y, ApplicationContext context) {
 		Item fromLoot = lootView.click(x, y, context); 
 		if(fromLoot != null) {
 			management.clickFromLoot(fromLoot, lootView.items()); 
-			return; 
+			return true;
 		}
+		return false;
+	}
+	
+	private void clickBackpackCell(int x, int y, ApplicationContext context) {
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
 			var item = placementView.item();
@@ -464,6 +515,28 @@ public class BattleView implements View {
 				}
 			}
 		}
+	}
+	
+	private void clickLootPhase(int x, int y, Controller controller, ApplicationContext context) {
+		if (clickMapButton(x, y)) {
+			return;
+		}
+		if (clickDeleteView(x, y, context)) {
+			return;
+		}
+		if (clickBackpackView(x, y, context)) {
+			return;
+		}
+		if (clickRotateButton(x, y)) {
+			return;
+		}
+		if (clickDeleteButton(x, y)) {
+			return;
+		}
+		if (clickLootView(x, y, context)) {
+			return;
+		}
+		clickBackpackCell(x, y, context);
 	} 
 	
 	private void startCursePhase(Item curseItem) {
@@ -471,7 +544,7 @@ public class BattleView implements View {
 		curseView = new CurseView(hero, curseItem, imagesHero, imagesItems, refuseCount); 
 	}
 	
-	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+	private boolean curseViewClick(int x, int y, Controller controller, ApplicationContext context) {
 		if(curseView != null) {
 			curseView.Click(x, y, controller, context);
 			refuseCount = curseView.refuseCount(); 
@@ -479,9 +552,15 @@ public class BattleView implements View {
 				if(curseView.curseAccepted()) fightGraphics.clearExpectedCurse(); 
 				curseView = null; 
 			}	 
-			return; 
+			return true;
 		}
-		
+		return false;
+	}
+	
+	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		if (curseViewClick(x, y, controller, context)) {
+			return;
+		}
 		if (!fightGraphics.isLootPhase() && fightGraphics.isHeroTurn()) {
 			if (endButton.click(x, y)) {
 				fightGraphics.endHeroTurn();
@@ -492,7 +571,10 @@ public class BattleView implements View {
 			ClickFight(x, y, controller, context);
 			return;
 		}
-		if(fightGraphics.isLootPhase() && !backpackView.backpack().isUnlockMode()) clickLootPhase(x, y, controller, context); 
-		else ClickFight(x, y, controller, context); 
+		if(fightGraphics.isLootPhase() && !backpackView.backpack().isUnlockMode()) {
+			clickLootPhase(x, y, controller, context); 
+		} else {
+			ClickFight(x, y, controller, context); 
+		}
 	}
 }

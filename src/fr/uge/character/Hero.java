@@ -1,7 +1,6 @@
 package fr.uge.character;
 import java.util.Objects;
 
-import fr.uge.application.*;
 import fr.uge.inventory.*;
 
 
@@ -27,55 +26,41 @@ public class Hero implements Fighter{
   }
   
   public String name() { return name; }
-  public int HP() {return heroFight.HP();}
-  public boolean isDead() {return heroFight.HP() == 0;}
-  public int HPMAX() {return heroFight.HPMAX();}
-  public int protection(){return heroFight.protection(); }
+  public int HP() { return heroFight.HP();}
+  public boolean isDead() { return heroFight.HP() == 0;}
+  public int HPMAX() { return heroFight.HPMAX();}
+  public int protection(){ return heroFight.protection(); }
   public void equipArmor(Item item) { heroFight.equipArmor(item); } 
-  public int energy() {return heroFight.energy(); }
-  public int mana() {return heroFight.mana(); }
-  public int manaMax() {return heroFight.manaMax(); }
-  public void addCursePenalty() {heroFight.addCursePenalty(); }
-  public boolean hasCursePenalty() {return heroFight.hasCursePenalty(); }
-  public boolean applyCursePenalty() {return heroFight.applyCursePenalty(); } 
-  public void endFightPenalty() {heroFight.endFightPenalty();}
-  public int xp() {return progression.xp(); }
-  public int nextLevelXp() { return progression.xpThreshold(); }
+  public int energy() { return heroFight.energy(); }
+  public int mana() { return heroFight.mana(); }
+  public int manaMax() { return heroFight.manaMax(); }
+  public void addCursePenalty() { heroFight.addCursePenalty(); }
+  public boolean hasCursePenalty() { return heroFight.hasCursePenalty(); }
+  public boolean applyCursePenalty() { return heroFight.applyCursePenalty(); } 
+  public void endFightPenalty() { heroFight.endFightPenalty();}
+  public int xp() { return progression.xp(); }
+  public int nextLevelXp() { return progression.levelXP(); }
   public int level() { return progression.level(); }
   public void heal(int heal) { heroFight.heal(heal); }
-  public Backpack backpack() {return inventoryManager.backpack(); }
+  public Backpack backpack() { return inventoryManager.backpack(); }
   public HeroProgression progression() { return progression; }
-  public int cursePenalty() {return heroFight.cursePenalty();}
-  public int cursePenaltyStacks() {return heroFight.cursePenaltyStacks();}
-  public void hpmaxAugmentation() {heroFight.hpmaxAugmentation();}
-  //Progression du héros
-  public void winXp(Enemy enemy, Backpack backpack) { progression.winXp(enemy, backpack);}
+  public int cursePenalty() { return heroFight.cursePenalty();}
+  public int cursePenaltyStacks() { return heroFight.cursePenaltyStacks();}
+  public void hpmaxAugmentation() { heroFight.hpmaxAugmentation();}
   
   public int attack(Fighter enemy, Item item) { return heroFight.attack(enemy, item);}
   public int defense(Item item) { return heroFight.defense(item);}
   public void addBlock(int amount) { heroFight.addBlock(amount); }
-  public int manaBonus(Item item) { return heroFight.manaBonus(item);}
-  public void receiveDamage(int damage) {heroFight.receiveDamage(damage);}
-  public void receiveProtectionDamage(int damage) {heroFight.receiveProtectionDamage(damage);}
-  public void resetProtection() {heroFight.resetProtection();}
+  public void receiveDamage(int damage) { heroFight.receiveDamage(damage);}
+  public void receiveProtectionDamage(int damage) { heroFight.receiveProtectionDamage(damage);}
+  public void resetProtection() { heroFight.resetProtection();}
   public void resetArmor() { heroFight.resetArmor(); }
-  public void resetEnergy() {heroFight.resetEnergy();}
+  public void resetEnergy() { heroFight.resetEnergy();}
   public void addEnergy(int amount) { heroFight.addEnergy(amount); }
-  public void resetMana() {heroFight.resetMana();}
+  public void resetMana() { heroFight.resetMana();}
   public void addMana(int amount) { heroFight.addMana(amount); }
   public void reduceMana(int amount) { heroFight.reduceMana(amount); }
-  public boolean buy(int cost) {return economyManager.buy(cost); }
-  public boolean winGold(int amount) { return economyManager.winGold(amount);}
-  public boolean sellItem(Merchant merchant, Item item) {return economyManager.sellItem(merchant, item);}
-  public void treat(Healer healer) {economyManager.treat(healer);}
-
-  public void manageBackpack(Items items, boolean isShop) {inventoryManager.manageBackpack(items,isShop);}
+  public boolean buy(int cost) { return economyManager.buy(cost); }
   
   public int score() {return heroFight.HPMAX() * 10 + inventoryManager.backpack().totalPrice(); }
-	@Override
-	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + this.HPMAX() + " | Mana " + this.mana() + "/" + this.manaMax() + " | Protection: " + this.protection() + " | Energy: " + this.energy() + " | Level: " + this.level(); 
-	}
-
-	
 }

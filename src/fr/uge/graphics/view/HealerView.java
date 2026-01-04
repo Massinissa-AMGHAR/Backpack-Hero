@@ -8,7 +8,6 @@ import fr.uge.inventory.Item;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
 import com.github.forax.zen.ApplicationContext;
@@ -44,7 +43,7 @@ public class HealerView implements View {
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView);
-		this.management = new ManageBackpack(hero.backpack(), placementView, hero, null); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, null); 
 
 		this.messageView = new MessageView(); 
 		this.healButton = new HealButton();
@@ -120,7 +119,9 @@ public class HealerView implements View {
 		messageView.drawMessage(graphics, context);
 		backpackView.drawBackpack(graphics, context);
 		placementView.draw(graphics, context);
-		if(!placementView.hasItem())mapButton.draw(graphics);
+		if(!placementView.hasItem()) {
+			mapButton.draw(graphics);
+		}
 		healButton.draw(graphics, context);
 		heroStat(graphics, context);
 		importHeroImage(graphics, context);
@@ -139,10 +140,16 @@ public class HealerView implements View {
 				messageView.showMessage("Only gold can be used to heal !", 1000);
 				return;
 			}
-			if (management.clickFromBackpack(fromBackpack) && fromBackpack.isGold()) return;
+			if (management.clickFromBackpack(fromBackpack) && fromBackpack.isGold()) {
+				return;
+			}
 		}
-		if (healButton.click(x, y, placementView, hero, healer, messageView)) return;
+		if (healButton.click(x, y, placementView, hero, healer, messageView)) {
+			return;
+		}
 		int[] cell = backpackView.choiceCase(x, y, context); 
-		if(cell != null) management.placeInBackpack(cell[0], cell[1]); 
+		if(cell != null) {
+			management.placeInBackpack(cell[0], cell[1]); 
+		}
 	}
 }

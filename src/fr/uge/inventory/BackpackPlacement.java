@@ -34,25 +34,27 @@ public class BackpackPlacement {
 	
   public boolean canPlaceItem(Item item, int line, int column) {
 		boolean[][] shape = item.shape(); 
-				
-				for(int i = 0; i < item.height(); i++) {
-					for(int j = 0; j < item.width(); j++) {
-						if(shape[i][j]) {
-							if(!caseFree(line + i, column + j)) {
-								IO.println("The case is already occupied");
-								return false; 
-							}
-						}
+		for(int i = 0; i < item.height(); i++) {
+			for(int j = 0; j < item.width(); j++) {
+				if(shape[i][j]) {
+					if(!caseFree(line + i, column + j)) {
+						IO.println("The case is already occupied");
+						return false; 
 					}
 				}
+			}
+		}
 		return true; 
   }
+  
   public boolean canPlaceCurse(Item curse, int line, int column) {
   	if(line < 0 || column < 0 || line + curse.height() > backpack.maxLines() || column + curse.width() > backpack.maxColumns()) return false;
   	
   	for(int i = 0; i < curse.height(); i++) {
   		for(int j = 0; j < curse.width(); j++) {
-  			if(curse.shape()[i][j] && !backpack.unlocked()[line + i][column + j])return false; 
+  			if(curse.shape()[i][j] && !backpack.unlocked()[line + i][column + j]) {
+  				return false; 
+  			}
   		}
   	}
   	return true; 
@@ -74,7 +76,9 @@ public class BackpackPlacement {
     for(int i = 0; i < backpack.maxLines(); i++) {
       for(int j = 0; j < backpack.maxColumns(); j++) {
       	Item current = backpack.grid().get(i).get(j); 
-        if(current != null && current.id() == item.id()) backpack.grid().get(i).set(j, null); 
+        if(current != null && current.id() == item.id()) {
+        	backpack.grid().get(i).set(j, null); 
+        }
       }
     }
   }

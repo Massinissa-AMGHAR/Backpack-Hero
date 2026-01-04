@@ -1,12 +1,12 @@
 package fr.uge.map;
 import fr.uge.character.*;
+
 import fr.uge.graphics.app.FightGraphics;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 
 public class Room {
 	private TreasureView treasureView;
@@ -141,18 +141,4 @@ public class Room {
     }
     return false; 
   }
-  
-  @Override
-  public String toString() {
-	  var builder = new StringBuilder(); 
-    if(hasEnemies) builder.append("E"); 
-    if(hasMerchant) builder.append("M");
-    if(hasAngel) builder.append("A");
-    if(hasTreasure) builder.append("T"); 
-    if(hasDoor) builder.append("D"); 
-    if(isCorridor())builder.append("."); 
-    
-    return String.format("%-5s", builder.toString());     
-  }
- 
 }

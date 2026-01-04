@@ -12,7 +12,9 @@ public class PoisonEffect implements ItemEffect {
 	}
 	
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item item) {
-		if (enemy == null) return;
+		if (enemy == null) {
+			return;
+		}
 		var applied = enemy.addPoison(poisonAmount);
 		if (applied) {
 			fight.battleView().messageView().showMessage(enemy.name() + "is poisoned for " + poisonAmount + "damage by " + item.name() + "!", 1500);

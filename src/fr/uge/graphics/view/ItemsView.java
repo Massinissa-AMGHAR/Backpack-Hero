@@ -28,7 +28,7 @@ public class ItemsView implements ClickableItems{
 		this.images = images; 
 		
 	}
-	public Items items(){return items; }
+	public Items items(){ return items; }
 	private int itemX(ApplicationContext context) {
 		return context.getScreenInfo().width()/2 - itemWidth /2; 
 	}
@@ -36,6 +36,7 @@ public class ItemsView implements ClickableItems{
 	private int itemY(ApplicationContext context, int index) {
 		return context.getScreenInfo().height()/2 + context.getScreenInfo().height() / 6 + index *(itemHeight + spacing); 
 	}
+	
 	private void drawItemsSlot(Graphics2D graphics, ApplicationContext context, int index) {
 		int x = itemX(context); 
 		int y = itemY(context, index); 
@@ -80,7 +81,6 @@ public class ItemsView implements ClickableItems{
 		}
 	}
 	
-	@Override
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		for(int i = 0; i < items.getItems().size(); i++) {
 			int x = itemX(context); 

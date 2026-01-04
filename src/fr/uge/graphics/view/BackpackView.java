@@ -1,15 +1,13 @@
 package fr.uge.graphics.view;
 
-import fr.uge.graphics.app.*;
+
 
 
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
 
-import com.github.forax.zen.ScreenInfo;
 
-import fr.uge.character.*;
 import fr.uge.inventory.*;
 
 import java.awt.Color;
@@ -68,35 +66,34 @@ public class BackpackView implements ClickableItems{
     return topFree && leftFree;
 	}
 	
+	private void drawItemAtPosition(Graphics2D graphics, Item item, int startX, int startY, int i, int j) {
+		int x = startX + j * cellSize;
+		int y = startY + i * cellSize;
+		int width = item.width() * cellSize;
+		int height = item.height() * cellSize;
+		int angle = item.graphicRotation() % 360; 
+		if(angle == 90 || angle == 270) {
+			int tmp = width; 
+			width = height; 
+			height = tmp; 
+			x = x - (width - height)/2; 
+			y = y - (height - width)/2; 
+		}
+		Graphics2D g2 = (Graphics2D) graphics.create(); 
+		int cx = x + width/2; 
+		int cy = y + height/2; 
+		g2.rotate(Math.toRadians(angle), cx, cy);
+		imagesItems.drawImage(g2, imagesItems.get(item.imageIndex()), x, y, width, height);
+		g2.dispose();
+	}
+	
 	private void importImageItemOnBackPack(Graphics2D graphics, int startX, int startY) {
 		var grid = backpack.grid();
 		for (int i = 0; i < grid.size(); i++) {
 			for (int j = 0; j < grid.get(i).size(); j++) {
 				var item = grid.get(i).get(j);
 				if (isItemStart(item, i, j, grid)) { 
-					int x = startX + j * cellSize;
-					int y = startY + i * cellSize;
-					int width = item.width() * cellSize;
-					int height = item.height() * cellSize;
-					
-					int angle = item.graphicRotation() % 360; 
-					if(angle == 90 || angle == 270) {
-						int tmp = width; 
-						width = height; 
-						height = tmp; 
-						x = x - (width - height)/2; 
-						y = y - (height - width)/2; 
-					}
-					
-					Graphics2D g2 = (Graphics2D) graphics.create(); 
-					
-					int cx = x + width/2; 
-					int cy = y + height/2; 
-					 
-					g2.rotate(Math.toRadians(angle), cx, cy);
-					imagesItems.drawImage(g2, imagesItems.get(item.imageIndex()), x, y, width, height);
-					
-					g2.dispose();
+					drawItemAtPosition(graphics, item, startX, startY, i, j);
 				}
 			}
 		}
@@ -113,7 +110,7 @@ public class BackpackView implements ClickableItems{
 				Color color;
 				if (backpack.unlocked()[i][j]) color = Color.GRAY;
 				else color = Color.LIGHT_GRAY;
-				drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, color);
+				drawRec(graphics, x, y, cellSize, color);
 			}
 		}
 		importImageItemOnBackPack(graphics, start[0], start[1]);

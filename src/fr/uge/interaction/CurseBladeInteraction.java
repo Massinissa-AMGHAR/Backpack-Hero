@@ -1,7 +1,5 @@
 package fr.uge.interaction;
 
-import java.util.List;
-
 import fr.uge.character.Enemy;
 import fr.uge.character.Hero;
 import fr.uge.graphics.app.FightGraphics;
@@ -10,7 +8,9 @@ import fr.uge.inventory.ItemType;
 
 public class CurseBladeInteraction implements ItemInteraction {
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
-		if (enemy == null) return ;
+		if (enemy == null) {
+			return;
+		}
 		var totalDamage = 0;
 		var adjacentItems = hero.backpack().getAdjacentItems(self);
 		for (var item : adjacentItems) {

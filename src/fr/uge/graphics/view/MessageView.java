@@ -22,10 +22,10 @@ public class MessageView {
 	
 	public void update() {
     if (currentMessage != null && Instant.now().isAfter(currentMessage.endTime())) {
-        currentMessage = null;
+      currentMessage = null;
     }
     if (currentMessage == null && !messages.isEmpty()) {
-        currentMessage = messages.remove(0);
+      currentMessage = messages.remove(0);
     }
 	}
 	

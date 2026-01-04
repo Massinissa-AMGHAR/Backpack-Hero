@@ -78,7 +78,6 @@ public class Enemy implements Fighter {
 	
 	public boolean isPoisoned() { return poisonCounter > 0; }
 	
-	@Override
 	public int attack(Fighter opponent, Item item) {
 		if (!(opponent instanceof Hero)) throw new IllegalArgumentException("Ennemy can only attack Hero");
 		Hero hero = (Hero) opponent;
@@ -98,32 +97,31 @@ public class Enemy implements Fighter {
 		return totalDamage;
 	}
 	
-	@Override
 	public int defense(Item item) {
 		protection += baseDefense();
 		return protection;
 	}
 		
-	public int getAction() {
+	public int getAction(boolean curseLaunched) {
 		if (action == null) {
-			action = actionAnnounced();
+			action = actionAnnounced(curseLaunched);
 		}
 		return action;
 	}
 	
 	public void resetAction() { action = null; }
 	
-	public int actionAnnounced() {
+	public int actionAnnounced(boolean curseLaunched) {
 	  Random rand = new Random(); 
-	  int action = rand.nextInt(3); 
-	  
-	 switch(action) {
-	 	case 0 -> IO.println(name() + "will attack"); 
-	 	case 1 -> IO.println(name() + "will defend"); 
-	 	case 2 -> IO.println(name() + "will curse you"); 
-	 }
+	  int action;
+	  if (curseLaunched) {
+	  	action = rand.nextInt(2);
+	  } else {
+	  	action = rand.nextInt(3); 
+	  }
 	  return action; 
 	}
+	
 	public Item curse() {
 		return ItemRegistry.create(ItemRegistry.CURSE); 
 	}
@@ -133,8 +131,4 @@ public class Enemy implements Fighter {
 		new EnemyData("Rat-Wolf", 20, 3, 6, 3, 6, 6)
 	};
 	
-	@Override
-	public String toString() {
-		return this.name() + ": " + this.HP() + "/" + HPMax() + " HP | Protection: " + this.protection();
-	}
 }

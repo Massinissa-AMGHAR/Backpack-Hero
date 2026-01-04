@@ -5,10 +5,10 @@ import java.util.Objects;
 public class Items {
 	private final ArrayList<Item> items;
 	private final Random rand;
+	
 	public Items() {
 		this.rand = new Random(); 
 		this.items = new ArrayList<>(); 
-	
 	}
 	
 	public void randomItems(int count) {
@@ -35,14 +35,5 @@ public class Items {
 	
 	public ArrayList<Item> getItems(){
 		return items; 
-	}
-	
-	@Override 
-	public String toString() {
-		var builder = new StringBuilder(); 
-		for(var i : items) {
-			builder.append(i.toString()).append("\n"); 
-		}
-		return builder.toString();
 	}
 }

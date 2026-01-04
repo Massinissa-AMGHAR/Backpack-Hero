@@ -1,7 +1,5 @@
 package fr.uge.graphics.app;
 
-
-import fr.uge.application.*;
 import fr.uge.character.*;
 import fr.uge.inventory.*;
 import fr.uge.map.*;

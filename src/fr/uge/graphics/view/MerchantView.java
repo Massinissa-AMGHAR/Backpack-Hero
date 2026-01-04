@@ -44,7 +44,7 @@ public class MerchantView implements View {
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView); 
-		this.management = new ManageBackpack(hero.backpack(), placementView, hero, merchant); 
+		this.management = new ManageBackpack(hero.backpack(), placementView, merchant); 
 		this.message = new MessageView(); 
 		this.mapButton = new Button(300, 300, 200, 100, "MAP"); 
 		this.rotateButton = new RotateButton(); 
@@ -73,7 +73,7 @@ public class MerchantView implements View {
 		String goldText; 
     if(gold == null) {
     	goldText = "Gold : 0 gold"; 
-    }else {
+    } else {
     	goldText = "Gold : " + gold.goldAmount() + " gold"; 
     }
 		graphics.setColor(Color.WHITE);
@@ -104,38 +104,77 @@ public class MerchantView implements View {
 		shopView.drawItems(graphics, context, true);
 		backpackView.drawBackpack(graphics, context); 
 		placementView.draw(graphics, context);
-		if(!placementView.hasItem())mapButton.draw(graphics);
+		if(!placementView.hasItem()) {
+			mapButton.draw(graphics);
+		}
 		rotateButton.draw(graphics, context);
 		sellButton.draw(graphics, context);
-		
 	}
-	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+	
+	private boolean clickMapButton(int x, int y) {
 		if(mapButton.click(x, y)) {
 			message.showMessage("Returning to the map...", 2000);
 			setReadyToReturnToMap(true);
-			return; 
+			return true;
 		}
+		return false;
+	}
+	
+	private boolean clickBackpack(int x, int y, ApplicationContext context) {
 		Item fromBackpack = backpackView.click(x, y, context); 
-		if(management.clickFromBackpack(fromBackpack)) return;
-		
+		if(management.clickFromBackpack(fromBackpack)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean clickRotateButton(int x, int y) {
 		Item placedItem = placementView.item(); 
 		if(rotateButton.click(x, y, placedItem)) {
 			placedItem.VisualRotation();
-			return; 
+			return true;
 		}
-		if (sellButton.click(x, y, placementView, management, message)) return;
+		return false;
+	}
+	
+	private boolean clickShop(int x, int y, ApplicationContext context) {
 		Item fromShop = shopView.click(x, y, context); 
 		if(fromShop != null) {
 			if (fromShop.isMana() && hero.backpack().findManaCount() >= hero.manaMax()) {
 				message.showMessage("Maximum mana reached !", 1000);
-				return;
+				return true;
 			}
 			if(!management.clickFromShop(fromShop, shopView.items())) {
 				message.showMessage("You don't have enough money !", 1000);
 			}
-			return; 
+			return true; 
 		}
+		return false;
+	}
+	
+	private void clickBackpackCell(int x, int y, ApplicationContext context) {
 		int[] cell = backpackView.choiceCase(x, y, context); 
-		if(cell != null) management.placeInBackpack(cell[0], cell[1]); 
+		if(cell != null) {
+			management.placeInBackpack(cell[0], cell[1]); 
+		}
+	}
+	
+	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		if (clickMapButton(x, y)) {
+			return;
+		}
+		if (clickBackpack(x, y, context)) {
+			return;
+		}
+		if (clickRotateButton(x, y)) {
+			return;
+		}
+		if (sellButton.click(x, y, placementView, management, message)) {
+			return;
+		}
+		if (clickShop(x, y, context)) {
+			return;
+		}
+		clickBackpackCell(x, y, context);
 	}
 }

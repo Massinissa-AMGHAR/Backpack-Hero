@@ -29,6 +29,7 @@ public class MapView implements View {
 	private final int imageSize = 200;
 	private final int cols = 11;
 	private final int rows = 5;
+	private boolean readyToReturnToMenu = false;
 	
 	public MapView(Hero hero, Floor floor, ImageLoader images, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesEnemies, ImageLoader imagesStatus) {
 		this.hero = hero;
@@ -42,6 +43,14 @@ public class MapView implements View {
 	}
 	
 	public MessageView messageView() { return message; }
+	
+	public void setReadyToReturnToMenu(boolean ready) {
+    readyToReturnToMenu = ready;
+	}
+	
+	public boolean isReadyToReturnToMenu() { 
+		return readyToReturnToMenu; 
+	}
 	
 	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
 		graphics.setColor(Color.DARK_GRAY);
@@ -127,6 +136,27 @@ public class MapView implements View {
 		return heroPos[0] == i && heroPos[1] == j;
 	}
 	
+	private void drawRoomElements(Room room, int i, int j, int[] start, Graphics2D graphics) {
+		if (room.hasDoor()) {
+			importDoorImageOnMap(i, j, start, graphics);
+		}
+		if (room.hasMerchant() && !isHeroOnCell(i, j)) {
+			importMerchantOnMap(i, j, start, graphics);
+		}
+		if (room.hasAngel() && !isHeroOnCell(i, j)) {
+			importHealerOnMap(i, j, start, graphics);
+		}
+		if (room.hasEnemies() && !isHeroOnCell(i, j)) {
+			importEnemyOnMap(i, j, start, graphics);
+		}
+		if (room.hasTreasure() && !isHeroOnCell(i, j)) {
+			importTreasureOnMap(i, j, start, graphics);
+		}
+		if (room.hasGrid() && !isHeroOnCell(i, j)) {
+			importGridOnMap(i, j, start, graphics);
+		}
+	}
+	
 	private void draw_map(Graphics2D graphics, ApplicationContext context, Floor floor) {
     var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
 		for (int i = 0; i < rows; i++) {
@@ -134,16 +164,16 @@ public class MapView implements View {
 				if (floor.hasRoom(i, j)) {
 					Room room = floor.getRoom(i, j);
 					Color color;
-					if (floor.isAccessible(i, j)) color = Color.GREEN;
-					else color = room.isCorridor() ? Color.LIGHT_GRAY : Color.ORANGE;
+					if (floor.isAccessible(i, j)) {
+						color = Color.GREEN;
+					} else {
+						color = room.isCorridor() ? Color.LIGHT_GRAY : Color.ORANGE;
+					}
 					drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, color);
-					if (room.hasDoor()) importDoorImageOnMap(i, j, start, graphics);
-					if (room.hasMerchant() && !isHeroOnCell(i, j)) importMerchantOnMap(i, j, start, graphics);
-					if (room.hasAngel() && !isHeroOnCell(i, j)) importHealerOnMap(i, j, start, graphics);
-					if (room.hasEnemies() && !isHeroOnCell(i, j)) importEnemyOnMap(i, j, start, graphics);
-					if (room.hasTreasure() && !isHeroOnCell(i, j)) importTreasureOnMap(i, j, start, graphics);
-					if (room.hasGrid() && !isHeroOnCell(i, j)) importGridOnMap(i, j, start, graphics);
- 				} else drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, Color.GRAY);
+					drawRoomElements(room, i, j, start, graphics);
+ 				} else {
+ 					drawRec(graphics, start[0] + j * cellSize, start[1] + i * cellSize, cellSize, Color.GRAY);
+ 				}
 			}
 		}
 	}
@@ -164,6 +194,46 @@ public class MapView implements View {
 		return x >= roomX && x <= roomX + cellSize && y >= roomY && y <= roomY + cellSize;
 	}
 	
+	private boolean gridClick(Room room, int i, int j, Controller controller) {
+		if (!room.hasGrid()) {
+			return false;
+		}
+		if (!room.hasVisited()) {
+			var unlocked = floor.tryUnlockGrid(room, hero);
+			if (!unlocked) {
+				message.showMessage("You need a key to enter this grid !", 1500);
+				return true;
+			}
+			message.showMessage("You use a key. The grid opens...", 2000);
+			return true;
+		}
+		controller.enterGridRoom(room, i, j);
+		return true;
+	}
+	
+	private void roomServices(Room clickedRoom, Controller controller) {
+		if (clickedRoom.hasAngel()) {
+			controller.startHealer(clickedRoom);
+			clickedRoom.setVisited(true);
+		}
+		if (clickedRoom.hasMerchant()) {
+			controller.startMerchant(clickedRoom);
+			clickedRoom.setVisited(true);
+		}
+		if (clickedRoom.hasTreasure()) {
+			controller.startTreasure(clickedRoom);
+			clickedRoom.setVisited(true);   
+		}
+		if (clickedRoom.hasEnemies()) {
+	    controller.startFight(clickedRoom.enemies(), clickedRoom);
+	    clickedRoom.setVisited(true);
+		}
+		if (clickedRoom.hasDoor()) {
+			controller.goToNextFloor();
+			return;
+		}
+	}
+	
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
 		for (int i = 0; i < rows; i++) {
@@ -178,41 +248,11 @@ public class MapView implements View {
 						message.showMessage("Step by step ... Follow the path", 2000);
 						return;
 					} 
-					if (clickedRoom.hasGrid()) {
-						if (!clickedRoom.hasVisited()) {
-							var unlocked = floor.tryUnlockGrid(clickedRoom, hero);
-							if (!unlocked) {
-								message.showMessage("You need a key to enter this grid !", 1500);
-								return;
-							}
-							message.showMessage("You use a key. The grid opens...", 2000);
-							return;
-						}
-						controller.enterGridRoom(clickedRoom, i, j);
+					if (gridClick(clickedRoom, i, j, controller)) {
 						return;
-					} 
+					}
 					floor.placeHero(i, j);
-					if (clickedRoom.hasAngel()) {
-						controller.startHealer(clickedRoom);
-						clickedRoom.setVisited(true);
-					}
-					if (clickedRoom.hasMerchant()) {
-						controller.startMerchant(clickedRoom);
-						clickedRoom.setVisited(true);
-					}
-
-					if (clickedRoom.hasTreasure()) {
-						controller.startTreasure(clickedRoom);
-						clickedRoom.setVisited(true);   
-					}
-					if (clickedRoom.hasEnemies()) {
-				    controller.startFight(clickedRoom.enemies(), clickedRoom);
-				    clickedRoom.setVisited(true);
-					}
-					if (clickedRoom.hasDoor()) {
-						controller.goToNextFloor();
-						return;
-					}
+					roomServices(clickedRoom, controller);
 				}
 			}
 		}

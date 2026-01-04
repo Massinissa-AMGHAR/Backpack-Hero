@@ -20,12 +20,4 @@ public class Enemies {
 	public ArrayList<Enemy> getEnemies() {
 		return enemies; 
 	}
-	@Override 
-	public String toString() {
-		var builder = new StringBuilder(); 
-		for(var e : enemies) {
-			builder.append(e).append("\n"); 
-		}	
-		return builder.toString(); 
-	}
 }

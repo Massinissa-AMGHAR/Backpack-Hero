@@ -80,11 +80,12 @@ public class ItemPlacementView implements ClickableItems{
 	}
 	
 	private void drawItem(Graphics2D graphics, int x, int y) {
-		if(item == null) return; 
+		if(item == null) {
+			return; 
+		}
 		int cellSize = 75; 
 		int w = item.width() * cellSize; 
 		int h = item.height() * cellSize; 
-	 
 		int angle = item.graphicRotation() % 360; 
 		if(angle == 90 || angle == 270) {
 			int tmp = w; 
@@ -96,10 +97,8 @@ public class ItemPlacementView implements ClickableItems{
 		int itemX = cx - w/2; 
 		int itemY = cy - h /2; 
 		Graphics2D g2 = (Graphics2D) graphics.create(); 
-		
 		g2.rotate(Math.toRadians(angle),cx, cy);
 		imagesItems.drawImage(g2, imagesItems.get(item.imageIndex()), itemX, itemY, w, h);
-		
 		g2.dispose();
 	}
 	
@@ -112,7 +111,6 @@ public class ItemPlacementView implements ClickableItems{
 		return false; 
 	}
 	
-	@Override
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		if(!hasItem || item == null) return null; 
 		

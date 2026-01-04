@@ -6,7 +6,6 @@ import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemType;
 
 public class RoboBucklerInteraction implements ItemInteraction {
-  @Override
   public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
     int weaponsOnLine = 0;
     int line = self.leftPlacementY();

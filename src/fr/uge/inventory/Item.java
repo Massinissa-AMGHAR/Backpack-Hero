@@ -170,9 +170,4 @@ public class Item {
 		 default -> 0; 
 		};
 	}
-	
-	@Override
-	public String toString() {
-		return this.name() + " | type : " + this.type() + " | rarity : " + this.rarity() + " | width : " + this.width() + " | height : " + this.height() + " | damage : " + this.damage() + " | defense : " + this.defense() + " | energy cost : " + this.energyCost() + " | energy gained " + this.energyGained() + " | mana cost : " + this.manaCost() + " | mana gained : "  + this.manaGained() + " | cost : " + this.goldCost() + " gold" + " | Amount : " + this.goldAmount() + " gold";  
-	}
 }

@@ -1,13 +1,11 @@
 package fr.uge.inventory;
 
 import java.util.List;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-
-import fr.uge.application.Interactions; 
 
 public class Backpack {
   private ArrayList<ArrayList<Item>> grid;  
@@ -41,24 +39,22 @@ public class Backpack {
   
   public ArrayList<ArrayList<Item>> grid(){return grid;}
   public int maxLines() { return maxLines; }
-  public int maxColumns() {return maxColumns; }
+  public int maxColumns() { return maxColumns; }
   public boolean[][] unlocked() { return unlocked; }; 
 
   
-  // Placement/Suppression
   public boolean canPlaceItem(Item item, int line, int column) { return placement.canPlaceItem(item, line, column); }
   public boolean canPlaceCurse(Item item, int line, int column) { return placement.canPlaceCurse(item, line, column); }
-  public boolean caseFree() {return placement.caseFree(maxLines, maxColumns);}
+  public boolean caseFree() { return placement.caseFree(maxLines, maxColumns);}
   public void add(Item item, int line, int column) { placement.add(item, line, column);}
   public void delete(Item item) { placement.delete(item);}
   public boolean consumeManaStones(int amount) { return placement.consumeManaStones(amount); }
-  public int lengthLine(int line, int column) {return placement.lengthLine(line, column);}
-  public int lengthColumn(int line, int column) {return placement.lengthColumn(line, column);}
+  public int lengthLine(int line, int column) { return placement.lengthLine(line, column);}
+  public int lengthColumn(int line, int column) { return placement.lengthColumn(line, column);}
   
   
-  // Recherche d'un item
   public Item choice(int line, int column) {return search.choice(line, column); }
-  public Item findGoldItem() {return search.findGoldItem();}
+  public Item findGoldItem() { return search.findGoldItem();}
   public Item findManaItem() { return search.findManaItem(); }
   public Item findKeyItem() { return search.findKeyItem(); }
   
@@ -101,33 +97,6 @@ public class Backpack {
   	}
   }
   
-  //Ajout des cases 
-  public void unlockCase(int n) {
-  	IO.println("You can unlock " + n + " cases !"); 
-  	int cpt = 0; 
-  	Interactions interaction = new Interactions(); 
-  	while(cpt < n) {
-  		IO.println(this.toString()); 
-  		IO.println("Choose a case to unlock : (line/column)"); 
-  		int line = interaction.requestInt(); 
-  		int column = interaction.requestInt(); 
-  		if(!inside(line, column)) {
-  			IO.println("The case is not in the backpack"); continue; 
-  		}
-  		
-  		if(unlocked[line][column]) {
-  			IO.println("The case is already unlocked"); continue; 
-  		}
-  		
-  		if(!isAdjacent(line, column)) {
-  	  	IO.println("Cases must be adjacent"); continue; 
-  		}
-  		unlocked[line][column] = true; 
-  		cpt++; 
-  		IO.println("Case unlocked"); 
-  	}
-  	IO.println(this.toString()); 
-  }
   
   public String tryUnlockCase(int line, int column) {
     if (!inside(line, column)) return "The case is not in the backpack";
@@ -141,6 +110,7 @@ public class Backpack {
   	if(line >= 0 && line < maxLines && column >= 0 && column < maxColumns)return true; 
   	return false; 
   }
+  
   private boolean isAdjacent(int line, int column) {
   	if(inside(line - 1, column) && unlocked[line - 1][column]) return true; 
   	if(inside(line + 1, column) && unlocked[line + 1][column])return true; 
@@ -197,30 +167,5 @@ public class Backpack {
   		}
   	}
   	return sum; 
-  }
-  @Override
-  public String toString() {
-    var builder = new StringBuilder(); 
-    builder.append("Backpack : ").append("\n"); 
-    for(int i = 0; i < maxLines; i++) {
-      for(int j = 0; j < maxColumns; j++) {
-      	if(!unlocked[i][j]) {
-      		 builder.append(String.format("%-15s", " X ")); 
-      	}
-      	else {
-      		if(grid.get(i).get(j) == null) {
-      			builder.append(String.format("%-15s", "free")); 
-      		}
-      		else {
-      			builder.append(String.format("%-15s", grid.get(i).get(j).name())); 
-      		}
-      	}
-      }
-      builder.append("\n"); 
-    }
-    return builder.toString(); 
-  }
-  
-  
-  
+  }  
 }
