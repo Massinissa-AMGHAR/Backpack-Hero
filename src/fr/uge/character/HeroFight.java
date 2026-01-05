@@ -33,9 +33,16 @@ public class HeroFight {
   
   
   public void receiveDamage(int damage) {
-  	int reduceDamage = Math.max(damage - armorValue, 0);
+  	int damageLeft = damage;
+  	if (protection > 0) {
+  		int absorbed = Math.min(protection, damageLeft);
+  		protection -= absorbed;
+  		damageLeft -= absorbed;
+  	}
+  	int reduceDamage = Math.max(damageLeft - armorValue, 0);
   	HP = Math.max(HP - reduceDamage, 0);
   }
+  
 	public void receiveProtectionDamage(int damage) { protection = Math.max(protection - damage, 0);}
   public void resetProtection() {protection = 0;}
   public void resetArmor() { armorValue = 0; }
