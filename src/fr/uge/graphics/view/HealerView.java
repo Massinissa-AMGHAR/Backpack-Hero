@@ -1,10 +1,11 @@
 package fr.uge.graphics.view;
 
 import fr.uge.character.*;
-import fr.uge.graphics.app.*;
-
+import fr.uge.game.ManageBackpack;
+import fr.uge.graphics.*;
 import fr.uge.graphics.image.*;
 import fr.uge.inventory.Item;
+import fr.uge.map.Dungeon;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -16,6 +17,7 @@ import com.github.forax.zen.ScreenInfo;
 public class HealerView implements View {
 	private final MessageView messageView;
 	private final Hero hero;
+	private final Dungeon dungeon;
 	private final Healer healer;
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesServices; 
@@ -34,8 +36,9 @@ public class HealerView implements View {
 	private final int imageSize = 200;
 	
 	
-	public HealerView(Hero hero, Healer healer, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+	public HealerView(Hero hero, Dungeon dungeon, Healer healer, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		this.hero = hero;
+		this.dungeon = dungeon;
 		this.healer = healer;
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices;
@@ -61,11 +64,9 @@ public class HealerView implements View {
 		
 	public MessageView messageView() { return messageView; }
 	
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		imagesHero.drawImage(graphics, imagesHero.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
-
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
 		graphics.setColor(Color.WHITE);
@@ -83,7 +84,7 @@ public class HealerView implements View {
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
-		background(graphics, context.getScreenInfo());
+		background(graphics, context);
 		messageView.drawMessage(graphics, context);
 		backpackView.drawBackpack(graphics, context);
 		placementView.draw(graphics, context);

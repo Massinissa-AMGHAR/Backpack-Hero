@@ -194,16 +194,17 @@ public class Floor {
 
   private static List<int[]> positionsRoomsFloor2() {
   	return List.of(
-      new int[]{0, 2}, new int[]{1, 1}, new int[]{2, 3},
-      new int[]{2, 5}, new int[]{1, 5}, new int[]{0, 6}, new int[] {2, 6}, 
-      new int[] {0, 5}, new int[] {0, 7}, new int[]{1, 7}
+      new int[]{0, 4}, new int[]{3, 1}, new int[]{2, 3},
+      new int[]{2, 6}, new int[]{2, 4}, new int[]{0, 8}, new int[] {2, 10}, 
+      new int[] {2, 8}, new int[] {4, 8}, new int[]{0, 10}
   		);
   }
 
   private static List<int[]> positionsRoomsFloor3() { 
   	return List.of(
-      new int[]{1, 0}, new int[]{1, 2}, new int[]{2, 1}, new int[]{2, 3},
-      new int[]{3, 2}, new int[]{3, 4}, new int[]{3, 5}, new int[] {1, 4}, new int[]{2, 5}
+      new int[]{2, 7}, new int[]{2, 5}, new int[]{4, 2}, 
+      new int[]{2, 2}, new int[]{4, 8}, new int[]{4, 5}, 
+      new int[]{0, 5}, new int[] {2, 0}, new int[]{0, 8}
   	);
   }
   
@@ -217,15 +218,22 @@ public class Floor {
 
 	private static List<int[]> corridorPositionsFloor2() {
 	    return List.of(
-        new int[]{0, 1}, new int[]{0, 3}, new int[]{1, 2},
-	      new int[]{1, 4}, new int[]{2, 2}, new int[]{2, 4}, new int[]{3, 3}, new int[]{1, 6}
+        new int[]{0, 1}, new int[]{0, 2}, new int[]{0, 3}, 
+        new int[]{0, 5}, new int[]{0, 6}, new int[]{0, 7},
+        new int[]{1, 1}, new int[]{2, 1}, new int[]{2, 7},
+	      new int[]{1, 4}, new int[]{2, 2}, new int[]{2, 5}, 
+	      new int[]{1, 6}, new int[]{3, 8}, new int[]{2, 9},
+	      new int[]{0, 9}, new int[]{1, 8}
 	    );
 	}
 	
 	private static List<int[]> corridorPositionsFloor3() {
 	    return List.of(
-        new int[]{0, 2}, new int[]{1, 1}, new int[]{1, 3},
-        new int[]{2, 2}, new int[]{2, 4}, new int[]{3, 1}, new int[]{3, 3}
+        new int[]{0, 2}, new int[]{1, 2}, new int[]{0, 3}, new int[]{0, 4},
+        new int[]{2, 1}, new int[]{3, 2}, new int[]{4, 3}, new int[]{4, 4},
+        new int[]{2, 3}, new int[]{2, 4}, new int[]{3, 5},
+        new int[]{0, 6}, new int[]{0, 7}, new int[]{1, 8}, new int[]{2, 8},
+        new int[]{4, 6}, new int[]{4, 7}, new int[]{3, 8}, new int[]{2, 6}
 	    );
 	}
 

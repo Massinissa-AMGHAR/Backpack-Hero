@@ -1,4 +1,4 @@
-package fr.uge.graphics.app;
+package fr.uge.game;
 
 import fr.uge.character.*;
 import fr.uge.inventory.*;
@@ -16,8 +16,7 @@ public class GameGraphics {
     Backpack backpack = new Backpack();
     var item = ItemRegistry.create(ItemRegistry.WOODEN_SWORD);
     backpack.add(item, 1, 2);
-    
-    hero = new Hero("Mouse", 40, 40, 0, 3, 5, 0, 0, 0, backpack);
+    hero = new Hero("Mouse", 40, 40, 0, 0, 3, 5, 0, 0, 0, backpack);
     floor = dungeon.getFloor(0);
     floor.initPlaceHero();
   }

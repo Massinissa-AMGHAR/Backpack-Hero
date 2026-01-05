@@ -1,7 +1,7 @@
 package fr.uge.graphics.view;
 
-import fr.uge.graphics.app.*;
-
+import fr.uge.graphics.*;
+import fr.uge.graphics.image.ImageLoader;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -12,17 +12,21 @@ import java.awt.Graphics2D;
 import java.util.List;
 
 public class MenuView implements View {
+	private final ImageLoader images;
 	private int playX, playY, playWidth, playHeight;
 	private int hofX, hofY, hofWidth, hofHeight; 
+	
+	public MenuView(ImageLoader images) {
+		this.images = images;
+	}
 	
 	public int playX() { return playX; }
 	public int playY() { return playY; }
 	public int playWidth() { return playWidth; }
 	public int playHeight() { return playHeight; }
 	
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		images.drawImage(graphics, images.get(11), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
 	private void title(Graphics2D graphics, ApplicationContext context, List<String> l, ScreenInfo screenInfo) {
@@ -72,7 +76,7 @@ public class MenuView implements View {
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		var screenInfo = context.getScreenInfo();
 		var l = List.of("BACKPACK HERO", "START GAME", "HALL OF FAME");
-		background(graphics, screenInfo);
+		background(graphics, context);
     title(graphics, context, l, screenInfo);
     play(graphics, l, screenInfo);    
     hallOfFame(graphics, l, screenInfo); 
@@ -86,7 +90,7 @@ public class MenuView implements View {
 	}
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (isPlayButton(x, y)) {
-			controller.startNewGame();
+			controller.startNewGame(false);
 		}
 		if (isHofButton(x, y)) {
 			controller.changeView(controller.hofView());

@@ -2,7 +2,7 @@ package fr.uge.interaction;
 
 import fr.uge.character.Enemy;
 import fr.uge.character.Hero;
-import fr.uge.graphics.app.FightGraphics;
+import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemType;
 

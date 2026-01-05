@@ -11,7 +11,7 @@ import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.application.HallOfFame;
-import fr.uge.graphics.app.Controller;
+import fr.uge.graphics.Controller;
 
 public class HallOfFameView implements View{
 	private final HallOfFame hallOfFame; 

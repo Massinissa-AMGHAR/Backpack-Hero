@@ -28,7 +28,7 @@ public class HeroView {
 	private void heroDefense(Graphics2D graphics, ApplicationContext context, int statX, int statY) {
 		var oldFont = graphics.getFont();
 		var oldColor = graphics.getColor();
-    var statusSize = 30;
+    var statusSize = 40;
     String pvText = hero.HP() + " / " + hero.HPMAX() + " PV";
     int textWidth = graphics.getFontMetrics().stringWidth(pvText);
     int defenseX = statX + textWidth + 10;
@@ -37,17 +37,39 @@ public class HeroView {
     graphics.setFont(new Font("Arial", Font.BOLD, 20));
     String protectionText = String.valueOf(hero.protection());
     int textX = defenseX + (statusSize - graphics.getFontMetrics().stringWidth(protectionText)) / 2;
-    int textY = defenseY + statusSize - 8;
+    int textY = defenseY + statusSize - 13;
     graphics.drawString(protectionText, textX, textY);
     graphics.setFont(oldFont);
     graphics.setColor(oldColor);
 	}
+	
+	private void heroArmor(Graphics2D graphics, ApplicationContext context, int statX, int statY) {
+    var oldFont = graphics.getFont();
+    var oldColor = graphics.getColor();
+    var statusSize = 30;
+    String pvText = hero.HP() + " / " + hero.HPMAX() + " PV";
+    int textWidth = graphics.getFontMetrics().stringWidth(pvText);
+    int armorX = statX - textWidth + 100; 
+    int armorY = statY - statusSize + 5;
+    imagesStatus.drawImage(graphics, imagesStatus.get(4), armorX, armorY, statusSize, statusSize); 
+    graphics.setFont(new Font("Arial", Font.BOLD, 20));
+    String armorText = String.valueOf(hero.armor());
+    int textX = armorX + (statusSize - graphics.getFontMetrics().stringWidth(armorText) + 4) / 2;
+    int textY = armorY + statusSize - 8; 
+    graphics.drawString(armorText, textX, textY);
+    graphics.setFont(oldFont);
+    graphics.setColor(oldColor);
+	}
+
 	
 	public void heroPV(Graphics2D graphics, ApplicationContext context) {
 		int statX = context.getScreenInfo().width() / 5 + 40;
 		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
 		if (hero.protection() > 0) {
 	    heroDefense(graphics, context, statX, statY);
+		}
+		if (hero.armor() > 0) {
+			heroArmor(graphics, context, statX, statY);
 		}
 		var stat = hero.HP() + " / " + hero.HPMAX() + " PV";
 		graphics.drawString(stat, statX, statY);
@@ -66,6 +88,7 @@ public class HeroView {
     var mY = context.getScreenInfo().height() / 6 + 50;
     graphics.drawString(mana, mX, mY);
 	}
+	
 	private void heroPenalty(Graphics2D graphics, ApplicationContext context) {
 		var penalty = "Penalties : " + hero.cursePenaltyStacks();
 		var mX = context.getScreenInfo().width() / 8 - 175;

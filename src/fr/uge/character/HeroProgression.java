@@ -19,12 +19,9 @@ public class HeroProgression {
   public void WinXpGraphics(Enemy enemy) {
     Objects.requireNonNull(enemy);
     xp += enemy.xp();
-    IO.println("Hero wins " + enemy.xp() + " XP. Total: " + xp);
-
     while (xp >= level * 10) {
       xp -= level * 10;
       level++;
-      IO.println("You have reached level " + level + "!");
       leveledUpDuringFight = true;
     }
   }

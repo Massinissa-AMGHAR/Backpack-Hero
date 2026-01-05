@@ -1,6 +1,6 @@
 package fr.uge.graphics.view;
 
-import fr.uge.graphics.app.*;
+import fr.uge.graphics.*;
 import fr.uge.graphics.image.*;
 import fr.uge.inventory.Item;
 
@@ -19,6 +19,7 @@ import java.time.Instant;
 public class MapView implements View {
 	private final MessageView message;
 	private final Floor floor;
+	private final Dungeon dungeon;
 	private final Hero hero; 
 	private final ImageLoader images;
 	private final ImageLoader imagesItems;
@@ -31,9 +32,10 @@ public class MapView implements View {
 	private final int rows = 5;
 	private boolean readyToReturnToMenu = false;
 	
-	public MapView(Hero hero, Floor floor, ImageLoader images, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesEnemies, ImageLoader imagesStatus) {
+	public MapView(Hero hero, Floor floor, Dungeon dungeon, ImageLoader images, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesEnemies, ImageLoader imagesStatus) {
 		this.hero = hero;
 		this.floor = floor;
+		this.dungeon = dungeon;
 		this.images = images;
 		this.imagesItems = imagesItems;
 		this.imagesServices = imagesServices;
@@ -52,9 +54,8 @@ public class MapView implements View {
 		return readyToReturnToMenu; 
 	}
 	
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-		graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		images.drawImage(graphics, images.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
 	private int[] calculateMapStart(int screenWidth, int screenHeight, int cols, int rows, int cellSize) {
@@ -180,12 +181,13 @@ public class MapView implements View {
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		message.update(); 
-		background(graphics, context.getScreenInfo());
+		background(graphics, context);
 		draw_map(graphics, context, floor);
 		importHeroImage(graphics, context);
 		importHeroImageOnMap(graphics, context);
 		message.drawMessage(graphics, context);
 		heroStat(graphics, context);
+
 	}
 	 
 	public boolean isRoomClicked(int x, int y, int i, int j, int[] start) {

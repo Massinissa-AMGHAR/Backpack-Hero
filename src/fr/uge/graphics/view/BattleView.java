@@ -1,9 +1,6 @@
 package fr.uge.graphics.view;
 
-import fr.uge.graphics.app.*;
-
-
-
+import fr.uge.graphics.*;
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
@@ -11,7 +8,10 @@ import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.character.*;
+import fr.uge.game.FightGraphics;
+import fr.uge.game.ManageBackpack;
 import fr.uge.inventory.*;
+import fr.uge.map.Dungeon;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -29,6 +29,7 @@ public class BattleView implements View {
 	private final ImageLoader imagesStatus;
 	private final int imageSize = 200;
 	private final Hero hero;
+	private final Dungeon dungeon;
 	private final Enemies enemies;
 	private boolean readyToReturnToMap = false;
 	private final BackpackView backpackView;
@@ -44,11 +45,12 @@ public class BattleView implements View {
 	private final EndTurnButton endButton;
 	private Enemy selectedEnemy;
 	private final ImageLoader imagesItems; 
-	private int refuseCount = 0; 
+	private int refuseCount = 1; 
 	
-	public BattleView(Hero hero, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
+	public BattleView(Hero hero, Dungeon dungeon, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
 
 		this.hero = hero;
+		this.dungeon = dungeon;
 		this.enemies = enemies;
 		this.imagesHero = imagesHero;
 		this.imagesEnemies = imagesEnemies;
@@ -88,9 +90,8 @@ public class BattleView implements View {
     return fightGraphics;
 	}
 
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		imagesHero.drawImage(graphics, imagesHero.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
 	private void importEnemyDefense(Graphics2D graphics, ApplicationContext context, Enemy enemy, int statX, int statY) {
@@ -245,7 +246,7 @@ public class BattleView implements View {
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		drawCursePhase(graphics, context);
-		background(graphics, context.getScreenInfo());
+		background(graphics, context);
 		messageView.drawMessage(graphics, context); 
 		if(curseView != null) {
 			curseView.draw(graphics, context);
@@ -264,7 +265,7 @@ public class BattleView implements View {
 		}
 	}
 
-	private void ClickUnlockCase(Backpack backpack, int line, int column, Controller controller, ApplicationContext context) {
+	private boolean ClickUnlockCase(Backpack backpack, int line, int column, Controller controller, ApplicationContext context) {
     if (backpack.isUnlockMode()) {
       IO.println("UnlockMode : " + backpack.isUnlockMode());
       var msg = backpack.tryUnlockCase(line, column);
@@ -279,7 +280,9 @@ public class BattleView implements View {
       	messageView.showMessage("Choose your loot !!", 3000);
       	fightGraphics.setLootPhase(true);
       }
+      return true;
     }
+    return false;
 	}
 	
 	private void updateSelectedEnemy() {
@@ -315,7 +318,7 @@ public class BattleView implements View {
     Item curse = getClickedCurse(line, column);
     if(curse != null) {
     	hero.backpack().delete(curse);
-    	if (refuseCount == 0) {
+    	if (refuseCount == 1) {
       	hero.receiveDamage(2); 
       	messageView.showMessage(2 + " damage from the curse !", 1500);    		
     	}
@@ -343,16 +346,18 @@ public class BattleView implements View {
 	
 	private void ClickFight(int x, int y, Controller controller, ApplicationContext context) {
     var fight = fightGraphics;
-    if (fight == null) return;       
+    if (fight == null) return;   
     var backpack = backpackView.backpack(); 
     var start = backpackView.calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
     int line = (y - start[1]) / backpackView.cellSize();
     int column = (x - start[0]) / backpackView.cellSize();
-    if (applyCurseIfClicked(line, column)) {
+    if (ClickUnlockCase(backpack, line, column, controller, context)) {
     	return;
     }
-    ClickUnlockCase(backpack, line, column, controller, context); 
     if (fight.isFightOver() || !fight.isHeroTurn()) {
+    	return;
+    }
+    if (applyCurseIfClicked(line, column)) {
     	return;
     }
     useItemOnEnemy(x, y, line, column, context);
@@ -468,7 +473,7 @@ public class BattleView implements View {
 			if(curseView.madeChoice()) {
 				if(curseView.curseAccepted()) {
 					fightGraphics.clearExpectedCurse(); 
-					curseView.resetRefuseCount();
+					refuseCount = 1;
 					fightGraphics.setCurseLaunced(false);
 				}
 				curseView = null; 

@@ -2,12 +2,14 @@ package fr.uge.graphics.view;
 
 import fr.uge.character.Hero;
 import fr.uge.character.Merchant;
-import fr.uge.graphics.app.*;
+import fr.uge.game.ManageBackpack;
+import fr.uge.graphics.*;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.BackpackPlacement;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemType;
 import fr.uge.inventory.Items;
+import fr.uge.map.Dungeon;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,6 +22,7 @@ import com.github.forax.zen.ScreenInfo;
 public class MerchantView implements View {
 	private final SellButton sellButton;
 	private final Hero hero;
+	private final Dungeon dungeon;
 	private final Merchant merchant; 
 	private final ItemsView shopView; 
 	private final ImageLoader imagesHero;
@@ -36,8 +39,9 @@ public class MerchantView implements View {
 
 	private static final int imageSize = 200; 
 	
-	public MerchantView(Hero hero, Merchant merchant, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+	public MerchantView(Hero hero, Dungeon dungeon, Merchant merchant, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		this.hero = hero;
+		this.dungeon = dungeon;
 		this.merchant = merchant; 
 		this.shopView= new ItemsView(shopItems, imagesItems);  
 		this.imagesHero = imagesHero;
@@ -63,9 +67,8 @@ public class MerchantView implements View {
 	public MessageView messageView() {return message; }
 
 	
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		imagesHero.drawImage(graphics, imagesHero.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
@@ -92,7 +95,7 @@ public class MerchantView implements View {
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		message.update();
-		background(graphics, context.getScreenInfo());
+		background(graphics, context);
 		message.drawMessage(graphics, context);
 		heroStat(graphics, context);
 		heroView.importHeroImage(graphics, context);

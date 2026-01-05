@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import com.github.forax.zen.ApplicationContext;
 
-import fr.uge.graphics.app.ManageBackpack;
+import fr.uge.game.ManageBackpack;
 import fr.uge.inventory.Item;
 
 public class SellButton {

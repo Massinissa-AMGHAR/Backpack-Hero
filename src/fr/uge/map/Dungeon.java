@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Dungeon {
   private final ArrayList<Floor> dungeon = new ArrayList<>(); 
   private final int floorCount;
+  private int currentFloor = 0;
   
   public Dungeon(int floorCount) {
   	if (floorCount < 0) throw new IllegalArgumentException("Integer must be >= 0");
@@ -12,6 +13,7 @@ public class Dungeon {
   }
   
   public int floorCount() { return floorCount; }
+  public int currentFloor() { return currentFloor; }
 
   public void add(Floor floor) {
     Objects.requireNonNull(floor, "floor cannot be null");
@@ -40,6 +42,7 @@ public class Dungeon {
   	if(i == dungeon.size() - 1) {
   		return null; 
   	}
+  	currentFloor++;
   	return dungeon.get(i + 1); 
   }
 }

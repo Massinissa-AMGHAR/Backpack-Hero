@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.github.forax.zen.ApplicationContext;
 
-import fr.uge.graphics.app.Message;
+import fr.uge.graphics.Message;
 
 public class MessageView {
 	private final List<Message> messages = new ArrayList<>();

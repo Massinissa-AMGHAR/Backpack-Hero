@@ -1,7 +1,7 @@
 package fr.uge.effect;
 
 import fr.uge.character.*;
-import fr.uge.graphics.app.FightGraphics;
+import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
 
 public class PoisonEffect implements ItemEffect {

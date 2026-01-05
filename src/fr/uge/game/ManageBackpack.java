@@ -1,4 +1,4 @@
-package fr.uge.graphics.app;
+package fr.uge.game;
 
 
 import fr.uge.character.HeroInventoryManager;

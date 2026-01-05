@@ -13,7 +13,6 @@ public class Merchant {
  
   public int goldCost(Item item) {
     int goldCost =  item.goldCost() / 2; 
-    IO.println("Merchant : I can buy this item for : " + goldCost + " golds"); 
     return goldCost; 
   }
   

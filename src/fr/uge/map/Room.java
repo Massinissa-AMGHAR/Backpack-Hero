@@ -1,7 +1,6 @@
 package fr.uge.map;
 import fr.uge.character.*;
-
-import fr.uge.graphics.app.FightGraphics;
+import fr.uge.game.FightGraphics;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
@@ -50,10 +49,10 @@ public class Room {
     
   }
   
-  public BattleView getBattleView(Hero hero, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
+  public BattleView getBattleView(Hero hero, Dungeon dungeon, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
     if (!hasEnemies) return null;
     if (battleView == null) {
-        battleView = new BattleView(hero, getLoot(), enemies, imagesHero, imagesEnemies, imagesItems, imagesStatus);
+        battleView = new BattleView(hero, dungeon, getLoot(), enemies, imagesHero, imagesEnemies, imagesItems, imagesStatus);
     }
     if (fightGraphics == null) {
       fightGraphics = new FightGraphics(hero, enemies, battleView);
@@ -65,25 +64,25 @@ public class Room {
     return battleView;
   } 
   
-  public TreasureView getTreasureView(Hero hero, ImageLoader images, ImageLoader imagesItems) {
+  public TreasureView getTreasureView(Hero hero, Dungeon dungeon, ImageLoader images, ImageLoader imagesItems) {
   	if (treasureView == null) {
-  		treasureView = new TreasureView(hero, getLoot(), images, imagesItems);
+  		treasureView = new TreasureView(hero, dungeon, getLoot(), images, imagesItems);
   	}
   	return treasureView;
   }
   
-  public HealerView getHealerView(Hero hero, ImageLoader imagesMap, ImageLoader imagesServices, ImageLoader imagesItems) {
+  public HealerView getHealerView(Hero hero, Dungeon dungeon, ImageLoader imagesMap, ImageLoader imagesServices, ImageLoader imagesItems) {
     if (!hasAngel) return null; 
     if (healerView == null) {
-        healerView = new HealerView(hero, angel(), imagesMap, imagesServices, imagesItems);
+        healerView = new HealerView(hero, dungeon, angel(), imagesMap, imagesServices, imagesItems);
     }
     return healerView;
   }
   
-  public MerchantView getMerchantView(Hero hero, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+  public MerchantView getMerchantView(Hero hero, Dungeon dungeon, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
     if (!hasMerchant) return null;
     if (merchantView == null) {
-        merchantView = new MerchantView(hero, merchant, getLoot(), imagesHero, imagesServices, imagesItems);
+        merchantView = new MerchantView(hero, dungeon, merchant, getLoot(), imagesHero, imagesServices, imagesItems);
     }
     return merchantView;
   }

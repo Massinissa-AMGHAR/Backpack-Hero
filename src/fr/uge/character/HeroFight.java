@@ -13,10 +13,11 @@ public class HeroFight {
   private int cursePenaltyStacks = 0; 
   private int armorValue;
   
-  public HeroFight(int HP, int HPMAX, int protection, int energy, int manaMax, int mana) {
+  public HeroFight(int HP, int HPMAX, int protection, int armor, int energy, int manaMax, int mana) {
   	this.HP = HP; 
   	this.HPMAX = HPMAX; 
-  	this.protection = protection; 
+  	this.protection = protection;
+  	this.armorValue = armor;
   	this.energy = energy;
     this.mana = mana;
     this.manaMax = manaMax;
@@ -25,6 +26,7 @@ public class HeroFight {
   public int HP() { return HP; } 
   public int HPMAX() { return HPMAX; }
   public int protection() { return protection; }
+  public int armor() { return armorValue; }
   public int energy() { return energy; }
   public int mana() { return mana; }
   public int manaMax() { return manaMax; }
@@ -100,7 +102,6 @@ public class HeroFight {
 			return 0;
 		}
 		protection += item.defense();
-		
 		energy -= item.energyCost(); 
 		mana -= item.manaCost(); 
 		return protection;

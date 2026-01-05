@@ -1,9 +1,6 @@
 package fr.uge.graphics.view;
 
-import fr.uge.graphics.app.*;
-
-
-
+import fr.uge.graphics.*;
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
@@ -11,7 +8,9 @@ import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.character.*;
+import fr.uge.game.ManageBackpack;
 import fr.uge.inventory.*;
+import fr.uge.map.Dungeon;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -19,6 +18,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 public class TreasureView implements View {
+	private final Dungeon dungeon;
 	private boolean treasureMessage = false;
 	private final MessageView messageView;
 	private boolean readyToReturnToMap = false;
@@ -36,8 +36,9 @@ public class TreasureView implements View {
 	private final DeleteButton deleteButton;
 	private final ManageBackpack management; 
 
-	public TreasureView(Hero hero, Items lootItems, ImageLoader imagesHero, ImageLoader imagesItems) {
+	public TreasureView(Hero hero, Dungeon dungeon, Items lootItems, ImageLoader imagesHero, ImageLoader imagesItems) {
 		this.hero = hero;
+		this.dungeon = dungeon;
 		this.imagesHero = imagesHero;
 		this.messageView = new MessageView(); 
 		this.heroView = new HeroView(hero, imagesHero, imagesItems, null);
@@ -60,9 +61,8 @@ public class TreasureView implements View {
 	
 	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
 	
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		imagesHero.drawImage(graphics, imagesHero.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
@@ -76,7 +76,7 @@ public class TreasureView implements View {
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
-		background(graphics, context.getScreenInfo());
+		background(graphics, context);
 		if (!treasureMessage) {
 			messageView().showMessage("You found a treasure !", 1500);
 			treasureMessage = true;

@@ -1,4 +1,4 @@
-package fr.uge.graphics.app;
+package fr.uge.graphics;
 import fr.uge.graphics.image.*;
 
 import fr.uge.graphics.view.*;
@@ -10,6 +10,8 @@ import com.github.forax.zen.PointerEvent;
 
 import fr.uge.application.*;
 import fr.uge.character.*;
+import fr.uge.game.FightGraphics;
+import fr.uge.game.GameGraphics;
 import fr.uge.map.*;
 
 public class Controller {	
@@ -31,7 +33,9 @@ public class Controller {
   private TreasureView treasureView;
   private View view;
   private BattleView battleView;
+  private VictoryView victoryView;
   private boolean dungeonFinished = false; 
+  private boolean running;
   
 	
   public Controller(Hero hero, Dungeon dungeon, Floor floor, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
@@ -43,23 +47,32 @@ public class Controller {
 		this.imagesItems = imagesItems;		
 		this.imagesServices = imagesServices;
 		this.imagesStatus = imagesStatus;
-		menuView = new MenuView();
+		menuView = new MenuView(imagesMap);
 
 		hofView = new HallOfFameView(); 
 		hof = new HallOfFame(); 
 
-		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
+		mapView = new MapView(hero, floor, dungeon, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
 		view = menuView;
   }
-  public void startNewGame() {
+  
+  public void startNewGame(boolean startFromMenu) {
   	GameGraphics newGame = new GameGraphics(); 
   	hero = newGame.hero(); 
   	dungeon = newGame.dungeon(); 
   	floor = newGame.floor(); 
-  	mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
-  	changeView(mapView); 
+  	mapView = new MapView(hero, floor, dungeon, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
+  	if (!startFromMenu) {
+    	changeView(mapView); 
+  		mapView.messageView().showMessage("Welcome to the dungeon !", 2000);
+
+  	}
   	dungeonFinished = false; 
-  	mapView().messageView().showMessage("Welcome to the dungeon !", 2000);
+  }
+  
+  public void startPlayAgain() {
+  	changeView(menuView);
+  	startNewGame(true);
   }
   
 	public MenuView menuView() { return menuView; }
@@ -111,19 +124,19 @@ public class Controller {
 	public void goToNextFloor() {
 		var next = dungeon.nextFloor(floor);
 		if (next == null) {
-			mapView.messageView().showMessage("You have cleared the dungeon !", 1000);
+			startVictory();
 			dungeonFinished = true; 
 			return;
 		}
 		floor = next;
 		floor.initPlaceHero();
-		mapView = new MapView(hero, floor, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus);
+		mapView = new MapView(hero, floor, dungeon, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus);
 		changeView(mapView);
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
 	}
 	
 	public void startFight(Enemies roomEnemies, Room room) {
-		battleView = room.getBattleView(hero, imagesMap, imagesEnemies, imagesItems, imagesStatus);
+		battleView = room.getBattleView(hero, dungeon, imagesMap, imagesEnemies, imagesItems, imagesStatus);
 		if (battleView.fight() == null) {
 			var fg = new FightGraphics(hero, roomEnemies, battleView);
 			battleView.setFight(fg);
@@ -132,18 +145,23 @@ public class Controller {
 	}
 	
 	public void startMerchant(Room room) {
-		merchantView = room.getMerchantView(hero, imagesMap, imagesServices, imagesItems);
+		merchantView = room.getMerchantView(hero, dungeon, imagesMap, imagesServices, imagesItems);
 		changeView(merchantView);
 	}
 	
 	public void startHealer(Room room) {
-		healerView = room.getHealerView(hero, imagesMap, imagesServices, imagesItems);
+		healerView = room.getHealerView(hero, dungeon, imagesMap, imagesServices, imagesItems);
 		changeView(healerView);
 	}
 	
 	public void startTreasure(Room room) {
-		treasureView = room.getTreasureView(hero, imagesMap, imagesItems);
+		treasureView = room.getTreasureView(hero, dungeon, imagesMap, imagesItems);
 		changeView(treasureView);
+	}
+	
+	public void startVictory() {
+		victoryView = new VictoryView(hero, imagesMap);
+		changeView(victoryView);
 	}
 	
 	
@@ -171,7 +189,7 @@ public class Controller {
 	private void endGame() {
 		int score = hero.score(); 
 		hof.addScore(score);
-		changeView(menuView); 
+		changeView(victoryView); 
 	}
 	
 	private void updateView() {
@@ -219,8 +237,22 @@ public class Controller {
     }
 	}
 	
+	private boolean checkEndGameButtons() {
+		if (view == victoryView) {
+			if (victoryView.isQuit()) {
+				return true;
+			}
+			if (victoryView.isPlayAgain()) {
+				startPlayAgain();
+				victoryView.setPlayAgain(false);
+				return false;
+			}
+		}
+		return false;
+	}
+	
 	public void game(ApplicationContext context) {
-    boolean running = true;
+    running = true;
     while (running) {
     	context.renderFrame(graphics -> {
     		if(dungeonFinished) {
@@ -233,6 +265,9 @@ public class Controller {
 
     	});
     	running = gameLoop(context);
+      if (checkEndGameButtons()) {
+      	running = false;
+      }
     } 
     context.dispose();
 	}
