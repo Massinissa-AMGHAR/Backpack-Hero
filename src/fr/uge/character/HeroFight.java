@@ -70,6 +70,7 @@ public class HeroFight {
   		}
   	}
   }
+  
   public void heal(int hpBonus) {
 		HP += hpBonus; 
 		if(HP > HPMAX) {
@@ -82,6 +83,8 @@ public class HeroFight {
   		return;
   	}
   	armorValue = item.defense();
+  	energy -= item.energyCost();
+  	mana -= item.manaCost();
   }
   
 	public int defense(Item item) {

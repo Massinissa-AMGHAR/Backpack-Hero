@@ -24,6 +24,7 @@ public class MerchantView implements View {
 	private final ItemsView shopView; 
 	private final ImageLoader imagesHero;
 	private final ImageLoader imagesServices; 
+	private final HeroView heroView;
 	private final BackpackView backpackView; 
 	private final ItemDeleteView deleteView;
 	private final ItemPlacementView placementView; 
@@ -41,6 +42,7 @@ public class MerchantView implements View {
 		this.shopView= new ItemsView(shopItems, imagesItems);  
 		this.imagesHero = imagesHero;
 		this.imagesServices = imagesServices; 
+		this.heroView = new HeroView(hero, imagesHero, imagesItems, null);
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
 		this.deleteView = new ItemDeleteView(imagesItems);
 		this.placementView = new ItemPlacementView(imagesItems, deleteView); 
@@ -81,12 +83,6 @@ public class MerchantView implements View {
     graphics.drawString(goldText, statX, statY);
 	}
 	
-	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
-		int heroX = context.getScreenInfo().width() / 5;
-		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
-		imagesHero.drawImage(graphics, imagesHero.get(0), heroX, heroY, imageSize, imageSize); 
-	}
-	
 	private void importMerchantImage(Graphics2D graphics, ApplicationContext context) {
 		int MerchantX = context.getScreenInfo().width() - context.getScreenInfo().width() / 5 - imageSize;
 		int MerchantY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
@@ -99,7 +95,7 @@ public class MerchantView implements View {
 		background(graphics, context.getScreenInfo());
 		message.drawMessage(graphics, context);
 		heroStat(graphics, context);
-		importHeroImage(graphics, context);
+		heroView.importHeroImage(graphics, context);
 		importMerchantImage(graphics, context);
 		shopView.drawItems(graphics, context, true);
 		backpackView.drawBackpack(graphics, context); 

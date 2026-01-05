@@ -24,6 +24,7 @@ public class TreasureView implements View {
 	private boolean readyToReturnToMap = false;
 	private final Hero hero;
 	private final Items lootItems;
+	private final HeroView heroView;
 	private final BackpackView backpackView; 
 	private final ImageLoader imagesHero;
 	private final int imageSize = 200;
@@ -39,6 +40,7 @@ public class TreasureView implements View {
 		this.hero = hero;
 		this.imagesHero = imagesHero;
 		this.messageView = new MessageView(); 
+		this.heroView = new HeroView(hero, imagesHero, imagesItems, null);
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems); 
 		this.lootItems = lootItems;
 		this.lootView = new ItemsView(lootItems, imagesItems); 
@@ -63,56 +65,13 @@ public class TreasureView implements View {
     graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
 	}
 	
-	private void heroPV(Graphics2D graphics, ApplicationContext context) {
-		var stat = hero.HP() + " / " + hero.HPMAX() + " PV";
-		int statX = context.getScreenInfo().width() / 5 + 40;
-		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
-		graphics.drawString(stat, statX, statY);
-	}
-	
-	private void heroManaEnergy(Graphics2D graphics, ApplicationContext context) {
-		var mana = "ManaEnergy : " + hero.mana();
-		var mX = context.getScreenInfo().width() / 8 - 175;
-    var mY = context.getScreenInfo().height() / 6 + 50;
-    graphics.drawString(mana, mX, mY);
-	}
-	
-	private void heroGold(Graphics2D graphics, ApplicationContext context) {
-		var gold = backpackView.backpack().findGoldItem(); 
-		String goldText; 
-    if(gold == null) {
-    	goldText = "Gold : 0 gold"; 
-    }else {
-    	goldText = "Gold : " + gold.goldAmount() + " gold"; 
-    }
-		var gX = context.getScreenInfo().width() / 8 - 175;
-    var gY = context.getScreenInfo().height() / 6 + 100;
-    graphics.drawString(goldText, gX, gY);
-	}
-	
-	private void heroLevel(Graphics2D graphics, ApplicationContext context) {
-    var level = "LVL." + hero.level();
-    var xp = hero.xp() + " / " + hero.nextLevelXp() + " XP"; 
-    var levelX = context.getScreenInfo().width() / 8 - 175;
-    var levelY = context.getScreenInfo().height() / 6 + 300;
-    graphics.drawString(level, levelX, levelY);
-    graphics.drawString(xp, levelX, levelY + 40);
-	}
-	
 	private void heroStat(Graphics2D graphics, ApplicationContext context) {
 		graphics.setColor(Color.WHITE);
     graphics.setFont(new Font("Arial", Font.BOLD, 30));
-    heroPV(graphics, context);
-    heroManaEnergy(graphics, context);
-    heroLevel(graphics, context);
-    heroGold(graphics, context);
-    
-	}
-	
-	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
-		int heroX = context.getScreenInfo().width() / 5;
-		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
-		imagesHero.drawImage(graphics, imagesHero.get(0), heroX, heroY, imageSize, imageSize); // Hero
+    heroView.heroPV(graphics, context);
+    heroView.heroManaEnergy(graphics, context);
+    heroView.heroLevel(graphics, context);
+    heroView.heroGold(graphics, context); 
 	}
 	
 	public void draw(Graphics2D graphics, ApplicationContext context) {
@@ -131,7 +90,7 @@ public class TreasureView implements View {
 		mapButton.draw(graphics);
 		rotateButton.draw(graphics, context);
 		deleteButton.draw(graphics, context);
-		importHeroImage(graphics, context);   
+		heroView.importHeroImage(graphics, context);   
 	}
 	
 	private boolean clickMapButton(int x, int y) {
