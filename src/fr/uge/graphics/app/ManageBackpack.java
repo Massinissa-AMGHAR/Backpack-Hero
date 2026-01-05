@@ -4,6 +4,7 @@ package fr.uge.graphics.app;
 import fr.uge.character.HeroInventoryManager;
 import fr.uge.character.Merchant;
 import fr.uge.graphics.view.ItemPlacementView;
+import fr.uge.graphics.view.MessageView;
 import fr.uge.inventory.Backpack;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemRegistry;

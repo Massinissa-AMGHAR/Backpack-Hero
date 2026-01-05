@@ -167,6 +167,7 @@ public class Item {
 		 case "Cool Drink" -> 26;
 		 case "Meal" -> 27;
 		 case "Steak" -> 28;
+		 case "Curse Sap" -> 29;
 		 default -> 0; 
 		};
 	}

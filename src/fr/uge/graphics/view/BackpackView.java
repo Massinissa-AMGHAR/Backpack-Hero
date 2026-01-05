@@ -116,8 +116,6 @@ public class BackpackView implements ClickableItems{
 		importImageItemOnBackPack(graphics, start[0], start[1]);
 	}
 	
-	
-	@Override
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
 		for(int i = 0; i < backpack.maxLines(); i++) {

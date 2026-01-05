@@ -52,8 +52,14 @@ public class BackpackPlacement {
   	
   	for(int i = 0; i < curse.height(); i++) {
   		for(int j = 0; j < curse.width(); j++) {
-  			if(curse.shape()[i][j] && !backpack.unlocked()[line + i][column + j]) {
-  				return false; 
+  			if (curse.shape()[i][j]) {
+  				if (!backpack.unlocked()[line + i][column + j]) {
+  					return false;
+  				}
+  				var current = backpack.grid().get(line + i).get(column + j);
+  				if (current != null && current.type() == ItemType.CURSE) {
+  					return false;
+  				}
   			}
   		}
   	}

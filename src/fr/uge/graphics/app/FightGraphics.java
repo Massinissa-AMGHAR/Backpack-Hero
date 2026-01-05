@@ -1,8 +1,6 @@
 package fr.uge.graphics.app;
 
 
-import java.util.Random;
-
 import fr.uge.application.*;
 
 import fr.uge.character.*;
@@ -25,6 +23,7 @@ public class FightGraphics {
 	private boolean manaRewardConsumed = false; 
 	private boolean curseLaunched = false; 
 	private boolean curseShown = false; 
+	
 	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
 		this.hero = hero;
 		this.enemies = enemies;
@@ -187,7 +186,9 @@ public class FightGraphics {
     applyItemEffects(item, enemy);
     applyItemInteractions(item, enemy);
     applyPoisonToEnemy(enemy);
-    if (hero.energy() <= 0) heroTurn = false;
+    if (hero.energy() <= 0) {
+    	heroTurn = false;
+    }
 	}
   
   public void checkEnemyDefeated() {
@@ -233,11 +234,14 @@ public class FightGraphics {
     fightEnded = true;
     heroTurn = false;
     if (heroWon()) {
+      if(hero.applyCursePenalty()) {
+      	int damage = 3 * hero.cursePenaltyStacks();
+      	battleView.messageView().showMessage(damage + " damage from curse penalties !", 2000);
+      }
     	victory();
     } else {
     	defeat();
     }
-    curseLaunched = false; 
   }
 
   public boolean isLootPhase() { return lootPhase;}
@@ -286,7 +290,6 @@ public class FightGraphics {
 			Item curse = enemy.curse(); 
 			battleView.messageView().showMessage(enemy.name() + " inflicts a curse ", 1000 + time);
 			giveCurse(curse); 
-			curseLaunched = true; 
 		}
    }
 	} 
@@ -309,9 +312,6 @@ public class FightGraphics {
     }
     var time = 0;
     playEnemies(time);
-    if(hero.applyCursePenalty()) {
-    	battleView.messageView().showMessage("Penalty!", 1000 + time);
-    }
     heroTurn = true;
   	curseShown = false; 
     cursesAttack(time); 

@@ -65,6 +65,8 @@ public class ItemRegistry {
 	
 	public static final ItemData CURSE = new ItemData("Curse", ItemType.CURSE, ItemRarity.RARE, ItemShapes.CURSE, 0, 0, 0, 0, 0, 0, 0, 0); 
 
+	public static final ItemData CURSE_SAP = new ItemData("Curse Sap", ItemType.CURSE, ItemRarity.RARE, ItemShapes.SIZE_1x1, 0, 0, 0, 0, 0, 0, 0, 0); 
+	
 	public static final ItemData MEAL = new ItemData("Meal", ItemType.CONSUMABLE, ItemRarity.COMMON, ItemShapes.SIZE_1x2, 0, 0, 0, 2, 0, 0, 0, 0);
 	
 	public static final ItemData COOL_DRINK = new ItemData("Cool Drink", ItemType.CONSUMABLE, ItemRarity.COMMON, ItemShapes.SIZE_1x1, 0, 0, 0, 1, 0, 0, 0, 0);

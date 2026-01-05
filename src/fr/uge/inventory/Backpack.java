@@ -121,11 +121,14 @@ public class Backpack {
   
   public int curseCount() {
   	return (int) grid.stream().
-  			flatMap(List::stream)
-  			.filter(Objects::nonNull)
-  			.filter(item -> item.type() == ItemType.CURSE)
-  			.distinct().count();
+			flatMap(List::stream)
+			.filter(Objects::nonNull)
+			.filter(item -> item.type() == ItemType.CURSE)
+      .map(Item::id)                  
+      .distinct()                     
+      .count();      
   }
+  
   
   private boolean isHorizontal(int i, int j, int startX, int startY, int width, int height) {
   	return (i >= startY && i < startY + height) && (j == startX - 1 || j == startX + width);

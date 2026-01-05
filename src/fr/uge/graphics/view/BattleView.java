@@ -245,7 +245,10 @@ public class BattleView implements View {
 		switch(action) {
 			case 0 -> imageIndex = 1;
 			case 1 -> imageIndex = 2;
-			case 2 -> imageIndex = 3;
+			case 2 -> {
+				imageIndex = 3;
+				fightGraphics.setCurseLaunced(true);
+			}
 		}
 		imagesStatus.drawImage(graphics, imagesStatus.get(imageIndex), statusX, statusY, statusSize, statusSize);
 	}
@@ -392,7 +395,9 @@ public class BattleView implements View {
 	
 	private Item getClickedCurse(int line, int column) {
 		Item item = hero.backpack().choice(line, column); 
-		if(item != null && item.type().equals(ItemType.CURSE)) return item; 
+		if(item != null && item.type().equals(ItemType.CURSE)) {
+			return item; 
+		}
 		return null; 
 	}
 	
@@ -400,8 +405,10 @@ public class BattleView implements View {
     Item curse = getClickedCurse(line, column);
     if(curse != null) {
     	hero.backpack().delete(curse);
-    	hero.receiveDamage(2); 
-    	messageView.showMessage(2 + " damage from the curse !", 1500); 
+    	if (refuseCount == 0) {
+      	hero.receiveDamage(2); 
+      	messageView.showMessage(2 + " damage from the curse !", 1500);    		
+    	}
     	hero.addCursePenalty(); 
     	return true;
     }
@@ -549,7 +556,11 @@ public class BattleView implements View {
 			curseView.Click(x, y, controller, context);
 			refuseCount = curseView.refuseCount(); 
 			if(curseView.madeChoice()) {
-				if(curseView.curseAccepted()) fightGraphics.clearExpectedCurse(); 
+				if(curseView.curseAccepted()) {
+					fightGraphics.clearExpectedCurse(); 
+					curseView.resetRefuseCount();
+					fightGraphics.setCurseLaunced(false);
+				}
 				curseView = null; 
 			}	 
 			return true;

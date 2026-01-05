@@ -112,17 +112,18 @@ public class Enemy implements Fighter {
 	public void resetAction() { action = null; }
 	
 	public int actionAnnounced(boolean curseLaunched) {
-	  Random rand = new Random(); 
-	  int action;
 	  if (curseLaunched) {
-	  	action = rand.nextInt(2);
+	  	return rand.nextInt(2);
 	  } else {
-	  	action = rand.nextInt(3); 
+	  	return rand.nextInt(3); 
 	  }
-	  return action; 
 	}
 	
 	public Item curse() {
+		var shape = rand.nextInt(2);
+		if (shape == 0) {
+			return ItemRegistry.create(ItemRegistry.CURSE_SAP); 
+		}
 		return ItemRegistry.create(ItemRegistry.CURSE); 
 	}
 	

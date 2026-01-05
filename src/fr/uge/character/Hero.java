@@ -10,7 +10,6 @@ public class Hero implements Fighter{
   private final HeroProgression progression; 
   private final HeroFight heroFight; 
   private final HeroInventoryManager inventoryManager; 
-  private final HeroEconomyManager economyManager; 
 
   
   public Hero(String name, int HP, int HPMAX, int protection, int energy, int manaMax, int mana, int xp,  int level, Backpack backpack) {
@@ -22,7 +21,6 @@ public class Hero implements Fighter{
       this.progression = new HeroProgression(this); 
       this.heroFight = new HeroFight(HP, HPMAX, protection, energy, manaMax, mana); 
       this.inventoryManager = new HeroInventoryManager(backpack); 
-      this.economyManager = new HeroEconomyManager(inventoryManager, heroFight); 
   }
   
   public String name() { return name; }
@@ -59,8 +57,6 @@ public class Hero implements Fighter{
   public void addEnergy(int amount) { heroFight.addEnergy(amount); }
   public void resetMana() { heroFight.resetMana();}
   public void addMana(int amount) { heroFight.addMana(amount); }
-  public void reduceMana(int amount) { heroFight.reduceMana(amount); }
-  public boolean buy(int cost) { return economyManager.buy(cost); }
-  
+  public void reduceMana(int amount) { heroFight.reduceMana(amount); }  
   public int score() {return heroFight.HPMAX() * 10 + inventoryManager.backpack().totalPrice(); }
 }

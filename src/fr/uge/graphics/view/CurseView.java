@@ -49,8 +49,10 @@ public class CurseView implements View{
 	}
 	public boolean curseAccepted() { return curseAccepted; }
 	public int refuseCount() { return refuseCount;}
+	public void resetRefuseCount() { refuseCount = 0; }
 	public Item getCurse() { return curse;}
 	public boolean madeChoice() { return madeChoice; }
+	
 	private void importHeroImage(Graphics2D graphics, ApplicationContext context) {
 	int heroX = context.getScreenInfo().width() / 5;
 	int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
@@ -73,13 +75,14 @@ public class CurseView implements View{
 			refuseCount++; 
 			hero.receiveDamage(refuseCount);
 			messageView.showMessage(refuseCount + " damage ! " + "It will be reproposed next turn.", 1000);
+			//fight.setCurseLaunced(true);
 			madeChoice = true; 
 			return; 
 		}
 		int[] cell = backpackView.choiceCase(x, y, context); 
 		if(cell != null) {
-			if (management.placeCurseInBackpack(cell[0], cell[1])){
-				fight.setCurseLaunced(false);
+			if (management.placeCurseInBackpack(cell[0], cell[1])) {
+				//fight.setCurseLaunced(false);
 				curseAccepted = true; 
 				madeChoice = true; 
 				placementView.clear();
