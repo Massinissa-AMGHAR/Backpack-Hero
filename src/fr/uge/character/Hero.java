@@ -59,5 +59,5 @@ public class Hero implements Fighter{
   public void resetMana() { heroFight.resetMana();}
   public void addMana(int amount) { heroFight.addMana(amount); }
   public void reduceMana(int amount) { heroFight.reduceMana(amount); }  
-  public int score() {return heroFight.HPMAX() * 10 + inventoryManager.backpack().totalPrice(); }
+  public int score() {return heroFight.HPMAX() * 5 + inventoryManager.backpack().totalPrice(); }
 }

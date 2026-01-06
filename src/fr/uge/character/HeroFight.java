@@ -53,7 +53,7 @@ public class HeroFight {
   public void resetEnergy() { energy = 3; }
   
   public void hpmaxAugmentation() {
-  	HPMAX += 2; 
+  	HPMAX += 4; 
   }
   
   public void addCursePenalty() {

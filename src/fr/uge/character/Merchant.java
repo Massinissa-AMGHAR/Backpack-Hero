@@ -12,7 +12,7 @@ public class Merchant {
   }
  
   public int goldCost(Item item) {
-    int goldCost =  item.goldCost() / 2; 
+    int goldCost =  item.goldCost(); 
     return goldCost; 
   }
   

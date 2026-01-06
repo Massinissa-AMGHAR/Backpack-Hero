@@ -93,12 +93,12 @@ public class Floor {
 		var random = rand.nextInt(5);
 		Room randomRoom;
 		switch(random) {
-			case 0 -> randomRoom = new Room(true, false, false, false, false, false);
-			case 1 -> randomRoom = new Room(false, true, false, false, false, false);
-			case 2 -> randomRoom = new Room(false, false, true, false, false, false);
-			case 3 -> randomRoom = new Room(false, false, false, true, false, false);
-			case 4 -> randomRoom = new Room(false, false, false, false, true, false);
-			default -> randomRoom = new Room(false, false, false, false, false, false);
+			case 0 -> randomRoom = new Room(gridRoom.floor(), true, false, false, false, false, false);
+			case 1 -> randomRoom = new Room(gridRoom.floor(), false, true, false, false, false, false);
+			case 2 -> randomRoom = new Room(gridRoom.floor(), false, false, true, false, false, false);
+			case 3 -> randomRoom = new Room(gridRoom.floor(), false, false, false, true, false, false);
+			case 4 -> randomRoom = new Room(gridRoom.floor(), false, false, false, false, true, false);
+			default -> randomRoom = new Room(gridRoom.floor(), false, false, false, false, false, false);
 		}
 		randomRoom.getLoot();
 		gridRoom.setGeneratedRoom(randomRoom);
@@ -119,45 +119,45 @@ public class Floor {
 	
   private static List<Room> listRoomOfFloor1() {
     return List.of(
-      new Room(false, true, false, false, false, false),
-      new Room(true, false, false, false, false, false),
-      new Room(true, false, false, false, false, false),
-      new Room(false, false, true, false, false, false),
-      new Room(false, false, false, true, false, false),
-      new Room(true, false, false, false, false, false),
-      new Room(false, false, false, true, false, false),
-      new Room(false, false, false, false, true, false),
-      new Room(false, false, false, false, false, true)
+      new Room(0, false, true, false, false, false, false),
+      new Room(0, true, false, false, false, false, false),
+      new Room(0, true, false, false, false, false, false),
+      new Room(0, false, false, true, false, false, false),
+      new Room(0, false, false, false, true, false, false),
+      new Room(0, true, false, false, false, false, false),
+      new Room(0, false, false, false, true, false, false),
+      new Room(0, false, false, false, false, true, false),
+      new Room(0, false, false, false, false, false, true)
     );
   }
 
   private static List<Room> listRoomOfFloor2() {
     return List.of(
-      new Room(false, false, false, true, false, false),
-      new Room(false, true, false, false, false, false),
-      new Room(false, false, false, false, false, false),
-      new Room(true, false, false, false, false, false),
-      new Room(false, false, true, false, false, false),
-      new Room(true, false, false, false, false, false), 
-      new Room(false, false, false, false, true, false), 
-      new Room(true, false, false, false, false, false), 
-      new Room(false, false, false, true, false, false),
-      new Room(false, false, false, false, false, true)
+      new Room(1, false, false, false, true, false, false),
+      new Room(1, false, true, false, false, false, false),
+      new Room(1, false, false, false, false, false, false),
+      new Room(1, true, false, false, false, false, false),
+      new Room(1, false, false, true, false, false, false),
+      new Room(1, true, false, false, false, false, false), 
+      new Room(1, false, false, false, false, true, false), 
+      new Room(1, true, false, false, false, false, false), 
+      new Room(1, false, false, false, true, false, false),
+      new Room(1, false, false, false, false, false, true)
 
     );
   }
 
 	private static List<Room> listRoomOfFloor3() {
 	    return List.of(
-	      new Room(false, false, true, false, false, false),
-	      new Room(true, false, false, false, false, false),
-	      new Room(true, false, false, false, false, false),
-	      new Room(false, true, false, false, false, false),
-	      new Room(true, false, false, false, false, false),
-	      new Room(false, false, false, false, true, false),
-	      new Room(false, false, false, true, false, false), 
-	      new Room(false, false, false, true, false, false),
-	      new Room(false, false, false, false, false, true)
+	      new Room(2, false, false, true, false, false, false),
+	      new Room(2, true, false, false, false, false, false),
+	      new Room(2, true, false, false, false, false, false),
+	      new Room(2, false, true, false, false, false, false),
+	      new Room(2, true, false, false, false, false, false),
+	      new Room(2, false, false, false, false, true, false),
+	      new Room(2, false, false, false, true, false, false), 
+	      new Room(2, false, false, false, true, false, false),
+	      new Room(2, false, false, false, false, false, true)
 	    );
 
 	}
@@ -246,13 +246,13 @@ public class Floor {
     addRoomsToFloor(floor2, listRoomOfFloor2(), positionsRoomsFloor2());
     addRoomsToFloor(floor3, listRoomOfFloor3(), positionsRoomsFloor3());
     for(var pos : corridorPositionsFloor1()) {
-    	floor1.add(new Room(false, false, false, false, false, false), pos[0], pos[1]);
+    	floor1.add(new Room(0, false, false, false, false, false, false), pos[0], pos[1]);
     }
     for(var pos : corridorPositionsFloor2()) {
-    	floor2.add(new Room(false, false, false, false, false, false), pos[0], pos[1]);
+    	floor2.add(new Room(1, false, false, false, false, false, false), pos[0], pos[1]);
     }
     for(var pos : corridorPositionsFloor3()) {
-    	floor3.add(new Room(false, false, false, false, false, false), pos[0], pos[1]);
+    	floor3.add(new Room(2, false, false, false, false, false, false), pos[0], pos[1]);
     }
     floor1.addAllNeighbor();
     floor2.addAllNeighbor();

@@ -14,7 +14,7 @@ public class HeroInventoryManager {
 		this.backpack = backpack; 
 	}
 	
-	public Backpack backpack() {return backpack; }
+	public Backpack backpack() { return backpack; }
 	
 	
 	public boolean buy(int cost) {

@@ -24,13 +24,15 @@ public class Room {
   private boolean visited;
   private final Enemies enemies; 
   private Items treasure; 
+  private final int floor;
   private final Merchant merchant; 
   private final Healer healer; 
   private final ArrayList<Room> neighbors = new ArrayList<>(); 
   private Room generatedRoom;
 
-  public Room(boolean hasEnemies, boolean hasMerchant, boolean hasAngel, boolean hasTreasure, boolean hasDoor, boolean hasGrid) {
-    this.hasEnemies = hasEnemies;
+  public Room(int floor, boolean hasEnemies, boolean hasMerchant, boolean hasAngel, boolean hasTreasure, boolean hasDoor, boolean hasGrid) {
+    this.floor = floor;
+  	this.hasEnemies = hasEnemies;
     this.hasMerchant = hasMerchant; 
     this.hasAngel = hasAngel; 
     this.hasTreasure = hasTreasure; 
@@ -38,7 +40,7 @@ public class Room {
     this.hasGrid = hasGrid;
     this.visited = false;
    
-    if(hasEnemies) enemies = new Enemies(); 
+    if(hasEnemies) enemies = new Enemies(floor); 
     else enemies = null; 
     
     if(hasMerchant) merchant = new Merchant(); 
@@ -109,6 +111,7 @@ public class Room {
   	this.generatedRoom = room;
   }
   
+  public int floor() { return floor; }
   public boolean hasEnemies() {return hasEnemies; }
   public boolean hasMerchant() {return hasMerchant;}
   public boolean hasAngel() {return hasAngel;}

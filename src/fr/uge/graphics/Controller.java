@@ -194,7 +194,11 @@ public class Controller {
 	private void endGame() {
 		int score = hero.score(); 
 		hof.addScore(score);
-		startDefeat();
+		if (hero.isDead()) {
+			startDefeat();
+		} else {
+			startVictory();
+		}
 	}
 	
 	private void updateView() {
@@ -264,7 +268,7 @@ public class Controller {
     while (running) {
     	context.renderFrame(graphics -> {
     		if(dungeonFinished) {
-    			dungeonFinished = false;
+    			dungeonFinished = false; 
     			endGame();
     			return; 
     		}

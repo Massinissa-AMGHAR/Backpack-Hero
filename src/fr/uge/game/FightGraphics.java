@@ -52,7 +52,7 @@ public class FightGraphics {
 	public BattleView battleView() { return battleView; }
 	
 	public int getGoldReward() {
-		return enemies.getEnemies().size();
+		return 2 * enemies.getEnemies().size();
 	}
 	
 	public boolean isFightOver() {
@@ -311,6 +311,9 @@ public class FightGraphics {
     	return;
     }
     var time = 0;
+    for (var enemy : enemies.getEnemies()) {
+    	enemy.resetProtection();
+    }
     playEnemies(time);
     heroTurn = true;
   	curseShown = false; 

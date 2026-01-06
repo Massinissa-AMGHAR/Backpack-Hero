@@ -167,15 +167,24 @@ public class BattleView implements View {
 		imagesStatus.drawImage(graphics, imagesStatus.get(imageIndex), statusX, statusY, statusSize, statusSize);
 	}
 	
+	private int getEnemyImageIndex(Enemy enemy) {
+		return switch(enemy.name()) {
+			case "Rat-Wolf" -> 0;
+			case "Small Rat-Wolf" -> 1;
+			case "Frog Wizard" -> 2;
+			case "Living Shadow" -> 3;
+			case "Queen Bee" -> 4;
+			default -> -1;
+		};
+	}
+	
 	private void importEnemy(Graphics2D graphics, ApplicationContext context, List<Enemy> allEnemies, FightGraphics fight, int startX, int startY, int spacing) {
     for (int i = 0; i < allEnemies.size(); i++) {
       var enemy = allEnemies.get(i);
       if (enemy.HP() <= 0) continue;
       int enemyX = startX + i * spacing;
       int enemyY = startY;
-      var imageIndex = 0;
-      if (enemy.name().equals("Little Rat-Wolf")) imageIndex = 1;
-      if (enemy.name().equals("Rat-Wolf")) imageIndex = 0;
+      var imageIndex = getEnemyImageIndex(enemy);
       imagesEnemies.drawImage(graphics, imagesEnemies.get(imageIndex), enemyX, enemyY, imageSize, imageSize);
       enemyStat(graphics, context, enemy, i, spacing);
       if (enemy == selectedEnemy) {

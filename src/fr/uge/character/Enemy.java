@@ -128,8 +128,11 @@ public class Enemy implements Fighter {
 	}
 	
 	public static final EnemyData[] ALL_ENEMIES ={
-		new EnemyData("Little Rat-Wolf", 15, 1, 4, 1, 6, 3 ),
-		new EnemyData("Rat-Wolf", 20, 3, 6, 3, 6, 6)
+		new EnemyData("Small Rat-Wolf", 20, 3, 5, 4, 6, 4),
+		new EnemyData("Rat-Wolf", 30, 5, 7, 6, 8, 8),
+		new EnemyData("Frog Wizard", 45, 6, 9, 6, 10, 12),
+		new EnemyData("Living Shadow", 60, 8, 11, 6, 10, 16),
+		new EnemyData("Queen Bee", 80, 9, 13, 7, 11, 20)
 	};
 	
 }
