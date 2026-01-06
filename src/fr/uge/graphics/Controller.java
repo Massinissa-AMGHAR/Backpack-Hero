@@ -164,6 +164,11 @@ public class Controller {
 		changeView(victoryView);
 	}
 	
+	public void startDefeat() {
+		changeView(menuView);
+		startNewGame(true);
+	}
+	
 	
 	private boolean gameLoop(ApplicationContext context) {
 		var event = context.pollOrWaitEvent(10);
@@ -189,7 +194,7 @@ public class Controller {
 	private void endGame() {
 		int score = hero.score(); 
 		hof.addScore(score);
-		changeView(victoryView); 
+		startDefeat();
 	}
 	
 	private void updateView() {
@@ -238,6 +243,9 @@ public class Controller {
 	}
 	
 	private boolean checkEndGameButtons() {
+		if (victoryView == null) {
+			return false;
+		}
 		if (view == victoryView) {
 			if (victoryView.isQuit()) {
 				return true;
