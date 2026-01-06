@@ -11,12 +11,44 @@ public class Items {
 		this.items = new ArrayList<>(); 
 	}
 	
+	private ItemRarity randomRarity() {
+		int roll = rand.nextInt(100) + 1;
+		if (roll <= 40) {
+			return ItemRarity.COMMON;
+		}
+		if (roll <= 70) {
+			return ItemRarity.UNCOMMON;
+		}
+		if (roll <= 90) {
+			return ItemRarity.RARE;
+		}
+		return ItemRarity.LEGENDARY;
+	}
+	
+	private Item randomItemByRarity(ItemRarity rarity) {
+		ArrayList<ItemData> candidates = new ArrayList<>();
+		for (var data : ItemRegistry.ALL_ITEMS) {
+			if (data.rarity() == rarity) {
+				candidates.add(data);
+			}
+		}
+		if (candidates.isEmpty()) {
+			return null;
+		}
+		var index = rand.nextInt(candidates.size());
+		return ItemRegistry.create(candidates.get(index));
+	}
+	
 	public void randomItems(int count) {
 		for(int i = 0; i < count; i++) {
-      int position = rand.nextInt(ItemRegistry.ALL_ITEMS.length); 
-      items.add(ItemRegistry.create(ItemRegistry.ALL_ITEMS[position])); 
+			var rarity = randomRarity();
+			var item = randomItemByRarity(rarity);
+			if (item != null) {
+				items.add(item);
+			}
     }
 	}
+	
 	public int index(Item item) {
 		Objects.requireNonNull(item); 
 		for(int i = 0; i < items.size(); i++) {
