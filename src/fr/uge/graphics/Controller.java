@@ -138,7 +138,7 @@ public class Controller {
 	public void startFight(Enemies roomEnemies, Room room) {
 		battleView = room.getBattleView(hero, dungeon, imagesMap, imagesEnemies, imagesItems, imagesStatus);
 		if (battleView.fight() == null) {
-			var fg = new FightGraphics(hero, roomEnemies, battleView);
+			var fg = new FightGraphics(hero, roomEnemies, dungeon, battleView);
 			battleView.setFight(fg);
 		}
 		changeView(battleView);
