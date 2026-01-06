@@ -3,6 +3,8 @@ package fr.uge.graphics.view;
 import fr.uge.character.*;
 import fr.uge.game.ManageBackpack;
 import fr.uge.graphics.*;
+import fr.uge.graphics.button.Button;
+import fr.uge.graphics.button.HealButton;
 import fr.uge.graphics.image.*;
 import fr.uge.inventory.Item;
 import fr.uge.map.Dungeon;

@@ -1,11 +1,13 @@
-package fr.uge.graphics.view;
+package fr.uge.graphics.button;
 
 import java.awt.Graphics2D;
 
 
+
 import com.github.forax.zen.ApplicationContext;
 
-import fr.uge.inventory.Item;
+import fr.uge.graphics.view.ItemPlacementView;
+import fr.uge.graphics.view.MessageView;
 
 public class DeleteButton {
 	private final Button button = new Button(0, 0, 200, 100, "DELETE");

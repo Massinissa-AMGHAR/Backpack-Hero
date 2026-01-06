@@ -11,6 +11,7 @@ import fr.uge.character.Hero;
 import fr.uge.game.FightGraphics;
 import fr.uge.game.ManageBackpack;
 import fr.uge.graphics.Controller;
+import fr.uge.graphics.button.RefuseButton;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 
@@ -29,7 +30,6 @@ public class CurseView implements View{
 	
 	private final ImageLoader imageHero;
 	private int refuseCount; 
-	private final int imageSize = 200;
 	
 	private boolean curseAccepted = false;
 	private boolean madeChoice = false; 

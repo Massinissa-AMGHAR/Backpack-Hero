@@ -12,6 +12,7 @@ import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.application.HallOfFame;
 import fr.uge.graphics.Controller;
+import fr.uge.graphics.button.Button;
 
 public class HallOfFameView implements View{
 	private final HallOfFame hallOfFame; 

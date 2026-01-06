@@ -1,15 +1,12 @@
-package fr.uge.graphics.view;
+package fr.uge.graphics.button;
 
 import java.awt.Color;
+
 
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
-import com.github.forax.zen.ApplicationContext;
-
-import fr.uge.graphics.Controller;
-import fr.uge.inventory.Item;
 
 public class Button {
 	private int x; 

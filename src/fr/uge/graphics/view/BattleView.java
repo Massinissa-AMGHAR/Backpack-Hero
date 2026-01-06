@@ -1,11 +1,13 @@
 package fr.uge.graphics.view;
 
 import fr.uge.graphics.*;
+import fr.uge.graphics.button.Button;
+import fr.uge.graphics.button.DeleteButton;
+import fr.uge.graphics.button.EndTurnButton;
+import fr.uge.graphics.button.RotateButton;
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
-
-import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.character.*;
 import fr.uge.game.FightGraphics;

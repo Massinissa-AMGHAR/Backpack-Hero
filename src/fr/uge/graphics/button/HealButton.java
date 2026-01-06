@@ -1,4 +1,4 @@
-package fr.uge.graphics.view;
+package fr.uge.graphics.button;
 
 import java.awt.Graphics2D;
 
@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.character.*;
+import fr.uge.graphics.view.ItemPlacementView;
+import fr.uge.graphics.view.MessageView;
 
 public class HealButton {
 	private final Button button = new Button(0, 0, 200, 100, "HEAL");

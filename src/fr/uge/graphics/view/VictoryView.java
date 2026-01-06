@@ -1,14 +1,15 @@
 package fr.uge.graphics.view;
 
 import java.awt.Color;
+
 import java.awt.Font;
 import java.awt.Graphics2D;
 
 import com.github.forax.zen.ApplicationContext;
-import com.github.forax.zen.ScreenInfo;
 
 import fr.uge.character.Hero;
 import fr.uge.graphics.Controller;
+import fr.uge.graphics.button.Button;
 import fr.uge.graphics.image.ImageLoader;
 
 public class VictoryView implements View {

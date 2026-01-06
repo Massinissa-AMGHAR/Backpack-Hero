@@ -1,4 +1,4 @@
-package fr.uge.graphics.view;
+package fr.uge.graphics.button;
 
 import java.awt.Graphics2D;
 
