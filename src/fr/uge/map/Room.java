@@ -57,7 +57,7 @@ public class Room {
         battleView = new BattleView(hero, dungeon, getLoot(), enemies, imagesHero, imagesEnemies, imagesItems, imagesStatus);
     }
     if (fightGraphics == null) {
-      fightGraphics = new FightGraphics(hero, enemies, battleView);
+      fightGraphics = new FightGraphics(hero, enemies, dungeon, battleView);
       battleView.setFight(fightGraphics);
     }
     if (visited) {

@@ -119,12 +119,14 @@ public class Enemy implements Fighter {
 	  }
 	}
 	
-	public Item curse() {
+	public Item curse(int floor) {
 		var shape = rand.nextInt(2);
-		if (shape == 0) {
-			return ItemRegistry.create(ItemRegistry.CURSE_SAP); 
+		if (shape == 1) {
+			if (floor > 0) {
+				return ItemRegistry.create(ItemRegistry.CURSE); 
+			}
 		}
-		return ItemRegistry.create(ItemRegistry.CURSE); 
+		return ItemRegistry.create(ItemRegistry.CURSE_SAP); 
 	}
 	
 	public static final EnemyData[] ALL_ENEMIES ={

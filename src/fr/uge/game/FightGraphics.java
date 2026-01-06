@@ -6,11 +6,13 @@ import fr.uge.application.*;
 import fr.uge.character.*;
 import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
+import fr.uge.map.Dungeon;
 
 public class FightGraphics {
 	private final BattleView battleView;
 	private final Hero hero;
   private final Enemies enemies; 
+  private final Dungeon dungeon;
 	private boolean heroTurn = true;
 	private boolean fightEnded = false;
 	private boolean lootPhase = false; 
@@ -24,9 +26,10 @@ public class FightGraphics {
 	private boolean curseLaunched = false; 
 	private boolean curseShown = false; 
 	
-	public FightGraphics(Hero hero, Enemies enemies, BattleView battleView) {
+	public FightGraphics(Hero hero, Enemies enemies, Dungeon dungeon, BattleView battleView) {
 		this.hero = hero;
 		this.enemies = enemies;
+		this.dungeon = dungeon;
 		this.battleView = battleView;
 		hero.resetEnergy();
 		hero.resetArmor();
@@ -287,7 +290,7 @@ public class FightGraphics {
   		battleView.messageView().showMessage(enemy.name() + " defends and gains " + blocked + " protection !", 1000 + time);
 		}
 		case 2 -> {
-			Item curse = enemy.curse(); 
+			Item curse = enemy.curse(dungeon.currentFloor()); 
 			battleView.messageView().showMessage(enemy.name() + " inflicts a curse ", 1000 + time);
 			giveCurse(curse); 
 		}
