@@ -221,7 +221,6 @@ public class FightGraphics {
   
   private void defeat() {
 		int score = hero.score(); 
-		hof.addScore(score);
     battleView.messageView().showMessage(hero.name() + " was defeated...", 2000);
     battleView.setReadyToReturnToMap(true);
   }
