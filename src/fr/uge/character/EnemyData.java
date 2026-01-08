@@ -2,6 +2,9 @@ package fr.uge.character;
 
 import java.util.Objects;
 
+/**
+ * Stores the data for an enemy.
+ */
 public record EnemyData(String name, int HPMax, int minAttack, int maxAttack, int minDefense, int maxDefense, int xp) {
 	public EnemyData{
 		Objects.requireNonNull(name); 

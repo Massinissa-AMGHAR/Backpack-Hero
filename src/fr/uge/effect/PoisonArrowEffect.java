@@ -4,8 +4,23 @@ import fr.uge.character.*;
 import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
 
+/**
+ * Applies poison to an enemy from a poison arrow item.
+ */
 public class PoisonArrowEffect implements ItemEffect {
-private final int basePoison = 2;	
+	/**
+	 * Base poison applied
+	 */
+	private final int basePoison = 2;	
+	
+  /**
+   * Applies poison effect to the enemy.
+   *
+   * @param hero the hero using the item
+   * @param enemy the enemy affected by the poison
+   * @param fight the fight
+   * @param item the item giving the effect
+   */
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item item) {
 		if (enemy == null) {
 			return;

@@ -8,6 +8,9 @@ import fr.uge.interaction.ItemInteraction;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an item with stats, shape, effects, and interactions.
+ */
 public class Item {
 	private final ItemData data; 
 	private boolean[][] shape; 
@@ -22,6 +25,23 @@ public class Item {
   private final List<ItemEffect> effects = new ArrayList<>();
   private final List<ItemInteraction> interactions = new ArrayList<>();
 	
+  /**
+   * Creates a new item with the given properties.
+   *
+   * @param name the item name
+   * @param type the item type as string
+   * @param rarity the item rarity as string
+   * @param shape the item's shape grid
+   * @param damage damage value
+   * @param defense defense value
+   * @param energyNeeded energy required
+   * @param energyGained energy gained
+   * @param manaNeeded mana required
+   * @param manaGained mana gained
+   * @param hpGained HP gained
+   * @param goldCost cost in gold
+   * @param goldAmount amount of gold
+   */
 	public Item(String name, String type, String rarity, boolean[][] shape, int damage, int defense, int energyNeeded, int energyGained, int manaNeeded, int manaGained, int hpGained, int goldCost, int goldAmount) {
 		Objects.requireNonNull(name, "name can't be null.");
 		Objects.requireNonNull(type, "type can't be null.");
@@ -48,11 +68,21 @@ public class Item {
 		this.rotation = new ItemRotation(this); 
 	}
 	
+	/**
+	 * Adds an effect to this item.
+	 *
+	 * @param effect the effect to add
+	 */
 	public void addEffect(ItemEffect effect) {
 		Objects.requireNonNull(effect);
 		effects.add(effect);
 	}
 	
+	/**
+	 * Adds an interaction to this item.
+	 *
+	 * @param interaction the interaction to add
+	 */
 	public void addInteraction(ItemInteraction interaction) {
 		Objects.requireNonNull(interaction);
 		interactions.add(interaction);
@@ -80,28 +110,63 @@ public class Item {
 	public int leftPlacementX() {return leftPlacementX; }
 	public int leftPlacementY() {return leftPlacementY; }
 	
+	/**
+	 * Adds bonus damage to the item.
+	 *
+	 * @param amount the bonus damage to add
+	 */
 	public void addBonusDamage(int amount) {
 		bonusDamage += amount;
 	}
 	
+
+/**
+ * Resets the bonus damage to zero.
+ */
 	public void resetBonusDamage() {
 		bonusDamage = 0;
 	}
 	
+	/**
+	 * Rotates the item's graphic by 90 degrees.
+	 */
 	public void VisualRotation() {
 		graphicRotation += 90; 
 		graphicRotation %= 360; 
 	}
 	
+	/**
+	 * Returns the current graphic rotation of the item.
+	 *
+	 * @return rotation in degrees
+	 */
 	public int graphicRotation() {
 		return graphicRotation; 
 	}
+	
+	/**
+	 * Sets the top-left placement of the item in the backpack.
+	 *
+	 * @param x column index
+	 * @param y line index
+	 */
 	public void setLeftPlacement(int x, int y) {
 		this.leftPlacementX = x; 
 		this.leftPlacementY = y; 
 	}
 	
+	/**
+	 * Checks if the item is a gold item.
+	 *
+	 * @return true if type is GOLD, false otherwise
+	 */
 	public boolean isGold() {return data.type() == ItemType.GOLD; }
+	
+	/**
+	 * Checks if the item is a mana item.
+	 *
+	 * @return true if type is MANA, false otherwise
+	 */
 	public boolean isMana() { return data.type() == ItemType.MANA; }
 	
 	public void addGold(int amount) {
@@ -113,6 +178,11 @@ public class Item {
 		IO.println("You have "+ goldAmount + " gold"); 
 	}
 	
+	/**
+	 * Adds gold to the item if it is a gold type.
+	 *
+	 * @param amount the amount of gold to add
+	 */
 	public void spendGold(int amount) {
 		if(!isGold()) {
 			throw new IllegalArgumentException("Trying to spend gold on a no gold item"); 
@@ -121,10 +191,18 @@ public class Item {
 		if(goldAmount < 0) goldAmount = 0; 
 	}
 	
+	/**
+	 * Applies the item's rotation to its shape.
+	 */
 	public void applyRotation() {
 		this.shape = rotation.rotate(); 
 	}
 
+	/**
+	 * Creates a copy of this item with the same properties.
+	 *
+	 * @return a new Item object identical to this one
+	 */
 	public Item copy() {
 		boolean[][] newShape = new boolean[shape.length][]; 
 		for(int i = 0; i < shape.length; i++) {
@@ -136,6 +214,11 @@ public class Item {
 		return new Item(data.name(), data.type().name(), data.rarity().name(), newShape, data.damage(), data.defense(), data.energyCost(), data.energyGained(), data.manaCost(), data.manaGained(), data.hpGained(), data.goldCost(), goldAmount);
 	}
 	
+	/**
+	 * Returns the image index for this item based on its name.
+	 *
+	 * @return the index of the item's image
+	 */
 	public int imageIndex() {
 		return switch(this.name()) {
 		 case "Wooden Sword" -> 0; 

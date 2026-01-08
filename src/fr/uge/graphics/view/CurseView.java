@@ -15,6 +15,18 @@ import fr.uge.graphics.button.RefuseButton;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 
+/**
+ * Shows the curse for the hero.
+ * Lets the hero accept or refuse the curse and move items in the backpack.
+ *
+ * @param hero the hero
+ * @param curse the curse item
+ * @param fight the fight graphics/state
+ * @param imageHero hero images
+ * @param imagesItems item images
+ * @param refuseCount how many times the hero can refuse
+ */
+
 public class CurseView implements View{
 	private final Hero hero;
 	private final BackpackView backpackView; 
@@ -35,6 +47,17 @@ public class CurseView implements View{
 	private boolean madeChoice = false; 
 	private final FightGraphics fight;
 	
+	/**
+	 * Create a curse view for the hero.
+	 * Shows the curse and lets the hero accept or refuse it.
+	 *
+	 * @param hero the hero
+	 * @param curse the curse item to offer
+	 * @param fight the current fight state
+	 * @param imageHero the hero images
+	 * @param imagesItems the item images
+	 * @param refuseCount number of times the hero can refuse
+	 */
 	public CurseView(Hero hero, Item curse, FightGraphics fight, ImageLoader imageHero, ImageLoader imagesItems, int refuseCount) {
 		this.hero = hero; 
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
@@ -52,6 +75,7 @@ public class CurseView implements View{
 		this.refuseCount = refuseCount; 
 		this.imageHero = imageHero; 
 	}
+	
 	public boolean curseAccepted() { return curseAccepted; }
 	public int refuseCount() { return refuseCount;}
 	public Item getCurse() { return curse;}
@@ -73,6 +97,13 @@ public class CurseView implements View{
     graphics.drawString(text, rectX + 10, rectY + 26);
 	}
 
+	/**
+	 * Draw the curse screen.
+	 * Shows messages, backpack, hero, curse placement, delete button, and refuse button.
+	 *
+	 * @param graphics the graphics object to draw on
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		messageView.drawMessage(graphics, context);
@@ -84,6 +115,15 @@ public class CurseView implements View{
 		heroView.importHeroImage(graphics, context);   
 	}
 	
+	/**
+	 * Process clicks on the curse screen.
+	 * Player can refuse the curse or place it in the backpack.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param controller the game controller
+	 * @param context the application context with screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(refuseButton.click(x, y)) {
 			hero.receiveDamage(refuseCount);

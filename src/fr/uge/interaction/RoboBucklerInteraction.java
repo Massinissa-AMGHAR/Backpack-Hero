@@ -5,8 +5,19 @@ import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemType;
 
-public class RoboBucklerInteraction implements ItemInteraction {
-  public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
+/**
+ * Gives protection to the hero for each weapon on the same line.
+ */
+public class RoboBucklerInteraction implements ItemInteraction {  
+  /**
+   * Applies protection bonus based on weapons on the item's line.
+   *
+   * @param hero the hero owning the item
+   * @param enemy the enemy (not used)
+   * @param fight current fight graphics
+   * @param self the item giving the block
+   */
+	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
     int weaponsOnLine = 0;
     int line = self.leftPlacementY();
     for (int col = 0; col < hero.backpack().maxColumns(); col++) {

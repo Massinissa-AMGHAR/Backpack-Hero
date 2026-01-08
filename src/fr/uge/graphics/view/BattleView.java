@@ -22,6 +22,12 @@ import java.awt.Graphics2D;
 import java.util.List;
 
 
+/**
+ * Battle screen and interactions.
+ * 
+ * Shows hero, enemies, loot, backpack, buttons, and item placement.
+ * Manages rendering and user actions during battles.
+ */
 public class BattleView implements View {
 	
 	private final MessageView messageView;
@@ -49,6 +55,18 @@ public class BattleView implements View {
 	private final ImageLoader imagesItems; 
 	private int refuseCount = 1; 
 	
+  /**
+   * Creates the battle view with all components and data.
+   *
+   * @param hero the hero in the battle
+   * @param dungeon the dungeon containing floors
+   * @param lootItems items available as loot
+   * @param enemies enemies in this battle
+   * @param imagesHero images for the hero
+   * @param imagesEnemies images for enemies
+   * @param imagesItems images for items
+   * @param imagesStatus images for status effects
+   */
 	public BattleView(Hero hero, Dungeon dungeon, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
 
 		this.hero = hero;
@@ -71,8 +89,8 @@ public class BattleView implements View {
 		this.deleteButton = new DeleteButton();
 		this.endButton = new EndTurnButton();
 		this.imagesItems = imagesItems; 
-		
 	}
+	
 	public MessageView messageView() {return messageView; }
 	
 	public void setReadyToReturnToMap(boolean ready) {
@@ -254,6 +272,12 @@ public class BattleView implements View {
 		deleteButton.draw(graphics, context);
 	}
 	
+	/**
+	 * Draws the battle screen with all elements.
+	 *
+	 * @param graphics the graphics context used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		drawCursePhase(graphics, context);
@@ -379,7 +403,10 @@ public class BattleView implements View {
 			messageView.showMessage("Returning to te map...", 2000);
 			fightGraphics.consumeManaReward();
 			fightGraphics.consumeGoldReward();
-			placementView.clear();  
+			if (placementView.hasItem() && (placementView.item().isGold() || placementView.item().isMana())) {
+				placementView.clear();  
+			}
+			deleteView.removeGoldItems();
 			setReadyToReturnToMap(true);
 			return true;
 		}
@@ -494,6 +521,14 @@ public class BattleView implements View {
 		return false;
 	}
 	
+	/**
+	 * Process a mouse click in the battle view.
+	 *
+	 * @param x the x-coordinate of the click
+	 * @param y the y-coordinate of the click
+	 * @param controller the game controller handling the logic
+	 * @param context the application context with screen and input info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (curseViewClick(x, y, controller, context)) {
 			return;

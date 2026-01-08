@@ -2,6 +2,9 @@ package fr.uge.character;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemType;
 
+/**
+ * Saves and manages the hero's combat-related stats.
+ */
 public class HeroFight {
 	private int HP;
   private int HPMAX;
@@ -13,6 +16,17 @@ public class HeroFight {
   private int cursePenaltyStacks = 0; 
   private int armorValue;
   
+  /**
+   * Initializes the hero's combat stats.
+   *
+   * @param HP current health points
+   * @param HPMAX maximum health points
+   * @param protection current protection
+   * @param armor armor value
+   * @param energy current energy
+   * @param manaMax maximum mana
+   * @param mana current mana
+   */
   public HeroFight(int HP, int HPMAX, int protection, int armor, int energy, int manaMax, int mana) {
   	this.HP = HP; 
   	this.HPMAX = HPMAX; 
@@ -33,7 +47,11 @@ public class HeroFight {
   public int cursePenalty() {return cursePenalty;}
   public int cursePenaltyStacks() {return cursePenaltyStacks;}
   
-  
+  /**
+   * Reduces hero's HP by incoming damage, considering protection and armor.
+   *
+   * @param damage amount of damage to receive
+   */
   public void receiveDamage(int damage) {
   	int damageLeft = damage;
   	if (protection > 0) {
@@ -62,7 +80,11 @@ public class HeroFight {
   }
   
   public boolean hasCursePenalty() { return cursePenalty > 0; }
-  
+  /**
+   * Applies curse damage if the hero has active curse stacks.
+   *
+   * @return true if curse damage was applied, false otherwise
+   */
   public boolean applyCursePenalty() {
   	if(hasCursePenalty() && cursePenaltyStacks > 0) {
   		receiveDamage(3 * cursePenaltyStacks); 
@@ -71,6 +93,9 @@ public class HeroFight {
   	return false; 
   }
   
+  /**
+   * Reduces curse penalty at the end of a fight.
+   */
   public void endFightPenalty() {
   	if(cursePenalty > 0) {
   		cursePenalty--;
@@ -80,6 +105,11 @@ public class HeroFight {
   	}
   }
   
+  /**
+   * Heals the hero by a given amount, without exceeding max HP.
+   *
+   * @param hpBonus amount of HP to restore
+   */
   public void heal(int hpBonus) {
 		HP += hpBonus; 
 		if(HP > HPMAX) {
@@ -87,6 +117,11 @@ public class HeroFight {
 		}
 	}
   
+  /**
+   * Equips an armor item, updating armor, energy, and mana.
+   *
+   * @param item the armor item to equip
+   */
   public void equipArmor(Item item) {
   	if (item.type() != ItemType.ARMOR) {
   		return;
@@ -96,6 +131,12 @@ public class HeroFight {
   	mana -= item.manaCost();
   }
   
+  /**
+   * Uses an item to increase protection if resources allow.
+   *
+   * @param item the item used for defense
+   * @return new protection value after applying the item
+   */
 	public int defense(Item item) {
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println("You don't have enough resources to use " + item.name());
@@ -144,6 +185,13 @@ public class HeroFight {
 		return totalDamage;
 	}
 	
+	/**
+	 * Hero attacks an enemy using an item.
+	 *
+	 * @param opponent the fighter to attack (must be Enemy)
+	 * @param item the item used for the attack
+	 * @return total damage dealt to the enemy
+	 */
 	public int attack(Fighter opponent, Item item) {
 		if (!(opponent instanceof Enemy)) {
 			throw new IllegalArgumentException("Hero can only attack Ennemy");

@@ -5,12 +5,23 @@ import fr.uge.character.Hero;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Represents a floor in the dungeon with a grid of rooms.
+ */
 public class Floor {
   private final Room[][] floor = new Room[5][11]; 
   private int heroX = -1; 
   private int heroY = -1;
   private final Random rand = new Random();
   
+  /**
+   * Adds a room at the specified position.
+   *
+   * @param room   the Room to add
+   * @param line   the row index (0-4)
+   * @param column the column index (0-10)
+   * @throws IllegalArgumentException if a room is already at that position
+   */
   public void add(Room room, int line, int column) {
     if(floor[line][column] != null) {
       throw new IllegalArgumentException("A room is already here"); 
@@ -18,6 +29,13 @@ public class Floor {
     floor[line][column] = room; 
   }
   
+  /**
+   * Checks if there is a room at the given coordinates.
+   *
+   * @param x the row index (0-4)
+   * @param y the column index (0-10)
+   * @return true if a room exists at (x, y), false otherwise
+   */
   public boolean hasRoom(int x, int y) {
   	if(x < 0 || x > 4 || y < 0 || y > 10) {
   		return false; 
@@ -28,6 +46,13 @@ public class Floor {
   	return true;
   }
   
+  /**
+   * Returns the room at the given coordinates.
+   *
+   * @param x the row index (0-4)
+   * @param y the column index (0-10)
+   * @return the Room at (x, y), or null if no room exists
+   */
   public Room getRoom(int x, int y) {
   	if (!hasRoom(x, y)) {
   		return null;
@@ -35,6 +60,12 @@ public class Floor {
   	return floor[x][y];
   }
   
+  /**
+   * Places the hero at the specified coordinates on the floor.
+   *
+   * @param x the row index (0-4)
+   * @param y the column index (0-10)
+   */
   public void placeHero(int x, int y) {
   	if(!hasRoom(x, y)) {
   		return;  	
@@ -43,6 +74,9 @@ public class Floor {
   	this.heroY = y; 
   }
   
+  /**
+   * Places the hero in the first corridor room found on the floor.
+   */
   public void initPlaceHero() {
   	for (int i = 0; i < 5; i++) {
   		for (int j = 0; j < 11; j++) {
@@ -54,10 +88,24 @@ public class Floor {
   	}
   }
   
+  /**
+   * Returns the current coordinates of the hero on this floor.
+   *
+   * @return an array with [heroX, heroY]
+   */
   public int[] getPlaceHero() {
   	return new int[]{heroX, heroY};
   }
   
+  /**
+   * Checks if there is a valid path from the current room to the target room.
+   * Only corridor rooms or the target room itself can be used in the path.
+   *
+   * @param current the starting room
+   * @param target  the destination room
+   * @param visited the list of already visited rooms
+   * @return true if a path exists, false otherwise
+   */
   public boolean goodPath(Room current, Room target, List<Room> visited) {
   	if(current.equals(target)) {
   		return true; 
@@ -73,6 +121,13 @@ public class Floor {
   	return false; 
   }
   
+  /**
+   * Checks if the room at (x, y) is accessible from the hero's current position.
+   *
+   * @param x the row index (0-4)
+   * @param y the column index (0-10)
+   * @return true if the room exists, is not the hero's current room, and is reachable via corridors
+   */
   public boolean isAccessible(int x, int y) {
   	if (!hasRoom(x, y)) {
   		return false;
@@ -83,9 +138,19 @@ public class Floor {
   	return goodPath(floor[heroX][heroY], floor[x][y], new ArrayList<>());
   }
  
+  /** Returns the hero's current row index on the floor. */
   public int heroX() { return heroX; }
+  
+  /** Returns the hero's current column index on the floor. */
   public int heroY() { return heroY; }
   
+  /**
+   * Generates a random room based on the type probabilities.
+   * If the room was already generated, returns the existing generated room.
+   *
+   * @param gridRoom the base room to generate from
+   * @return the generated Room
+   */
 	public Room generateRandomRoom(Room gridRoom) {
 		if (gridRoom.getGeneratedRoom() != null) {
 			return gridRoom.getGeneratedRoom();
@@ -105,6 +170,13 @@ public class Floor {
 		return randomRoom;
 	}
 	
+	/**
+	 * Tries to unlock a room/grid using a key from the hero's backpack.
+	 *
+	 * @param grid the room to unlock
+	 * @param hero the hero attempting to unlock the room
+	 * @return true if the room was unlocked or already visited, false if no key is available
+	 */
 	public boolean tryUnlockGrid(Room grid, Hero hero) {
 		if (!grid.hasVisited()) {
 			var key = hero.backpack().findKeyItem();
@@ -169,6 +241,10 @@ public class Floor {
     }
   }
   
+  /**
+   * Adds all adjacent rooms as neighbors for each room in the floor grid.
+   * Checks up, down, left, and right for existing rooms.
+   */
   public void addAllNeighbor() {
   	for (int i = 0; i < 5; i++) {
   		for (int j = 0; j < 11; j++) {
@@ -237,7 +313,12 @@ public class Floor {
 	    );
 	}
 
-  
+	/**
+	 * Creates 3 floors with rooms and corridors.
+	 * Adds neighbors for all rooms.
+	 *
+	 * @return list of the 3 floors
+	 */
   public static List<Floor> createFloors() {
     Floor floor1 = new Floor();
     Floor floor2 = new Floor();

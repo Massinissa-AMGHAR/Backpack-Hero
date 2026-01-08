@@ -14,16 +14,36 @@ import fr.uge.game.FightGraphics;
 import fr.uge.game.GameGraphics;
 import fr.uge.map.*;
 
+/**
+ * Main game controller.
+ * Manages the hero, dungeon, floors, and all game views.
+ * Controls the progression between exploration, battles, shops, healing, and victory screens.
+ */
 public class Controller {	
   private Hero hero;
   private HallOfFame hof; 
   private Dungeon dungeon;
   private Floor floor;
-  private final ImageLoader imagesMap;
-  private final ImageLoader imagesEnemies;
-  private final ImageLoader imagesStatus;
-  private final ImageLoader imagesItems;
-  private final ImageLoader imagesServices;
+  /**
+   * Images for the map
+   */
+  private final ImageLoader imagesMap; 
+  /**
+   * Images for enemies
+   */
+  private final ImageLoader imagesEnemies; 
+  /**
+   * Images for status effects
+   */
+  private final ImageLoader imagesStatus; 
+  /**
+   * Images for items
+   */
+  private final ImageLoader imagesItems; 
+  /**
+   * Images for merchants, healers
+   */
+  private final ImageLoader imagesServices;  
   private final MenuView menuView;
   private final HallOfFameView hofView; 
   private MapView mapView;
@@ -56,6 +76,12 @@ public class Controller {
 		view = menuView;
   }
   
+  /**
+   * Starts a new game by creating the dungeon, hero, and floor.
+   * Initializes the map view and optionally shows a welcome message.
+   *
+   * @param startFromMenu true if the game starts from the menu, false to show map immediately
+   */
   public void startNewGame(boolean startFromMenu) {
   	GameGraphics newGame = new GameGraphics(); 
   	hero = newGame.hero(); 
@@ -70,6 +96,9 @@ public class Controller {
   	dungeonFinished = false; 
   }
   
+  /**
+   * Restarts the game from the menu by resetting everything and creating a new game.
+   */
   public void startPlayAgain() {
   	changeView(menuView);
   	startNewGame(true);
@@ -84,10 +113,20 @@ public class Controller {
 	public TreasureView treasureView() { return treasureView; }
 	public View view() { return view; }
   
+	/**
+	 * Changes the current active view in the game.
+	 *
+	 * @param newView the view to switch to
+	 */
 	public void changeView(View newView) {
 		view = newView;
 	}
 	
+	/**
+	 * Makes the hero enter a room and starts the right event.
+	 *
+	 * @param randomRoom the room being entered
+	 */
 	private void enterRoom(Room randomRoom) {
     if (randomRoom.hasEnemies()) {
       startFight(randomRoom.enemies(), randomRoom);
@@ -99,7 +138,7 @@ public class Controller {
       randomRoom.setVisited(true);
       return;
     }
-    if (randomRoom.hasAngel()) {
+    if (randomRoom.hasHealer()) {
       startHealer(randomRoom);
       randomRoom.setVisited(true);
     	return;
@@ -115,12 +154,22 @@ public class Controller {
     }
 	}
 	
+	/**
+	 * Places the hero on the grid and makes them enter the corresponding room.
+	 *
+	 * @param gridRoom the room on the grid
+	 * @param i the row position
+	 * @param j the column position
+	 */
 	public void enterGridRoom(Room gridRoom, int i, int j) {
 		floor.placeHero(i, j);
 		var randomRoom = floor.generateRandomRoom(gridRoom);
 		enterRoom(randomRoom);
 	}
 	
+	/**
+	 * Moves the hero to the next floor or ends the dungeon if there are no more floors.
+	 */
 	public void goToNextFloor() {
 		var next = dungeon.nextFloor(floor);
 		if (next == null) {
@@ -135,6 +184,12 @@ public class Controller {
 		mapView.messageView().showMessage("You enter a new floor...", 2000);
 	}
 	
+	/**
+	 * Starts a fight in the given room with its enemies.
+	 *
+	 * @param roomEnemies the enemies in the room
+	 * @param room the room where the fight happens
+	 */
 	public void startFight(Enemies roomEnemies, Room room) {
 		battleView = room.getBattleView(hero, dungeon, imagesMap, imagesEnemies, imagesItems, imagesStatus);
 		if (battleView.fight() == null) {
@@ -144,32 +199,58 @@ public class Controller {
 		changeView(battleView);
 	}
 	
+	/**
+	 * Starts the merchant interaction in the given room.
+	 *
+	 * @param room the room with the merchant
+	 */
 	public void startMerchant(Room room) {
 		merchantView = room.getMerchantView(hero, dungeon, imagesMap, imagesServices, imagesItems);
 		changeView(merchantView);
 	}
 	
+	/**
+	 * Starts the healer interaction in the given room.
+	 *
+	 * @param room the room with the healer
+	 */
 	public void startHealer(Room room) {
 		healerView = room.getHealerView(hero, dungeon, imagesMap, imagesServices, imagesItems);
 		changeView(healerView);
 	}
 	
+	/**
+	 * Starts the treasure event in the given room.
+	 *
+	 * @param room the room containing the treasure
+	 */
 	public void startTreasure(Room room) {
 		treasureView = room.getTreasureView(hero, dungeon, imagesMap, imagesItems);
 		changeView(treasureView);
 	}
 	
+	/**
+	 * Shows the victory screen when the dungeon is completed.
+	 */
 	public void startVictory() {
 		victoryView = new VictoryView(hero, imagesMap);
 		changeView(victoryView);
 	}
 	
+	/**
+	 * Ends the game on defeat and returns to the menu, starting a new game.
+	 */
 	public void startDefeat() {
 		changeView(menuView);
 		startNewGame(true);
 	}
 	
-	
+	/**
+	 * Main game loop that processes input events and updates the current view.
+	 *
+	 * @param context the application context providing events
+	 * @return false if the game should stop, true otherwise
+	 */
 	private boolean gameLoop(ApplicationContext context) {
 		var event = context.pollOrWaitEvent(10);
 		if (event == null) {
@@ -191,6 +272,9 @@ public class Controller {
 		return true;
 	}
 	
+	/**
+	 * Ends the game by saving the hero's score and showing defeat or victory screen.
+	 */
 	private void endGame() {
 		int score = hero.score(); 
 		hof.addScore(score);
@@ -201,6 +285,9 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Updates the view, either battle or map/room.
+	 */
 	private void updateView() {
 		if (view == battleView) {
 			updateBattle();
@@ -209,6 +296,9 @@ public class Controller {
 		updateRoomView(view);
 	}
 	
+	/**
+	 * Updates the battle view, processes fight logic, and switches back to the map if the fight ends.
+	 */
 	private void updateBattle() {
   	battleView.fight().updateFight();
   	battleView.messageView().update();
@@ -222,6 +312,11 @@ public class Controller {
   	}
 	}
 	
+	/**
+	 * Updates a non-battle view (merchant, healer, or treasure) and returns to the map when done.
+	 *
+	 * @param view the current view to update
+	 */
 	private void updateRoomView(View view) {
     if (view == merchantView) {
     	merchantView.messageView().update();
@@ -246,6 +341,11 @@ public class Controller {
     }
 	}
 	
+	/**
+	 * Checks if the player clicked a button on the victory screen (quit or play again).
+	 *
+	 * @return true if the player chose to quit, false otherwise
+	 */
 	private boolean checkEndGameButtons() {
 		if (victoryView == null) {
 			return false;
@@ -263,6 +363,11 @@ public class Controller {
 		return false;
 	}
 	
+	/**
+	 * Main game method that runs the game loop, updates views, and ends the game when finished.
+	 *
+	 * @param context the application context for rendering and events
+	 */
 	public void game(ApplicationContext context) {
     running = true;
     while (running) {

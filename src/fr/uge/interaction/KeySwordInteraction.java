@@ -4,7 +4,18 @@ import fr.uge.character.*;
 import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
 
+/**
+ * Gives extra damage to the enemy for each adjacent item named "Key".
+ */
 public class KeySwordInteraction implements ItemInteraction {
+  /**
+   * Applies bonus damage from nearby key items.
+   *
+   * @param hero the hero owning the item
+   * @param enemy the enemy receiving damage
+   * @param fight current fight graphics
+   * @param self the item causing the bonus damage
+   */
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
 		if (enemy == null) {
 			return;

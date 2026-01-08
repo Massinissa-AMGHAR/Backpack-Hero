@@ -22,6 +22,10 @@ import java.awt.Graphics2D;
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
+/**
+ * Creates the merchant view.
+ * It shows the hero, merchant, shop items, backpack, and buttons.
+ */
 public class MerchantView implements View {
 	private final SellButton sellButton;
 	private final Hero hero;
@@ -42,6 +46,17 @@ public class MerchantView implements View {
 
 	private static final int imageSize = 200; 
 	
+	/**
+	 * Creates the merchant view with hero, dungeon, merchant, and images.
+	 *
+	 * @param hero the hero
+	 * @param dungeon the dungeon
+	 * @param merchant the merchant
+	 * @param shopItems the items in the shop
+	 * @param imagesHero images of the hero
+	 * @param imagesServices images for services
+	 * @param imagesItems images of items
+	 */
 	public MerchantView(Hero hero, Dungeon dungeon, Merchant merchant, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		this.hero = hero;
 		this.dungeon = dungeon;
@@ -95,7 +110,13 @@ public class MerchantView implements View {
 		imagesHero.drawImage(graphics, imagesServices.get(0), MerchantX, MerchantY, imageSize, imageSize); 
 	}
 	
-	
+	/**
+	 * Draws the merchant view on the screen.
+	 * It shows background, messages, hero, merchant, shop, backpack, placement, and buttons.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		message.update();
 		background(graphics, context);
@@ -161,6 +182,15 @@ public class MerchantView implements View {
 		}
 	}
 	
+	/**
+	 * Processes a click in the merchant view.
+	 * It checks clicks on map, backpack, rotate button, sell button, shop, and backpack cells.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param controller the game controller
+	 * @param context the application context with screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (clickMapButton(x, y)) {
 			return;

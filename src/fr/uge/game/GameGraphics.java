@@ -4,11 +4,26 @@ import fr.uge.character.*;
 import fr.uge.inventory.*;
 import fr.uge.map.*;
 
+/**
+ * Initializes the game graphics, dungeon, hero, and floor.
+ */
 public class GameGraphics {
+	/**
+	 * The game dungeon
+	 */
   private final Dungeon dungeon;
-  private final Floor floor;
-  private final Hero hero;
+  /**
+   * Current floor in the dungeon
+   */
+  private final Floor floor; 
+  /**
+   * The hero controlled by the player
+   */
+  private final Hero hero;  
   
+  /**
+   * Sets up the dungeon, creates the hero with initial items, and places them on the floor.
+   */
   public GameGraphics() {
     dungeon = new Dungeon(2);
     dungeon.createDungeon();
@@ -25,8 +40,17 @@ public class GameGraphics {
     floor.initPlaceHero();
   }
 
+  /**
+   * @return the hero
+   */
   public Hero hero() { return hero; }
+  /**
+   * @return the current floor
+   */
   public Floor floor() { return floor; }
+  /**
+   * @return the dungeon
+   */
   public Dungeon dungeon() { return dungeon; }
 }
 

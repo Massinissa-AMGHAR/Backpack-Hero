@@ -7,8 +7,17 @@ import java.awt.Color;
 
 import com.github.forax.zen.Application;
 
-
+/**
+ * Main Class of the application.
+ * Starts the game and initializes all resources.
+*/
 public class Main {
+  /**
+   * Entry point of the program.
+   * Creates the game, loads images, and starts the application.
+   *
+   * @param args command line arguments (not used)
+   */
 	static void main(String[] args) {
     GameGraphics gameGraphics = new GameGraphics(); 
     ImageLoader imagesMap = new ImageLoader("data", "hero.png", "minihero.png", "door.png", "enemymap.png", "minimerchant.png", "minihealer.png", "treasure.png", "grid.png", "floor1.png", "floor2.png", "floor3.png", "background_menu.png", "victory_background.png", "hero_victory.png");

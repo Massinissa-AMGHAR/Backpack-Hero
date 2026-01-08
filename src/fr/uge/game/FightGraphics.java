@@ -1,24 +1,40 @@
 package fr.uge.game;
 
 
-import fr.uge.application.*;
-
 import fr.uge.character.*;
 import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
 import fr.uge.map.Dungeon;
 
+/**
+ * Manages the graphical interface and state of a fight.
+ */
 public class FightGraphics {
+	/**
+	 * Visual representation of the battle
+	 */
 	private final BattleView battleView;
+	/**
+	 * The hero participating in the fight
+	 */
 	private final Hero hero;
-  private final Enemies enemies; 
-  private final Dungeon dungeon;
+	/**
+	 * Enemies in the current fight
+	 */
+	private final Enemies enemies; 
+	/**
+	 * Dungeon of the game
+	 */
+	private final Dungeon dungeon;
+	
 	private boolean heroTurn = true;
 	private boolean fightEnded = false;
 	private boolean lootPhase = false; 
-	private HallOfFame hof = new HallOfFame(); 
 	private Items lootItems = new Items(); 
-	private Item expectedCurse; 
+	/**
+	 * Curse item expected from enemies
+	 */
+	private Item expectedCurse;
 	
 	private final boolean[] enemyDefeatedMessageShown;
 	private boolean goldRewardConsumed = false; 
@@ -26,6 +42,14 @@ public class FightGraphics {
 	private boolean curseLaunched = false; 
 	private boolean curseShown = false; 
 	
+	/**
+	 * Initializes the fight graphics.
+	 *
+	 * @param hero the hero participating in the fight
+	 * @param enemies the enemies in this fight
+	 * @param dungeon the dungeon of the game 
+	 * @param battleView the battle view interface
+	 */
 	public FightGraphics(Hero hero, Enemies enemies, Dungeon dungeon, BattleView battleView) {
 		this.hero = hero;
 		this.enemies = enemies;
@@ -58,6 +82,11 @@ public class FightGraphics {
 		return 2 * enemies.getEnemies().size();
 	}
 	
+	/**
+	 * Checks if the fight has ended.
+	 *
+	 * @return true if the hero is dead or all enemies are defeated, false otherwise
+	 */
 	public boolean isFightOver() {
     if (hero.HP() <= 0) {
     	return true;
@@ -70,10 +99,16 @@ public class FightGraphics {
     return true;
 	}
 	
+	/**
+	 * @return true if it is currently the hero's turn
+	 */
   public boolean isHeroTurn() {
     return heroTurn;
   }
   
+  /**
+   * Ends the hero's turn if it is active and the fight is not over.
+   */
   public void endHeroTurn() {
   	if (!heroTurn || isFightOver()) {
   		return;
@@ -92,6 +127,13 @@ public class FightGraphics {
   	}
   }
   
+  /**
+   * Applies all effects of an item to an enemy.
+   *
+   * @param item the item whose effects are applied
+   * @param enemy the enemy affected by the effects
+   * @return number of effects applied
+   */
   private int applyItemEffects(Item item, Enemy enemy) {
   	var effects = 0;
   	for (var effect : item.effects()) {
@@ -101,6 +143,13 @@ public class FightGraphics {
   	return effects;
   }
   
+  /**
+   * Applies all interactions of an item to an enemy.
+   *
+   * @param item the item whose interactions are applied
+   * @param enemy the enemy affected by the interactions
+   * @return number of interactions applied
+   */
   private int applyItemInteractions(Item item, Enemy enemy) {
     int interactions = 0;
     for (var interaction : item.interactions()) {
@@ -110,6 +159,12 @@ public class FightGraphics {
     return interactions;
   }
 
+  /**
+   * Checks if the hero has enough energy and mana to use an item.
+   *
+   * @param item the item to check
+   * @return true if the hero has enough resources, false otherwise
+   */
   private boolean hasEnoughResources(Item item) {
     if (hero.energy() < item.energyCost() || hero.mana() < item.manaCost()) {
     	battleView.messageView().showMessage("Not enough energy/mana to use " + item.name(), 1000);
@@ -118,6 +173,12 @@ public class FightGraphics {
     return true;
   }
   
+  /**
+   * Consumes mana stones from the hero's backpack to pay for an item's mana cost.
+   *
+   * @param item the item to use
+   * @return true if the mana cost was successfully paid, false otherwise
+   */
   private boolean consumeManaStones(Item item) {
   	if (item.manaCost() <= 0) {
   		return true;
@@ -129,6 +190,12 @@ public class FightGraphics {
   	return true;
   }
   
+  /**
+   * Hero uses a weapon or magic item to attack an enemy.
+   *
+   * @param item the weapon or magic item used
+   * @param enemy the enemy being attacked
+   */
   private void useWeaponOrMagic(Item item, Enemy enemy) {
     int value = hero.attack(enemy, item);
     if (value > 0 ) {
@@ -136,16 +203,33 @@ public class FightGraphics {
     }
   }
   
+  /**
+   * Hero uses a shield item to block damage.
+   *
+   * @param item the shield item
+   * @param enemy the enemy (not used but required by interface)
+   */
   private void useShield(Item item, Enemy enemy) {
     int value = hero.defense(item);
     battleView.messageView().showMessage(hero.name() + " blocks " + value + " damage!", 1000);	
   }
   
+  /**
+   * Hero equips an armor item for passive damage reduction.
+   *
+   * @param item the armor item
+   * @param enemy the enemy (not used but required by interface)
+   */
   private void useArmor(Item item, Enemy enemy) {
   	hero.equipArmor(item);
   	battleView.messageView().showMessage(hero.name() + " uses " + item.name() + " for passive damage reduction of " + item.defense() + "!", 1000);
   }
   
+  /**
+   * Hero uses a consumable item to heal or regain energy.
+   *
+   * @param item the consumable item
+   */
   private void useConsumable(Item item) {
   	var healedHP = item.hpGained();
   	var energyGained = item.energyGained();
@@ -159,6 +243,12 @@ public class FightGraphics {
   	}
   }
   
+  /**
+   * Uses an item based on its type.
+   *
+   * @param item the item to use
+   * @param enemy the enemy affected (if applicable)
+   */
   private void useItemByType(Item item, Enemy enemy) {
     switch(item.type()) {
 	    case WEAPON, MAGIC -> {
@@ -177,6 +267,12 @@ public class FightGraphics {
     }
   }
   
+  /**
+   * Hero uses an item on an enemy during their turn.
+   *
+   * @param item the item to use
+   * @param enemy the enemy affected by the item
+   */
 	public void heroUseItem(Item item, Enemy enemy) {
     if (!heroTurn || isFightOver() || item == null || enemy == null || enemy.HP() <= 0) return;
     if (!hasEnoughResources(item)) {
@@ -194,6 +290,9 @@ public class FightGraphics {
     }
 	}
   
+	/**
+	 * Checks all enemies and shows a message if any is defeated, granting XP to the hero.
+	 */
   public void checkEnemyDefeated() {
     for (var i = 0; i < enemies.getEnemies().size(); i++) {
     	var enemy = enemies.getEnemies().get(i);
@@ -205,6 +304,11 @@ public class FightGraphics {
     }
   }
   
+  /**
+   * Handles victory actions after a fight ends.
+   * If the hero leveled up, unlocks backpack cases and increases HP max.
+   * Otherwise, starts the loot phase.
+   */
   private void victory() {
     if (hero.progression().hasLeveledUpDuringFight()) {
     	hero.hpmaxAugmentation();
@@ -219,12 +323,17 @@ public class FightGraphics {
     }
   }
   
-  private void defeat() {
-		int score = hero.score(); 
+  /**
+   * Handles defeat actions when the hero loses a fight.
+   */
+  private void defeat() { 
     battleView.messageView().showMessage(hero.name() + " was defeated...", 2000);
     battleView.setReadyToReturnToMap(true);
   }
   
+  /**
+   * Checks if the fight has ended and triggers victory or defeat actions.
+   */
   public void checkEndFight() {
     if (fightEnded) {
     	return;
@@ -250,6 +359,11 @@ public class FightGraphics {
 	public void setLootPhase( boolean bool) { this.lootPhase = bool; }
   public Items lootItems() { return lootItems;}
 	
+  /**
+   * Checks if the hero won the fight.
+   *
+   * @return true if all enemies are defeated and the hero is alive
+   */
 	public boolean heroWon() {
 	    if (hero.HP() <= 0) {
 	    	return false;
@@ -262,6 +376,11 @@ public class FightGraphics {
 	    return true;
 	}
 	
+	/**
+	 * Assigns a curse item for the fight if it exists.
+	 *
+	 * @param curse the curse item to assign
+	 */
 	private void giveCurse(Item curse) {
 		if(curse == null) {
 			return; 
@@ -269,6 +388,11 @@ public class FightGraphics {
 		expectedCurse = curse; 
 	}
 	
+	/**
+	 * Applies damage from all active curses on the hero.
+	 *
+	 * @param time additional delay for the message display
+	 */
 	private void cursesAttack(int time) {
 	 int curseCount = hero.backpack().curseCount(); 
     if(curseCount > 0) {
@@ -278,6 +402,13 @@ public class FightGraphics {
     }
 	}
 	
+	/**
+	 * Makes an enemy perform an action based on its choice.
+	 *
+	 * @param action the action type (0 = attack, 1 = defend, 2 = curse)
+	 * @param enemy the enemy performing the action
+	 * @param time additional delay for message display
+	 */
 	private void choiceEnemyAction(int action, Enemy enemy, int time) {
   	switch (action) {
 		case 0 -> {
@@ -296,6 +427,11 @@ public class FightGraphics {
    }
 	} 
 	
+	/**
+	 * Executes actions for all enemies during their turn.
+	 *
+	 * @param time initial delay for message display
+	 */
 	private void playEnemies(int time) {
     for (var enemy : enemies.getEnemies()) {
     	if (enemy.HP() <= 0) {
@@ -308,6 +444,9 @@ public class FightGraphics {
     }
 	}
 	
+	/**
+	 * Executes all enemy actions during their turn and updates fight state.
+	 */
 	public void enemyAction() {
     if (isFightOver() || heroTurn) {
     	return;
@@ -324,6 +463,10 @@ public class FightGraphics {
     hero.resetProtection();
 	}
 
+	/**
+	 * Updates the fight state each frame.
+	 * Executes enemy actions if it's their turn and checks for fight end.
+	 */
 	public void updateFight() {
     if (battleView.messageView().isMessageActive()) {
         return;
@@ -336,11 +479,16 @@ public class FightGraphics {
     checkEndFight();
 	}
 
-
+	/**
+	 * @return the hero participating in the fight
+	 */
 	public Hero Hero() {
 	    return hero;
 	}
 	
+	/**
+	 * @return the enemies in the fight
+	 */
 	public Enemies Enemies() {
 	    return enemies;
 	}

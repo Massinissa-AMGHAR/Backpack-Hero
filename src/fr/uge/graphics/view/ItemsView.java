@@ -10,6 +10,10 @@ import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 import fr.uge.inventory.Items;
 
+/**
+ * Creates a view to show all items.
+ * It displays items with images, names, and info.
+ */
 public class ItemsView implements ClickableItems{
 	private final Items items; 
 	private final ImageLoader images;  
@@ -23,12 +27,24 @@ public class ItemsView implements ClickableItems{
 	private static final Font itemName = new Font("Arial", Font.BOLD, 16); 
 	private static final Font itemInfos = new Font("Arial", Font.PLAIN, 14); 
 	
+	/**
+	 * Creates the items view with items and their images.
+	 *
+	 * @param items the items to show
+	 * @param images the images of the items
+	 */
 	public ItemsView(Items items, ImageLoader images) {
 		this.items = items; 
 		this.images = images; 
-		
 	}
+	
+	/**
+	 * Returns the items shown in this view.
+	 *
+	 * @return the items
+	 */
 	public Items items(){ return items; }
+	
 	private int itemX(ApplicationContext context) {
 		return context.getScreenInfo().width()/2 - itemWidth /2; 
 	}
@@ -72,6 +88,14 @@ public class ItemsView implements ClickableItems{
 		
 	}
 	
+	/**
+	 * Draws all items in the view.
+	 * It draws each slot, the item image, and the item text.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 * @param isShop true if showing in shop mode, false otherwise
+	 */
 	public void drawItems(Graphics2D graphics, ApplicationContext context, boolean isShop) {
 		var list = items.getItems(); 
 		for(int i = 0; i < list.size(); i++) {
@@ -81,6 +105,15 @@ public class ItemsView implements ClickableItems{
 		}
 	}
 	
+	/**
+	 * Checks if the mouse clicks on an item in this view.
+	 * Returns the clicked item or null if none.
+	 *
+	 * @param mouseX the mouse X position
+	 * @param mouseY the mouse Y position
+	 * @param context the application context with screen info
+	 * @return the clicked item or null
+	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		for(int i = 0; i < items.getItems().size(); i++) {
 			int x = itemX(context); 

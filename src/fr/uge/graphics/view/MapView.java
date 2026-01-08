@@ -16,6 +16,10 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.time.Instant;
 
+/**
+ * Creates a view for the dungeon map.
+ * It shows the hero, floor, dungeon, messages, and all images.
+ */
 public class MapView implements View {
 	private final MessageView message;
 	private final Floor floor;
@@ -32,6 +36,18 @@ public class MapView implements View {
 	private final int rows = 5;
 	private boolean readyToReturnToMenu = false;
 	
+	/**
+	 * Creates the map view with all needed data and images.
+	 *
+	 * @param hero the hero on the map
+	 * @param floor the current floor
+	 * @param dungeon the dungeon
+	 * @param images the map images
+	 * @param imagesItems the item images
+	 * @param imagesServices the service images
+	 * @param imagesEnemies the enemy images
+	 * @param imagesStatus the hero status images
+	 */
 	public MapView(Hero hero, Floor floor, Dungeon dungeon, ImageLoader images, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesEnemies, ImageLoader imagesStatus) {
 		this.hero = hero;
 		this.floor = floor;
@@ -144,7 +160,7 @@ public class MapView implements View {
 		if (room.hasMerchant() && !isHeroOnCell(i, j)) {
 			importMerchantOnMap(i, j, start, graphics);
 		}
-		if (room.hasAngel() && !isHeroOnCell(i, j)) {
+		if (room.hasHealer() && !isHeroOnCell(i, j)) {
 			importHealerOnMap(i, j, start, graphics);
 		}
 		if (room.hasEnemies() && !isHeroOnCell(i, j)) {
@@ -179,6 +195,13 @@ public class MapView implements View {
 		}
 	}
 	
+	/**
+	 * Draws the map view on the screen.
+	 * It shows the background, map, hero, messages, and hero stats.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		message.update(); 
 		background(graphics, context);
@@ -190,6 +213,16 @@ public class MapView implements View {
 
 	}
 	 
+	/**
+	 * Checks if a room on the map is clicked.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param i the row of the room
+	 * @param j the column of the room
+	 * @param start the starting position of the map [x, y]
+	 * @return true if the room is clicked, false otherwise
+	 */
 	public boolean isRoomClicked(int x, int y, int i, int j, int[] start) {
 		int roomX = start[0] + j * cellSize;
 		int roomY = start[1] + i * cellSize;
@@ -214,7 +247,7 @@ public class MapView implements View {
 	}
 	
 	private void roomServices(Room clickedRoom, Controller controller) {
-		if (clickedRoom.hasAngel()) {
+		if (clickedRoom.hasHealer()) {
 			controller.startHealer(clickedRoom);
 			clickedRoom.setVisited(true);
 		}
@@ -236,6 +269,15 @@ public class MapView implements View {
 		}
 	}
 	
+	/**
+	 * Processes a click on the map.
+	 * It checks which room is clicked and moves the hero or shows messages.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param controller the game controller
+	 * @param context the application context with screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
 		for (int i = 0; i < rows; i++) {

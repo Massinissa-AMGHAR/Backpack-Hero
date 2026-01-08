@@ -16,6 +16,17 @@ import java.awt.Graphics2D;
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
+/**
+ * Creates the healer screen with hero info, dungeon info, and game components.
+ * Sets up buttons, backpack, hero view, and message system.
+ *
+ * @param hero the hero character
+ * @param dungeon the current dungeon
+ * @param healer the healer NPC
+ * @param imagesHero images for the hero
+ * @param imagesServices images for healer services
+ * @param imagesItems images for items
+ */
 public class HealerView implements View {
 	private final MessageView messageView;
 	private final Hero hero;
@@ -84,6 +95,12 @@ public class HealerView implements View {
 		imagesHero.drawImage(graphics, imagesServices.get(1), MerchantX, MerchantY, imageSize, imageSize); 
 	}
 	
+	/**
+	 * Draws the healer screen with hero, backpack, buttons, and healer image.
+	 *
+	 * @param graphics the graphics context to draw on
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		background(graphics, context);
@@ -99,6 +116,14 @@ public class HealerView implements View {
 		importHealerImage(graphics, context);
 	}
 	
+	/**
+	 * Process click on the healer screen: map button, backpack items, and heal button.
+	 *
+	 * @param x mouse x position
+	 * @param y mouse y position
+	 * @param controller the game controller
+	 * @param context application context
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);

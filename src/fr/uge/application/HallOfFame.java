@@ -7,9 +7,21 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages the hall of fame of the game.
+ * Saves and reads the best scores in a text file.
+ */
+
 public class HallOfFame {
-	private static final Path FILE = Path.of("hof.txt");
+	/**
+	 * File used to save the scores. 
+	*/
+	private static final Path FILE = Path.of("data", "hof.txt");
 	
+	/**
+	 * Saves a new score in the file.
+	 * @param score the score to save.
+	*/
 	public void addScore(int score) {
 		try(var writer = Files.newBufferedWriter(FILE, StandardOpenOption.CREATE, StandardOpenOption.APPEND)){
 			writer.write(Integer.toString(score)); 
@@ -19,6 +31,10 @@ public class HallOfFame {
 		}
 	}
 	
+	/**
+	 * Reads the best scores from the file.
+	 * @return a list of the 3 best scores.
+	*/
 	public List<Integer> bestScores(){
 		try {
 			if(!Files.exists(FILE))return new ArrayList<>();

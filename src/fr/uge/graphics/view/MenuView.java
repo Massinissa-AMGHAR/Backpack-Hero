@@ -11,19 +11,23 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.List;
 
+/**
+ * Creates the main menu view.
+ * It stores menu images and button positions.
+ */
 public class MenuView implements View {
 	private final ImageLoader images;
 	private int playX, playY, playWidth, playHeight;
 	private int hofX, hofY, hofWidth, hofHeight; 
 	
+	/**
+	 * Creates the menu view with images.
+	 *
+	 * @param images the images used in the menu
+	 */
 	public MenuView(ImageLoader images) {
 		this.images = images;
 	}
-	
-	public int playX() { return playX; }
-	public int playY() { return playY; }
-	public int playWidth() { return playWidth; }
-	public int playHeight() { return playHeight; }
 	
 	private void background(Graphics2D graphics, ApplicationContext context) {
 		images.drawImage(graphics, images.get(11), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
@@ -73,6 +77,13 @@ public class MenuView implements View {
    
 	}
 	
+	/**
+	 * Draws the menu on the screen.
+	 * It shows the background, title, Play button, and Hall of Fame button.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		var screenInfo = context.getScreenInfo();
 		var l = List.of("BACKPACK HERO", "START GAME", "HALL OF FAME");
@@ -85,9 +96,20 @@ public class MenuView implements View {
 	private boolean isPlayButton(int x, int y) {
     return x >= playX && x <= playX + playWidth && y >= playY && y <= playY + playHeight;
 	}
+	
 	private boolean isHofButton(int x, int y) {
     return x >= hofX && x <= hofX + hofWidth && y >= hofY && y <= hofY + hofHeight;
 	}
+	
+	/**
+	 * Processes a click on the menu.
+	 * It checks if Play or Hall of Fame button is clicked and acts.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param controller the game controller
+	 * @param context the application context with screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (isPlayButton(x, y)) {
 			controller.startNewGame(false);

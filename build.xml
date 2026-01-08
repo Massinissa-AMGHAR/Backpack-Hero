@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="BackpackHero" default="jar" basedir=".">
+	<property name="src.dir" value="src"/>
+	<property name="build.dir" value="classes"/>
+	<property name="lib.dir" value="lib"/>
+	<property name="javadoc.dir" value="docs/doc"/>
+	<property name="jar.name" value="BackpackHero.jar"/>
+	
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<target name="compile">
+		<mkdir dir="${build.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="classpath"/>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<jar destfile="${jar.name}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="fr.uge.application.Main"/>
+				<attribute name="Class-Path" value="lib/zen-6.0.jar"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="javadoc">
+		<mkdir dir="${javadoc.dir}"/>
+		<javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" classpathref="classpath"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+		<delete dir="${javadoc.dir}"/>
+		<delete file="${jar.name}"/>
+	</target>
+</project>

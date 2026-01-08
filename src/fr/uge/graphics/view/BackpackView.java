@@ -1,8 +1,5 @@
 package fr.uge.graphics.view;
 
-
-
-
 import fr.uge.graphics.image.*;
 
 import com.github.forax.zen.ApplicationContext;
@@ -14,22 +11,48 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-
+/**
+ * Shows a backpack on screen.
+ * Handles drawing items and clicks.
+ */
 public class BackpackView implements ClickableItems{
 	private final Backpack backpack; 
 	private final ImageLoader imagesItems; 
 	
 	private final int cellSize = 75; 
 	
+  /**
+   * Create a view for a backpack.
+   *
+   * @param backpack the backpack to show
+   * @param imagesItems loader for item images
+   */
 	public BackpackView(Backpack backpack, ImageLoader imagesItems) {
 		this.backpack = backpack; 
 		this.imagesItems = imagesItems; 
 	}
+	
+  /**
+   * Get the backpack.
+   *
+   * @return the backpack
+   */
 	public Backpack backpack() {
 		return backpack; 
 	}
+	
+	/**
+	 * Get size of one backpack cell
+	 * @return cell size in pixels
+	 */
 	public int cellSize() {return cellSize;}
 	
+	/**
+	 * Calculate top-left position of backpack grid on screen
+	 * @param screenWidth screen width in pixels
+	 * @param screenHeight screen height in pixels
+	 * @return int array {x, y} for grid start
+	 */
 	public int[] calculateGridStart(int screenWidth, int screenHeight) {
 		int mapWidth = backpack.maxColumns() * cellSize;
 		int mapHeight = backpack.maxLines() * cellSize;
@@ -38,6 +61,13 @@ public class BackpackView implements ClickableItems{
 		return new int[] {x, y};
 	}
 	
+	/**
+	 * Get backpack cell from mouse position
+	 * @param mouseX mouse x coordinate
+	 * @param mouseY mouse y coordinate
+	 * @param context application context with screen info
+	 * @return int array {line, column} of cell, or null if outside
+	 */
 	public int[] choiceCase(int mouseX, int mouseY, ApplicationContext context) {
 		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
 		for(int i = 0; i < backpack.maxLines(); i++) {
@@ -99,6 +129,11 @@ public class BackpackView implements ClickableItems{
 		}
 	}
 	
+	/**
+	 * Draws the backpack grid and items
+	 * @param graphics the graphics object
+	 * @param context application context with screen info
+	 */
 	public void drawBackpack(Graphics2D graphics, ApplicationContext context) {
 		int cols = backpack.maxColumns(); 
 		int rows = backpack.maxLines(); 
@@ -116,6 +151,14 @@ public class BackpackView implements ClickableItems{
 		importImageItemOnBackPack(graphics, start[0], start[1]);
 	}
 	
+	/**
+	 * Returns the item clicked in the backpack grid.
+	 *
+	 * @param mouseX the x-coordinate of the mouse
+	 * @param mouseY the y-coordinate of the mouse
+	 * @param context the application context with screen info
+	 * @return the item at the clicked cell, or null if empty
+	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
 		for(int i = 0; i < backpack.maxLines(); i++) {

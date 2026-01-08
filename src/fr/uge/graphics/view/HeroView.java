@@ -9,6 +9,14 @@ import com.github.forax.zen.ApplicationContext;
 import fr.uge.character.Hero;
 import fr.uge.graphics.image.ImageLoader;
 
+/**
+ * Creates a view for the hero with images and backpack.
+ *
+ * @param hero the hero to show
+ * @param imagesHero the images of the hero
+ * @param imagesItems the images of items for the backpack
+ * @param imagesStatus the images for hero status effects
+ */
 public class HeroView {
 	private final Hero hero;
 	private final ImageLoader imagesHero;
@@ -118,6 +126,14 @@ public class HeroView {
     graphics.drawString(xp, levelX, levelY + 40);
 	}
 	
+	/**
+	 * Draws all hero statistics on the screen.
+	 * It sets the font and color, shows life, energy, mana, level,
+	 * penalties, and gold, then restores old settings.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void heroStat(Graphics2D graphics, ApplicationContext context) {
 		var oldFont = graphics.getFont();
 		var oldColor = graphics.getColor();
@@ -133,6 +149,13 @@ public class HeroView {
     graphics.setColor(oldColor);
 	}
 	
+	/**
+	 * Draws the hero image on the screen.
+	 * The position is based on the screen size.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void importHeroImage(Graphics2D graphics, ApplicationContext context) {
 		int heroX = context.getScreenInfo().width() / 5;
 		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;

@@ -14,10 +14,17 @@ import fr.uge.application.HallOfFame;
 import fr.uge.graphics.Controller;
 import fr.uge.graphics.button.Button;
 
+/**
+ * Displays the Hall of Fame screen.
+ * Shows the high scores and a back button.
+ */
 public class HallOfFameView implements View{
 	private final HallOfFame hallOfFame; 
 	private final Button backButton; 
 	
+  /**
+   * Creates the Hall of Fame view and the back button.
+   */
 	public HallOfFameView(){
 		hallOfFame = new HallOfFame(); 
 		
@@ -71,6 +78,13 @@ public class HallOfFameView implements View{
     }
 	}
 	
+	/**
+	 * Draws the Hall of Fame screen.
+	 * Shows background, title, ranking, and back button.
+	 *
+	 * @param graphics the graphics to draw on
+	 * @param context provides screen size and other info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		var screenInfo = context.getScreenInfo();
 		background(graphics, screenInfo);
@@ -80,6 +94,14 @@ public class HallOfFameView implements View{
     backButton.draw(graphics);
 	}
 	
+	/**
+	 * Checks if the back button was clicked and goes back to the menu.
+	 *
+	 * @param x the mouse x position
+	 * @param y the mouse y position
+	 * @param controller to change views
+	 * @param context provides screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if(backButton.click(x, y)) {
 			controller.changeView(controller.menuView());

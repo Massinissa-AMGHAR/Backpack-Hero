@@ -20,6 +20,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
+/**
+ * Creates a view for treasure collection.
+ * It shows the hero, dungeon, loot items, backpack, and buttons.
+ */
 public class TreasureView implements View {
 	private final Dungeon dungeon;
 	private boolean treasureMessage = false;
@@ -39,6 +43,15 @@ public class TreasureView implements View {
 	private final DeleteButton deleteButton;
 	private final ManageBackpack management; 
 
+	/**
+	 * Creates the treasure view with hero, dungeon, loot, and images.
+	 *
+	 * @param hero the hero
+	 * @param dungeon the dungeon
+	 * @param lootItems the loot items
+	 * @param imagesHero the images of the hero
+	 * @param imagesItems the images of items
+	 */
 	public TreasureView(Hero hero, Dungeon dungeon, Items lootItems, ImageLoader imagesHero, ImageLoader imagesItems) {
 		this.hero = hero;
 		this.dungeon = dungeon;
@@ -77,6 +90,13 @@ public class TreasureView implements View {
     heroView.heroGold(graphics, context); 
 	}
 	
+	/**
+	 * Draws the treasure view on the screen.
+	 * It shows background, messages, hero stats, backpack, loot, placement, delete zone, and buttons.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		messageView.update(); 
 		background(graphics, context);
@@ -99,6 +119,7 @@ public class TreasureView implements View {
 	private boolean clickMapButton(int x, int y) {
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);
+			deleteView.removeGoldItems();
 			setReadyToReturnToMap(true);
 			return true;
 		}
@@ -168,6 +189,15 @@ public class TreasureView implements View {
 		}
 	}
 	
+	/**
+	 * Processes a click in the treasure view.
+	 * It checks clicks on map, delete zone, backpack, rotate button, delete button, loot view, and backpack cells.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param controller the game controller
+	 * @param context the application context with screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (clickMapButton(x, y)) {
 			return;

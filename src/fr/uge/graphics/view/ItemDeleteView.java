@@ -11,6 +11,13 @@ import fr.uge.inventory.Item;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Creates a view to delete items.
+ * It stores removed items and shows them in a grid area.
+ *
+ * This class uses item images and limits how many items
+ * can be displayed.
+ */
 public class ItemDeleteView implements ClickableItems {
 	private final List<Item> deletedItems = new ArrayList<>();
 	private final ImageLoader imagesItems;
@@ -22,18 +29,54 @@ public class ItemDeleteView implements ClickableItems {
 	private final int rows = 2;
 	private final int maxItems = columns * rows;
 	
+	/**
+	 * Creates the delete view.
+	 * It receives the images used for the items.
+	 *
+	 * @param imagesItems the images of the items
+	 */
 	public ItemDeleteView(ImageLoader imagesItems) {
 		this.imagesItems = imagesItems;
 	}
 	
+	/**
+	 * Adds an item to the deleted items list.
+	 * The item is added only if it is not null.
+	 *
+	 * @param item the item to add
+	 */
 	public void add(Item item) {
 		if (item != null) deletedItems.add(item);
 	}
 	
+	/**
+	 * Checks if the delete area is full.
+	 *
+	 * @return true if the maximum number of items is reached
+	 */
 	public boolean isFull() { return deletedItems.size() >= maxItems; }
 	
+	/**
+	 * Removes an item from the deleted items list.
+	 *
+	 * @param item the item to remove
+	 */
 	public void remove(Item item) {
 		deletedItems.remove(item);
+	}
+	
+	/**
+	 * Removes all gold items from the deleted items list.
+	 * 
+	 * This method uses an iterator to safely remove elements while iterating.
+	 */
+	public void removeGoldItems() {
+		var iterator = deletedItems.iterator();
+		while(iterator.hasNext()) {
+			if (iterator.next().isGold()) {
+				iterator.remove();
+			}
+		}
 	}
 	
 	private int zoneX(ApplicationContext context) {
@@ -86,6 +129,13 @@ public class ItemDeleteView implements ClickableItems {
 
 	}
 
+	/**
+	 * Draws the delete zone and all deleted items.
+	 * Each item is drawn inside the zone grid.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		int x = zoneX(context);
 		int y = zoneY(context);
@@ -93,6 +143,15 @@ public class ItemDeleteView implements ClickableItems {
 		for (int i = 0; i < deletedItems.size(); i++) drawItem(graphics, x, y, deletedItems.get(i), i);
 	}
 	
+	/**
+	 * Checks if the mouse clicks on an item.
+	 * If an item is clicked, it is returned.
+	 *
+	 * @param mouseX the mouse X position
+	 * @param mouseY the mouse Y position
+	 * @param context the application context with screen info
+	 * @return the clicked item or null if none
+	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
 		int x = zoneX(context);
 		int y = zoneY(context);

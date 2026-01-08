@@ -12,6 +12,10 @@ import fr.uge.graphics.Controller;
 import fr.uge.graphics.button.Button;
 import fr.uge.graphics.image.ImageLoader;
 
+/**
+ * Creates a victory view.
+ * It shows the hero, messages, and buttons after clearing the dungeon.
+ */
 public class VictoryView implements View {
 	private final Hero hero;
 	private final MessageView message;
@@ -22,7 +26,13 @@ public class VictoryView implements View {
 	private boolean isQuit = false;
 	private boolean isPlayAgain = false;
 
-
+	/**
+	 * Creates the victory view with hero and images.
+	 * Shows congratulation messages.
+	 *
+	 * @param hero the hero
+	 * @param images the images of the hero
+	 */
 	public VictoryView(Hero hero, ImageLoader images) {
 		this.hero = hero;
 		this.images = images;
@@ -31,8 +41,25 @@ public class VictoryView implements View {
 		message.showMessage("Congratulations !", 4000);
 	}
 	
+	/**
+	 * Checks if the quit button was pressed.
+	 *
+	 * @return true if quitting, false otherwise
+	 */
 	public boolean isQuit() { return isQuit; }
+	
+	/**
+	 * Checks if the play again button was pressed.
+	 *
+	 * @return true if play again, false otherwise
+	 */
 	public boolean isPlayAgain() { return isPlayAgain; }
+	
+	/**
+	 * Sets the play again status.
+	 *
+	 * @param bool true to play again, false otherwise
+	 */
 	public void setPlayAgain(boolean bool) { isPlayAgain = bool; }
 	
 	private void drawQuitButton(Graphics2D graphics, ApplicationContext context) {
@@ -79,6 +106,13 @@ public class VictoryView implements View {
 		images.drawImage(graphics, images.get(13), context.getScreenInfo().width() / 2 - 150, context.getScreenInfo().height() / 4, imageSize, imageSize);
 	}
 	
+	/**
+	 * Draws the victory view on the screen.
+	 * It shows background, hero, text, buttons, and messages.
+	 *
+	 * @param graphics the graphics used to draw
+	 * @param context the application context with screen info
+	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
 		message.update(); 
 		background(graphics, context);
@@ -89,6 +123,15 @@ public class VictoryView implements View {
 
 	}
 	
+	/**
+	 * Processes a click in the victory view.
+	 * It checks clicks on the quit and play again buttons.
+	 *
+	 * @param x the mouse X position
+	 * @param y the mouse Y position
+	 * @param controller the game controller
+	 * @param context the application context with screen info
+	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
 		if (quitButton.click(x, y)) {
 			isQuit = true;
@@ -97,5 +140,4 @@ public class VictoryView implements View {
 			isPlayAgain = true;
 		}
 	}
-	
 }
