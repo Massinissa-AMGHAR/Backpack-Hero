@@ -15,18 +15,6 @@ import fr.uge.graphics.button.RefuseButton;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 
-/**
- * Shows the curse for the hero.
- * Lets the hero accept or refuse the curse and move items in the backpack.
- *
- * @param hero the hero
- * @param curse the curse item
- * @param fight the fight graphics/state
- * @param imageHero hero images
- * @param imagesItems item images
- * @param refuseCount how many times the hero can refuse
- */
-
 public class CurseView implements View{
 	private final Hero hero;
 	private final BackpackView backpackView; 

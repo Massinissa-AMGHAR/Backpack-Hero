@@ -28,7 +28,7 @@ public class DamagePerTurnEffect implements ItemEffect {
    * @param hero the hero involved
    * @param enemy the enemy involved
    * @param fight the fight 
-   * @param @param item the item giving the effect
+   * @param item the item giving the effect
    */
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item item) {
 		Objects.requireNonNull(hero); 

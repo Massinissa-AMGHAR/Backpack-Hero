@@ -8,15 +8,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
-/**
- * Represents a clickable button with a position, size, and label.
- *
- * @param x the x-coordinate of the button
- * @param y the y-coordinate of the button
- * @param width the width of the button
- * @param height the height of the button
- * @param text the label shown on the button
- */
+
 public class Button {
 	private int x; 
 	private int y; 
@@ -24,6 +16,15 @@ public class Button {
 	private final int height; 
 	private final String text; 
 	
+	/**
+	 * Represents a clickable button with a position, size, and label.
+	 *
+	 * @param x the x-coordinate of the button
+	 * @param y the y-coordinate of the button
+	 * @param width the width of the button
+	 * @param height the height of the button
+	 * @param text the label shown on the button
+	 */
 	public Button(int x, int y, int width, int height, String text) {
 		Objects.requireNonNull(text);
 		this.x = x; 

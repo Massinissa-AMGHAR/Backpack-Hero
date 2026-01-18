@@ -17,17 +17,7 @@ import java.util.Objects;
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
 
-/**
- * Creates the healer screen with hero info, dungeon info, and game components.
- * Sets up buttons, backpack, hero view, and message system.
- *
- * @param hero the hero character
- * @param dungeon the current dungeon
- * @param healer the healer NPC
- * @param imagesHero images for the hero
- * @param imagesServices images for healer services
- * @param imagesItems images for items
- */
+
 public class HealerView implements View {
 	private final MessageView messageView;
 	private final Hero hero;
@@ -49,6 +39,17 @@ public class HealerView implements View {
 
 	private final int imageSize = 200;
 	
+	/**
+	 * Creates the healer screen with hero info, dungeon info, and game components.
+	 * Sets up buttons, backpack, hero view, and message system.
+	 *
+	 * @param hero the hero character
+	 * @param dungeon the current dungeon
+	 * @param healer the healer NPC
+	 * @param imagesHero images for the hero
+	 * @param imagesServices images for healer services
+	 * @param imagesItems images for items
+	 */
 	
 	public HealerView(Hero hero, Dungeon dungeon, Healer healer, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
 		Objects.requireNonNull(hero);

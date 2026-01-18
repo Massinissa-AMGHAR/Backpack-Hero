@@ -10,14 +10,7 @@ import com.github.forax.zen.ApplicationContext;
 import fr.uge.character.Hero;
 import fr.uge.graphics.image.ImageLoader;
 
-/**
- * Creates a view for the hero with images and backpack.
- *
- * @param hero the hero to show
- * @param imagesHero the images of the hero
- * @param imagesItems the images of items for the backpack
- * @param imagesStatus the images for hero status effects
- */
+
 public class HeroView {
 	private final Hero hero;
 	private final ImageLoader imagesHero;
@@ -25,7 +18,14 @@ public class HeroView {
 	private final ImageLoader imagesStatus;
 	private final int imageSize = 200;
 
-	
+	/**
+	 * Creates a view for the hero with images and backpack.
+	 *
+	 * @param hero the hero to show
+	 * @param imagesHero the images of the hero
+	 * @param imagesItems the images of items for the backpack
+	 * @param imagesStatus the images for hero status effects
+	 */
 	public HeroView(Hero hero, ImageLoader imagesHero, ImageLoader imagesItems, ImageLoader imagesStatus) {
 		Objects.requireNonNull(imagesHero);
 		Objects.requireNonNull(imagesItems);

@@ -23,12 +23,6 @@ import java.util.List;
 import java.util.Objects;
 
 
-/**
- * Battle screen and interactions.
- * 
- * Shows hero, enemies, loot, backpack, buttons, and item placement.
- * Manages rendering and user actions during battles.
- */
 public class BattleView implements View {
 	
 	private final MessageView messageView;
