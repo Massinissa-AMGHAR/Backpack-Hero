@@ -129,7 +129,6 @@ public class ItemDeleteView implements ClickableItems {
 		int itemX = x + col * (itemWidth + 5) + 5;
 		int itemY = y + row * (itemHeight + 5) + 5;
 		drawRotatedItem(graphics, item, itemX, itemY, itemWidth, itemHeight);
-
 	}
 
 	/**
