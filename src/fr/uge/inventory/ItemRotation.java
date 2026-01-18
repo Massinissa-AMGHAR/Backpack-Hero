@@ -2,6 +2,7 @@ package fr.uge.inventory;
 
 /**
  * Manages rotation logic for an item.
+ * @param item the item that can be rotated
  */
 public record ItemRotation(Item item) {
   /**

@@ -28,6 +28,7 @@ public class HallOfFameView implements View{
 	
   /**
    * Creates the Hall of Fame view and the back button.
+   * @param images the ImageLoader used to load images for the view
    */
 	public HallOfFameView(ImageLoader images){
 		this.images = images;
