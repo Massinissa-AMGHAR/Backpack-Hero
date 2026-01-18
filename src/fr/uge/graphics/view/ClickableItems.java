@@ -4,6 +4,9 @@ import com.github.forax.zen.ApplicationContext;
 
 import fr.uge.inventory.Item;
 
+/**
+ * Defines items that can be clicked.
+ */
 public interface ClickableItems {
 	
 	/**

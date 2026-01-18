@@ -58,7 +58,18 @@ public class Controller {
   private boolean dungeonFinished = false; 
   private boolean running;
   
-	
+  /**
+   * Creates the game controller.
+   *
+   * @param hero the main hero of the game
+   * @param dungeon the dungeon of the game
+   * @param floor the current floor
+   * @param imagesMap images used for the map
+   * @param imagesEnemies images used for enemies
+   * @param imagesItems images used for items
+   * @param imagesServices images used for services
+   * @param imagesStatus images used for status icons
+   */
   public Controller(Hero hero, Dungeon dungeon, Floor floor, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
 		Objects.requireNonNull(hero); 
 		Objects.requireNonNull(dungeon);
@@ -115,13 +126,60 @@ public class Controller {
   	startNewGame(true);
   }
   
+  /**
+   * Returns the menu view.
+   *
+   * @return the menu view
+   */
 	public MenuView menuView() { return menuView; }
+	
+	/**
+	 * Returns the hall of fame view.
+	 *
+	 * @return the hall of fame view
+	 */
 	public HallOfFameView hofView() { return hofView; }
+	
+	/**
+	 * Returns the map view.
+	 *
+	 * @return the map view
+	 */
 	public MapView mapView() { return mapView; }
+	
+	/**
+	 * Returns the battle view.
+	 *
+	 * @return the battle view
+	 */
 	public BattleView battleView() { return battleView; }
+	
+	/**
+	 * Returns the healer view.
+	 *
+	 * @return the healer view
+	 */
 	public HealerView healerView() { return healerView; }
+	
+	/**
+	 * Returns the merchant view.
+	 *
+	 * @return the merchant view
+	 */
 	public MerchantView merchantView() { return merchantView; }
+	
+	/**
+	 * Returns the treasure view.
+	 *
+	 * @return the treasure view
+	 */
 	public TreasureView treasureView() { return treasureView; }
+	
+	/**
+	 * Returns the current view.
+	 *
+	 * @return the current view
+	 */
 	public View view() { return view; }
   
 	/**

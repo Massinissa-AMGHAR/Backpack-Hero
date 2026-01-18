@@ -41,14 +41,17 @@ public class GameGraphics {
   }
 
   /**
+   * Returns the hero
    * @return the hero
    */
   public Hero hero() { return hero; }
   /**
+   * Returns the floor
    * @return the current floor
    */
   public Floor floor() { return floor; }
   /**
+   * Returns the dungeon
    * @return the dungeon
    */
   public Dungeon dungeon() { return dungeon; }

@@ -76,13 +76,30 @@ public class TreasureView implements View {
 		this.deleteButton = new DeleteButton();
 	}
 	
+	/**
+	 * Returns the message view.
+	 *
+	 * @return the message view
+	 */
 	public MessageView messageView() {return messageView; }
 	
+	/**
+	 * Sets if the player is ready to return to the map.
+	 *
+	 * @param ready true if the player can return to the map
+	 */
 	public void setReadyToReturnToMap(boolean ready) {
     readyToReturnToMap = ready;
 	}
 	
-	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
+	/**
+	 * Checks if the player is ready to return to the map.
+	 *
+	 * @return true if the player can return to the map
+	 */
+	public boolean isReadyToReturnToMap() { 
+		return readyToReturnToMap; 
+	}
 	
 	private void background(Graphics2D graphics, ApplicationContext context) {
 		graphics.setColor(Color.BLACK);

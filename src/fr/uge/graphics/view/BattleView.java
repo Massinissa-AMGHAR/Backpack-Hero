@@ -94,22 +94,47 @@ public class BattleView implements View {
 		this.imagesItems = imagesItems; 
 	}
 	
+	/**
+	 * Returns the message view.
+	 *
+	 * @return the message view
+	 */
 	public MessageView messageView() {return messageView; }
 	
+	/**
+	 * Sets if the player is ready to return to the map.
+	 *
+	 * @param ready true if the player can return to the map
+	 */
 	public void setReadyToReturnToMap(boolean ready) {
     readyToReturnToMap = ready;
 	}
 	
+	/**
+	 * Checks if the player is ready to return to the map.
+	 *
+	 * @return true if the player can return to the map
+	 */
 	public boolean isReadyToReturnToMap() { 
 		return readyToReturnToMap; 
 	}
 	
+	/**
+	 * Sets the fight graphics.
+	 *
+	 * @param fight the fight graphics to use, cannot be null
+	 */
 	public void setFight(FightGraphics fight) {
 		Objects.requireNonNull(fight);
     this.fightGraphics = fight;
     updateSelectedEnemy();
 	}
-
+	
+	/**
+	 * Returns the fight graphics.
+	 *
+	 * @return the current fight graphics
+	 */
 	public FightGraphics fight() {
     return fightGraphics;
 	}

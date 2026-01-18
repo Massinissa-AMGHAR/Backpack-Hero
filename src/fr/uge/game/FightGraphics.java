@@ -72,18 +72,82 @@ public class FightGraphics {
 		}
 	}
 	
+	/**
+	 * Checks if the curse is shown.
+	 *
+	 * @return true if the curse is shown
+	 */
 	public boolean curseShown() { return curseShown; }
+	
+	/**
+	 * Checks if the curse is launched.
+	 *
+	 * @return true if the curse is launched
+	 */
 	public boolean curseLaunched() { return curseLaunched; }
+	
+	/**
+	 * Sets if the curse is launched.
+	 *
+	 * @param bool true if the curse is launched
+	 */
 	public void setCurseLaunced(boolean bool) { curseLaunched = bool; }
+	
+	/**
+	 * Sets if the curse is shown.
+	 *
+	 * @param value true if the curse is shown
+	 */
 	public void setCurseShown(boolean value) { curseShown = value;}
+	
+	/**
+	 * Returns the expected curse.
+	 *
+	 * @return the expected curse
+	 */
 	public Item expectedCurse() { return expectedCurse;}
+	
+	/**
+	 * Clears the expected curse.
+	 */
 	public void clearExpectedCurse() { expectedCurse = null;}
+	
+	/**
+	 * Checks if the gold reward was consumed.
+	 *
+	 * @return true if the gold reward was consumed
+	 */
 	public boolean goldRewardConsumed() { return goldRewardConsumed; }
+	
+	/**
+	 * Marks the gold reward as consumed.
+	 */
 	public void consumeGoldReward() { goldRewardConsumed = true; }
+	
+	/**
+	 * Checks if the mana reward was consumed.
+	 *
+	 * @return true if the mana reward was consumed
+	 */
 	public boolean manaRewardConsumed() { return manaRewardConsumed; }
+	
+	/**
+	 * Marks the mana reward as consumed.
+	 */
 	public void consumeManaReward() { manaRewardConsumed = true; }
+	
+	/**
+	 * Returns the battle view.
+	 *
+	 * @return the battle view
+	 */
 	public BattleView battleView() { return battleView; }
 	
+	/**
+	 * Returns the gold reward.
+	 *
+	 * @return the amount of gold reward
+	 */
 	public int getGoldReward() {
 		return 2 * enemies.getEnemies().size();
 	}
@@ -361,8 +425,25 @@ public class FightGraphics {
     }
   }
 
+  /**
+   * Checks if the loot phase is active.
+   *
+   * @return true if the loot phase is active
+   */
   public boolean isLootPhase() { return lootPhase;}
+  
+  /**
+   * Sets if the loot phase is active.
+   *
+   * @param bool true if the loot phase is active
+   */
 	public void setLootPhase( boolean bool) { this.lootPhase = bool; }
+	
+	/**
+	 * Returns the loot items.
+	 *
+	 * @return the loot items
+	 */
   public Items lootItems() { return lootItems;}
 	
   /**

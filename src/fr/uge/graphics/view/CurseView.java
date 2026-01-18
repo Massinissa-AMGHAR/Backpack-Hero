@@ -15,6 +15,9 @@ import fr.uge.graphics.button.RefuseButton;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 
+/**
+ * Displays the curse view.
+ */
 public class CurseView implements View{
 	private final Hero hero;
 	private final BackpackView backpackView; 
@@ -69,9 +72,32 @@ public class CurseView implements View{
 		this.imageHero = imageHero; 
 	}
 	
+	/**
+	 * Checks if the curse was accepted.
+	 *
+	 * @return true if the curse was accepted
+	 */
 	public boolean curseAccepted() { return curseAccepted; }
+	
+	/**
+	 * Returns how many times the curse was refused.
+	 *
+	 * @return the refuse count.
+	 */
 	public int refuseCount() { return refuseCount;}
+	
+	/**
+	 * Returns the curse item.
+	 *
+	 * @return the curse item
+	 */
 	public Item getCurse() { return curse;}
+	
+	/**
+	 * Checks if a choice was made.
+	 *
+	 * @return true if a choice was made
+	 */
 	public boolean madeChoice() { return madeChoice; }
 	
 	private void drawRefuseCount(Graphics2D graphics, ApplicationContext context) {
