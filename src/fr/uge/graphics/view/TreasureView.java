@@ -85,6 +85,8 @@ public class TreasureView implements View {
 	public boolean isReadyToReturnToMap() { return readyToReturnToMap; }
 	
 	private void background(Graphics2D graphics, ApplicationContext context) {
+		graphics.setColor(Color.BLACK);
+    graphics.fillRect(0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());  
 		imagesHero.drawImage(graphics, imagesHero.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	

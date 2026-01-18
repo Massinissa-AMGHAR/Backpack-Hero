@@ -14,6 +14,7 @@ import com.github.forax.zen.ScreenInfo;
 import fr.uge.application.HallOfFame;
 import fr.uge.graphics.Controller;
 import fr.uge.graphics.button.Button;
+import fr.uge.graphics.image.ImageLoader;
 
 /**
  * Displays the Hall of Fame screen.
@@ -22,11 +23,14 @@ import fr.uge.graphics.button.Button;
 public class HallOfFameView implements View{
 	private final HallOfFame hallOfFame; 
 	private final Button backButton; 
+	private final ImageLoader images; 
+
 	
   /**
    * Creates the Hall of Fame view and the back button.
    */
-	public HallOfFameView(){
+	public HallOfFameView(ImageLoader images){
+		this.images = images;
 		hallOfFame = new HallOfFame(); 
 		
 		int width = 200; 
@@ -36,9 +40,10 @@ public class HallOfFameView implements View{
 		backButton = new Button(x, y, width, height, "BACK"); 
 	}
 	
-	private void background(Graphics2D graphics, ScreenInfo screenInfo) {
-		graphics.setColor(Color.DARK_GRAY);
-    graphics.fillRect(0, 0, screenInfo.width(), screenInfo.height());  
+	private void background(Graphics2D graphics, ApplicationContext context) {
+		graphics.setColor(Color.BLACK);
+    graphics.fillRect(0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());  
+		images.drawImage(graphics, images.get(11), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
 	private void title(Graphics2D graphics, ApplicationContext context, String text, ScreenInfo screenInfo) {
@@ -90,7 +95,7 @@ public class HallOfFameView implements View{
 		Objects.requireNonNull(context);
 		Objects.requireNonNull(graphics);
 		var screenInfo = context.getScreenInfo();
-		background(graphics, screenInfo);
+		background(graphics, context);
     title(graphics, context, "HALL OF FAME", screenInfo);
     var ranking = hallOfFame.bestScores(); 
     ranking(graphics, context, ranking, screenInfo); 

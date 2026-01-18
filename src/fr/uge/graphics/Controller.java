@@ -80,7 +80,7 @@ public class Controller {
 		this.imagesStatus = imagesStatus;
 		menuView = new MenuView(imagesMap);
 
-		hofView = new HallOfFameView(); 
+		hofView = new HallOfFameView(imagesMap); 
 		hof = new HallOfFame(); 
 
 		mapView = new MapView(hero, floor, dungeon, imagesMap, imagesItems, imagesServices, imagesEnemies, imagesStatus); 
