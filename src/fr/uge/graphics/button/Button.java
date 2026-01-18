@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 /**
  * Represents a clickable button with a position, size, and label.
@@ -24,6 +25,7 @@ public class Button {
 	private final String text; 
 	
 	public Button(int x, int y, int width, int height, String text) {
+		Objects.requireNonNull(text);
 		this.x = x; 
 		this.y = y; 
 		this.width = width; 
@@ -48,6 +50,7 @@ public class Button {
 	 * @param graphics the graphics context to draw on
 	 */
 	public void draw(Graphics2D graphics) {
+		Objects.requireNonNull(graphics);
 		graphics.setColor(Color.RED);
 		graphics.fillRect(x, y, width, height);
 		

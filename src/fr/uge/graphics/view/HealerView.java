@@ -12,6 +12,7 @@ import fr.uge.map.Dungeon;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
@@ -50,6 +51,13 @@ public class HealerView implements View {
 	
 	
 	public HealerView(Hero hero, Dungeon dungeon, Healer healer, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(dungeon);
+		Objects.requireNonNull(healer);
+		Objects.requireNonNull(imagesHero);
+		Objects.requireNonNull(imagesServices);
+		Objects.requireNonNull(imagesItems);
+		
 		this.hero = hero;
 		this.dungeon = dungeon;
 		this.healer = healer;
@@ -78,6 +86,7 @@ public class HealerView implements View {
 	public MessageView messageView() { return messageView; }
 	
 	private void background(Graphics2D graphics, ApplicationContext context) {
+		
 		imagesHero.drawImage(graphics, imagesHero.get(8 + dungeon.currentFloor()), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
@@ -102,6 +111,8 @@ public class HealerView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		messageView.update(); 
 		background(graphics, context);
 		messageView.drawMessage(graphics, context);
@@ -125,6 +136,8 @@ public class HealerView implements View {
 	 * @param context application context
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(controller);
 		if(mapButton.click(x, y)) {
 			messageView.showMessage("Returning to te map...", 2000);
 			setReadyToReturnToMap(true);

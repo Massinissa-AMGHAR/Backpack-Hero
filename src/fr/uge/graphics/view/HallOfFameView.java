@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.util.List;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
@@ -86,6 +87,8 @@ public class HallOfFameView implements View{
 	 * @param context provides screen size and other info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		var screenInfo = context.getScreenInfo();
 		background(graphics, screenInfo);
     title(graphics, context, "HALL OF FAME", screenInfo);
@@ -103,6 +106,8 @@ public class HallOfFameView implements View{
 	 * @param context provides screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller);
+		Objects.requireNonNull(context);
 		if(backButton.click(x, y)) {
 			controller.changeView(controller.menuView());
 		}

@@ -1,5 +1,7 @@
 package fr.uge.interaction;
 
+import java.util.Objects;
+
 import fr.uge.character.*;
 import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
@@ -18,6 +20,10 @@ public class RoboBucklerInteraction implements ItemInteraction {
    * @param self the item giving the block
    */
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(enemy);
+		Objects.requireNonNull(fight);
+		Objects.requireNonNull(self);
     int weaponsOnLine = 0;
     int line = self.leftPlacementY();
     for (int col = 0; col < hero.backpack().maxColumns(); col++) {

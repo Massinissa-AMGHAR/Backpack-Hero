@@ -1,5 +1,7 @@
 package fr.uge.interaction;
 
+import java.util.Objects;
+
 import fr.uge.character.*;
 import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
@@ -27,6 +29,9 @@ public class AdjacentArmorBlockInteraction implements ItemInteraction {
    * @param self the item giving the bonus
    */
   public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
+  	Objects.requireNonNull(hero);
+  	Objects.requireNonNull(fight);
+  	Objects.requireNonNull(self);
   	var adjacentItems = hero.backpack().getAdjacentItems(self);
   	var bonusBlock = 0;
   	var time = 2500;

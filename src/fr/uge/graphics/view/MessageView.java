@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -26,6 +27,7 @@ public class MessageView {
 	 * @param durationMs how long the message shows in milliseconds
 	 */
 	public void showMessage(String msg, int durationMs) {
+		Objects.requireNonNull(msg); 
     var end = Instant.now().plusMillis(durationMs);
     messages.add(new Message(msg, end));
 	}
@@ -60,6 +62,8 @@ public class MessageView {
 	 * @param context the application context with screen info
 	 */
 	public void drawMessage(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context);
     if (isMessageActive()) {
       graphics.setColor(Color.WHITE);
       graphics.setFont(new Font("Arial", Font.BOLD, 40));

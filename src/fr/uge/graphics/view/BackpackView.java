@@ -10,6 +10,7 @@ import fr.uge.inventory.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Shows a backpack on screen.
@@ -28,6 +29,8 @@ public class BackpackView implements ClickableItems{
    * @param imagesItems loader for item images
    */
 	public BackpackView(Backpack backpack, ImageLoader imagesItems) {
+		Objects.requireNonNull(backpack);
+		Objects.requireNonNull(imagesItems);
 		this.backpack = backpack; 
 		this.imagesItems = imagesItems; 
 	}
@@ -69,6 +72,7 @@ public class BackpackView implements ClickableItems{
 	 * @return int array {line, column} of cell, or null if outside
 	 */
 	public int[] choiceCase(int mouseX, int mouseY, ApplicationContext context) {
+		Objects.requireNonNull(context); 
 		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
 		for(int i = 0; i < backpack.maxLines(); i++) {
 			for(int j = 0; j < backpack.maxColumns(); j++) {
@@ -135,6 +139,8 @@ public class BackpackView implements ClickableItems{
 	 * @param context application context with screen info
 	 */
 	public void drawBackpack(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics);
+		Objects.requireNonNull(context);
 		int cols = backpack.maxColumns(); 
 		int rows = backpack.maxLines(); 
 	  var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
@@ -160,6 +166,7 @@ public class BackpackView implements ClickableItems{
 	 * @return the item at the clicked cell, or null if empty
 	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
+		Objects.requireNonNull(context);
 		var start = calculateGridStart(context.getScreenInfo().width(), context.getScreenInfo().height());
 		for(int i = 0; i < backpack.maxLines(); i++) {
 			for(int j = 0; j < backpack.maxColumns(); j++) {

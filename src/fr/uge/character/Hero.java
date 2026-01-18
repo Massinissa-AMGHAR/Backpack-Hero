@@ -73,7 +73,10 @@ public class Hero implements Fighter{
   /**
    * @param item the armor item to equip
    */
-  public void equipArmor(Item item) { heroFight.equipArmor(item); } 
+  public void equipArmor(Item item) {
+  	Objects.requireNonNull(item); 
+  	heroFight.equipArmor(item);
+  } 
   /**
    * @return current energy
    */
@@ -145,13 +148,20 @@ public class Hero implements Fighter{
    * @param item the item used for the attack
    * @return total damage dealt
    */
-  public int attack(Fighter enemy, Item item) { return heroFight.attack(enemy, item);}
+  public int attack(Fighter enemy, Item item) {
+  	Objects.requireNonNull(enemy); 
+  	Objects.requireNonNull(item); 
+  	return heroFight.attack(enemy, item);
+  	}
   /**
    * Uses an item to defend, increasing protection.
    * @param item the item used to defend
    * @return total protection after applying the item
    */
-  public int defense(Item item) { return heroFight.defense(item);}
+  public int defense(Item item) { 
+  	Objects.requireNonNull(item); 
+  	return heroFight.defense(item);
+  }
   /**
    * Adds block points to the hero.
    * @param amount number of block points to add

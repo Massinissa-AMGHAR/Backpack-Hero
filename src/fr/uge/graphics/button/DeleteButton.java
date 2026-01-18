@@ -1,8 +1,7 @@
 package fr.uge.graphics.button;
 
 import java.awt.Graphics2D;
-
-
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -28,6 +27,8 @@ public class DeleteButton {
    * @param context the application context for screen information
    */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics);
+		Objects.requireNonNull(context);
 		updateLayout(context); 
 		button.draw(graphics);
 	}
@@ -42,6 +43,8 @@ public class DeleteButton {
 	 * @return true if an item was deleted, false otherwise
 	 */
 	public boolean click(int mouseX, int mouseY, ItemPlacementView placementView, MessageView message) {
+		Objects.requireNonNull(placementView);
+		Objects.requireNonNull(message);
 		if(placementView.hasItem() && button.click(mouseX, mouseY)) {
 			if (placementView.deleteView().isFull()) {
 				message.showMessage("Delete zone is full !", 1500);

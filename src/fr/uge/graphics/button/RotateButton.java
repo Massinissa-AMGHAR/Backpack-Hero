@@ -1,7 +1,7 @@
 package fr.uge.graphics.button;
 
 import java.awt.Graphics2D;
-
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -26,6 +26,8 @@ public class RotateButton {
    * @param context the application context for screen information
    */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics);
+		Objects.requireNonNull(context);
 		updateLayout(context); 
 		button.draw(graphics);
 	}

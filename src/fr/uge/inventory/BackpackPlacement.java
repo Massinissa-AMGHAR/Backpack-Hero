@@ -1,5 +1,7 @@
 package fr.uge.inventory;
 
+import java.util.Objects;
+
 /**
  * Manages item placement logic in the backpack.
  */
@@ -13,6 +15,7 @@ public class BackpackPlacement {
    * @param backpack the backpack to manage
    */
 	public BackpackPlacement(Backpack backpack) {
+		Objects.requireNonNull(backpack); 
 		this.backpack = backpack; 
 	}
 	
@@ -75,6 +78,7 @@ public class BackpackPlacement {
    * @return true if all required cases are free, false otherwise
    */
   public boolean canPlaceItem(Item item, int line, int column) {
+  	Objects.requireNonNull(item); 
 		boolean[][] shape = item.shape(); 
 		for(int i = 0; i < item.height(); i++) {
 			for(int j = 0; j < item.width(); j++) {
@@ -98,6 +102,7 @@ public class BackpackPlacement {
    * @return true if the curse can be placed, false otherwise
    */
   public boolean canPlaceCurse(Item curse, int line, int column) {
+  	Objects.requireNonNull(curse); 
   	if(line < 0 || column < 0 || line + curse.height() > backpack.maxLines() || column + curse.width() > backpack.maxColumns()) return false;
   	
   	for(int i = 0; i < curse.height(); i++) {
@@ -124,6 +129,7 @@ public class BackpackPlacement {
    * @param column the starting column
    */
   public void add(Item item, int line, int column) { 
+  	Objects.requireNonNull(item); 
   	boolean[][] shape = item.shape(); 
 		for(int i = 0; i < item.height(); i++) {
 			for(int j = 0; j < item.width(); j++) {
@@ -141,6 +147,7 @@ public class BackpackPlacement {
    * @param item the item to delete
    */
   public void delete(Item item) {
+  	Objects.requireNonNull(item); 
     for(int i = 0; i < backpack.maxLines(); i++) {
       for(int j = 0; j < backpack.maxColumns(); j++) {
       	Item current = backpack.grid().get(i).get(j); 

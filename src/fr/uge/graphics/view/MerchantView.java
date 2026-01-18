@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.ScreenInfo;
@@ -58,6 +59,14 @@ public class MerchantView implements View {
 	 * @param imagesItems images of items
 	 */
 	public MerchantView(Hero hero, Dungeon dungeon, Merchant merchant, Items shopItems, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(dungeon);
+		Objects.requireNonNull(merchant);
+		Objects.requireNonNull(imagesHero);
+		Objects.requireNonNull(shopItems);
+		Objects.requireNonNull(imagesServices);
+		Objects.requireNonNull(imagesItems);
+		
 		this.hero = hero;
 		this.dungeon = dungeon;
 		this.merchant = merchant; 
@@ -118,6 +127,8 @@ public class MerchantView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context);
 		message.update();
 		background(graphics, context);
 		message.drawMessage(graphics, context);
@@ -192,6 +203,8 @@ public class MerchantView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller); 
+		Objects.requireNonNull(context);
 		if (clickMapButton(x, y)) {
 			return;
 		}

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import fr.uge.character.Hero;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -23,6 +24,7 @@ public class Floor {
    * @throws IllegalArgumentException if a room is already at that position
    */
   public void add(Room room, int line, int column) {
+  	Objects.requireNonNull(room); 
     if(floor[line][column] != null) {
       throw new IllegalArgumentException("A room is already here"); 
     }
@@ -107,6 +109,8 @@ public class Floor {
    * @return true if a path exists, false otherwise
    */
   public boolean goodPath(Room current, Room target, List<Room> visited) {
+  	Objects.requireNonNull(current);
+  	Objects.requireNonNull(target); 
   	if(current.equals(target)) {
   		return true; 
   	}
@@ -152,6 +156,7 @@ public class Floor {
    * @return the generated Room
    */
 	public Room generateRandomRoom(Room gridRoom) {
+		Objects.requireNonNull(gridRoom); 
 		if (gridRoom.getGeneratedRoom() != null) {
 			return gridRoom.getGeneratedRoom();
 		}
@@ -178,6 +183,8 @@ public class Floor {
 	 * @return true if the room was unlocked or already visited, false if no key is available
 	 */
 	public boolean tryUnlockGrid(Room grid, Hero hero) {
+		Objects.requireNonNull(grid);
+		Objects.requireNonNull(hero); 
 		if (!grid.hasVisited()) {
 			var key = hero.backpack().findKeyItem();
 			if (key == null) {

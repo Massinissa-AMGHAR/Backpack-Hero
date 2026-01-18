@@ -3,6 +3,7 @@ package fr.uge.graphics.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -26,6 +27,8 @@ public class HeroView {
 
 	
 	public HeroView(Hero hero, ImageLoader imagesHero, ImageLoader imagesItems, ImageLoader imagesStatus) {
+		Objects.requireNonNull(imagesHero);
+		Objects.requireNonNull(imagesItems);
 		this.hero = hero;
 		this.imagesHero = imagesHero;
 		this.imagesStatus = imagesStatus;
@@ -71,6 +74,8 @@ public class HeroView {
 
 	
 	public void heroPV(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		int statX = context.getScreenInfo().width() / 5 + 40;
 		int statY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 3 + 100;
 		if (hero.protection() > 0) {
@@ -91,6 +96,8 @@ public class HeroView {
 	}
 	
 	public void heroManaEnergy(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		var mana = "ManaEnergy : " + hero.mana();
 		var mX = context.getScreenInfo().width() / 8 - 175;
     var mY = context.getScreenInfo().height() / 6 + 50;
@@ -105,6 +112,8 @@ public class HeroView {
 	}
 	
 	public void heroGold(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		var gold = backpackView.backpack().findGoldItem(); 
 		String goldText; 
     if(gold == null) {
@@ -118,6 +127,8 @@ public class HeroView {
 	}
 	
 	public void heroLevel(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
     var level = "LVL." + hero.level();
     var xp = hero.xp() + " / " + hero.nextLevelXp() + " XP"; 
     var levelX = context.getScreenInfo().width() / 8 - 175;
@@ -135,6 +146,8 @@ public class HeroView {
 	 * @param context the application context with screen info
 	 */
 	public void heroStat(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		var oldFont = graphics.getFont();
 		var oldColor = graphics.getColor();
 		graphics.setColor(Color.WHITE);
@@ -157,6 +170,8 @@ public class HeroView {
 	 * @param context the application context with screen info
 	 */
 	public void importHeroImage(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		int heroX = context.getScreenInfo().width() / 5;
 		int heroY = context.getScreenInfo().height() / 2 + context.getScreenInfo().height() / 6;
 		imagesHero.drawImage(graphics, imagesHero.get(0), heroX, heroY, imageSize, imageSize);

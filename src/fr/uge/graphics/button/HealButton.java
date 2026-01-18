@@ -1,7 +1,7 @@
 package fr.uge.graphics.button;
 
 import java.awt.Graphics2D;
-
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -28,6 +28,8 @@ public class HealButton {
    * @param context the application context for screen information
    */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics);
+		Objects.requireNonNull(context);
 		updateLayout(context); 
 		button.draw(graphics);
 	}
@@ -44,6 +46,10 @@ public class HealButton {
    * @return true if healing was applied or blocked by conditions
    */
 	public boolean click(int mouseX, int mouseY, ItemPlacementView placementView, Hero hero, Healer healer, MessageView message) {
+		Objects.requireNonNull(placementView);
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(healer);
+		Objects.requireNonNull(message);
 		if (placementView.hasItem() && placementView.item().isGold() && button.click(mouseX, mouseY)) {
 			var gold = placementView.item();
 			if (hero.HP() >= hero.HPMAX()) {

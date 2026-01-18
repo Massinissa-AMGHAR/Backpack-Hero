@@ -1,4 +1,6 @@
 package fr.uge.character;
+import java.util.Objects;
+
 import fr.uge.inventory.Item;
 import fr.uge.inventory.ItemType;
 
@@ -123,6 +125,7 @@ public class HeroFight {
    * @param item the armor item to equip
    */
   public void equipArmor(Item item) {
+  	Objects.requireNonNull(item); 
   	if (item.type() != ItemType.ARMOR) {
   		return;
   	}
@@ -138,6 +141,7 @@ public class HeroFight {
    * @return new protection value after applying the item
    */
 	public int defense(Item item) {
+		Objects.requireNonNull(item); 
 		if (mana < item.manaCost() || energy < item.energyCost()) {
 			IO.println("You don't have enough resources to use " + item.name());
 			return 0;
@@ -193,6 +197,8 @@ public class HeroFight {
 	 * @return total damage dealt to the enemy
 	 */
 	public int attack(Fighter opponent, Item item) {
+		Objects.requireNonNull(opponent); 
+		Objects.requireNonNull(item); 
 		if (!(opponent instanceof Enemy)) {
 			throw new IllegalArgumentException("Hero can only attack Ennemy");
 		}

@@ -1,5 +1,7 @@
 package fr.uge.character;
 
+import java.util.Objects;
+
 import fr.uge.inventory.*;
 
 /**
@@ -24,6 +26,7 @@ public class Merchant {
    * @return gold cost of the item
    */
   public int goldCost(Item item) {
+  	Objects.requireNonNull(item); 
     int goldCost =  item.goldCost(); 
     return goldCost; 
   }

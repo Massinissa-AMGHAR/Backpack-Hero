@@ -82,7 +82,13 @@ public class Room {
    * @return The BattleView of this room, or null if no enemies are present
    */
   public BattleView getBattleView(Hero hero, Dungeon dungeon, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
-    if (!hasEnemies) return null;
+    Objects.requireNonNull(hero); 
+    Objects.requireNonNull(dungeon);
+    Objects.requireNonNull(imagesHero);
+    Objects.requireNonNull(imagesEnemies);
+    Objects.requireNonNull(imagesItems); 
+  	
+  	if (!hasEnemies) return null;
     if (battleView == null) {
         battleView = new BattleView(hero, dungeon, getLoot(), enemies, imagesHero, imagesEnemies, imagesItems, imagesStatus);
     }
@@ -107,6 +113,11 @@ public class Room {
    * @return The TreasureView for this room
    */
   public TreasureView getTreasureView(Hero hero, Dungeon dungeon, ImageLoader images, ImageLoader imagesItems) {
+  	
+  	 Objects.requireNonNull(hero); 
+     Objects.requireNonNull(dungeon);
+     Objects.requireNonNull(images);
+     Objects.requireNonNull(imagesItems);
   	if (treasureView == null) {
   		treasureView = new TreasureView(hero, dungeon, getLoot(), images, imagesItems);
   	}
@@ -126,7 +137,14 @@ public class Room {
    * @return The HealerView for this room, or null if no healer is present
    */
   public HealerView getHealerView(Hero hero, Dungeon dungeon, ImageLoader imagesMap, ImageLoader imagesServices, ImageLoader imagesItems) {
-    if (!hasHealer) return null; 
+
+ 	 	Objects.requireNonNull(hero); 
+    Objects.requireNonNull(dungeon);
+    Objects.requireNonNull(imagesMap);
+    Objects.requireNonNull(imagesServices);
+    Objects.requireNonNull(imagesItems);
+  	
+  	if (!hasHealer) return null; 
     if (healerView == null) {
         healerView = new HealerView(hero, dungeon, angel(), imagesMap, imagesServices, imagesItems);
     }
@@ -146,7 +164,13 @@ public class Room {
    * @return The MerchantView for this room, or null if no merchant is present
    */
   public MerchantView getMerchantView(Hero hero, Dungeon dungeon, ImageLoader imagesHero, ImageLoader imagesServices, ImageLoader imagesItems) {
-    if (!hasMerchant) return null;
+  	Objects.requireNonNull(hero); 
+    Objects.requireNonNull(dungeon);
+    Objects.requireNonNull(imagesServices);
+    Objects.requireNonNull(imagesItems);
+  	
+  	
+  	if (!hasMerchant) return null;
     if (merchantView == null) {
         merchantView = new MerchantView(hero, dungeon, merchant, getLoot(), imagesHero, imagesServices, imagesItems);
     }

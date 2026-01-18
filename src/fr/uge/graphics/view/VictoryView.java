@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -34,6 +35,8 @@ public class VictoryView implements View {
 	 * @param images the images of the hero
 	 */
 	public VictoryView(Hero hero, ImageLoader images) {
+		Objects.requireNonNull(hero); 
+		Objects.requireNonNull(images);
 		this.hero = hero;
 		this.images = images;
 		this.message = new MessageView();
@@ -114,6 +117,8 @@ public class VictoryView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context);
 		message.update(); 
 		background(graphics, context);
 		drawText(graphics, context);
@@ -133,6 +138,8 @@ public class VictoryView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller); 
+		Objects.requireNonNull(context);
 		if (quitButton.click(x, y)) {
 			isQuit = true;
 		}

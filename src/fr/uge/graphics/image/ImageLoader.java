@@ -25,6 +25,7 @@ public class ImageLoader {
    * @param pics names of image files to load
    */
 	public ImageLoader(String dir, String... pics) {
+		Objects.requireNonNull(dir);
 		Objects.requireNonNull(pics, "pics can't be null.");
 		images = new BufferedImage[pics.length];
 		for (var i = 0; i < pics.length; i++) {

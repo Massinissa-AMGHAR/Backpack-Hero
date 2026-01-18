@@ -19,6 +19,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 /**
  * Creates a view for treasure collection.
@@ -53,6 +54,12 @@ public class TreasureView implements View {
 	 * @param imagesItems the images of items
 	 */
 	public TreasureView(Hero hero, Dungeon dungeon, Items lootItems, ImageLoader imagesHero, ImageLoader imagesItems) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(dungeon);
+		Objects.requireNonNull(lootItems);
+		Objects.requireNonNull(imagesItems);
+		Objects.requireNonNull(imagesHero);
+		
 		this.hero = hero;
 		this.dungeon = dungeon;
 		this.imagesHero = imagesHero;
@@ -98,6 +105,8 @@ public class TreasureView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context);
 		messageView.update(); 
 		background(graphics, context);
 		if (!treasureMessage) {
@@ -199,6 +208,8 @@ public class TreasureView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller); 
+		Objects.requireNonNull(context);
 		if (clickMapButton(x, y)) {
 			return;
 		}

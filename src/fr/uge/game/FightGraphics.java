@@ -1,6 +1,8 @@
 package fr.uge.game;
 
 
+import java.util.Objects;
+
 import fr.uge.character.*;
 import fr.uge.graphics.view.*;
 import fr.uge.inventory.*;
@@ -51,6 +53,10 @@ public class FightGraphics {
 	 * @param battleView the battle view interface
 	 */
 	public FightGraphics(Hero hero, Enemies enemies, Dungeon dungeon, BattleView battleView) {
+		Objects.requireNonNull(hero); 
+		Objects.requireNonNull(enemies); 
+		Objects.requireNonNull(dungeon); 
+		Objects.requireNonNull(battleView); 
 		this.hero = hero;
 		this.enemies = enemies;
 		this.dungeon = dungeon;
@@ -134,7 +140,7 @@ public class FightGraphics {
    * @param enemy the enemy affected by the effects
    * @return number of effects applied
    */
-  private int applyItemEffects(Item item, Enemy enemy) {
+  private int applyItemEffects(Item item, Enemy enemy) { 
   	var effects = 0;
   	for (var effect : item.effects()) {
   		effect.apply(hero, enemy, this, item);

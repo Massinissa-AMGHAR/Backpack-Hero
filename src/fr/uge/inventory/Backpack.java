@@ -82,7 +82,7 @@ public class Backpack {
    * @param column the column in the backpack
    * @return true if the item can be placed, false otherwise
    */
-  public boolean canPlaceItem(Item item, int line, int column) { return placement.canPlaceItem(item, line, column); }
+  public boolean canPlaceItem(Item item, int line, int column) { Objects.requireNonNull(item); return placement.canPlaceItem(item, line, column); }
   /**
    * Checks if a curse item can be placed at a specific position.
    * @param item the curse item
@@ -90,7 +90,7 @@ public class Backpack {
    * @param column the column in the backpack
    * @return true if the curse can be placed, false otherwise
    */
-  public boolean canPlaceCurse(Item item, int line, int column) { return placement.canPlaceCurse(item, line, column); }
+  public boolean canPlaceCurse(Item item, int line, int column) { Objects.requireNonNull(item); return placement.canPlaceCurse(item, line, column); }
   /**
    * Checks if there is at least one free slot in the backpack.
    * @return true if a free slot exists, false otherwise
@@ -102,12 +102,12 @@ public class Backpack {
    * @param line the row where the item will be placed
    * @param column the column where the item will be placed
    */
-  public void add(Item item, int line, int column) { placement.add(item, line, column);}
+  public void add(Item item, int line, int column) { Objects.requireNonNull(item); placement.add(item, line, column);}
   /**
    * Deletes an item from the backpack.
    * @param item the item to delete
    */
-  public void delete(Item item) { placement.delete(item);}
+  public void delete(Item item) { Objects.requireNonNull(item); placement.delete(item);}
   /**
    * Consumes a number of mana stones from the backpack.
    * @param amount the number of mana stones to consume

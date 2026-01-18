@@ -67,6 +67,7 @@ public class ItemPlacementView implements ClickableItems{
 	 * @param item the item to place
 	 */
 	public void take(Item item) {
+		Objects.requireNonNull(item);
 		if (hasItem) return;
 		this.item = item; 
 		hasItem = true; 
@@ -112,6 +113,8 @@ public class ItemPlacementView implements ClickableItems{
 		return context.getScreenInfo().height() / 10 + 100;  
 	}
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		int x = zoneX(context); 
 		int y = zoneY(context); 
 		drawZone(graphics, x, y); 
@@ -162,6 +165,8 @@ public class ItemPlacementView implements ClickableItems{
 	 * @return true if an item was taken, false otherwise
 	 */
 	public boolean clickSource(int mouseX, int mouseY, ClickableItems source, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(source);
 		Item clicked = source.click(mouseX, mouseY, context); 
 		if(clicked != null) {
 			take(clicked); 
@@ -180,6 +185,7 @@ public class ItemPlacementView implements ClickableItems{
 	 * @return the item if clicked, null otherwise
 	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
+		Objects.requireNonNull(context);
 		if(!hasItem || item == null) return null; 
 		
 		int x = zoneX(context); 

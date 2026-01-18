@@ -3,7 +3,7 @@ package fr.uge.graphics.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -59,6 +59,11 @@ public class CurseView implements View{
 	 * @param refuseCount number of times the hero can refuse
 	 */
 	public CurseView(Hero hero, Item curse, FightGraphics fight, ImageLoader imageHero, ImageLoader imagesItems, int refuseCount) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(curse);
+		Objects.requireNonNull(fight);
+		Objects.requireNonNull(imageHero);
+		Objects.requireNonNull(imagesItems);
 		this.hero = hero; 
 		this.backpackView = new BackpackView(hero.backpack(), imagesItems);
 		this.heroView = new HeroView(hero, imageHero, imagesItems, null);
@@ -105,6 +110,8 @@ public class CurseView implements View{
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context); 
 		messageView.update(); 
 		messageView.drawMessage(graphics, context);
 		backpackView.drawBackpack(graphics, context);
@@ -125,6 +132,8 @@ public class CurseView implements View{
 	 * @param context the application context with screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller); 
+		Objects.requireNonNull(context); 
 		if(refuseButton.click(x, y)) {
 			hero.receiveDamage(refuseCount);
 			refuseCount++; 

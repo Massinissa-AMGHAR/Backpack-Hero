@@ -9,6 +9,7 @@ import com.github.forax.zen.ApplicationContext;
 import fr.uge.graphics.image.ImageLoader;
 import fr.uge.inventory.Item;
 import java.util.List;
+import java.util.Objects;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +37,7 @@ public class ItemDeleteView implements ClickableItems {
 	 * @param imagesItems the images of the items
 	 */
 	public ItemDeleteView(ImageLoader imagesItems) {
+		Objects.requireNonNull(imagesItems);
 		this.imagesItems = imagesItems;
 	}
 	
@@ -62,6 +64,7 @@ public class ItemDeleteView implements ClickableItems {
 	 * @param item the item to remove
 	 */
 	public void remove(Item item) {
+		Objects.requireNonNull(item);
 		deletedItems.remove(item);
 	}
 	
@@ -137,6 +140,8 @@ public class ItemDeleteView implements ClickableItems {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		int x = zoneX(context);
 		int y = zoneY(context);
 		drawZone(graphics, x, y);
@@ -153,6 +158,7 @@ public class ItemDeleteView implements ClickableItems {
 	 * @return the clicked item or null if none
 	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
+		Objects.requireNonNull(context);
 		int x = zoneX(context);
 		int y = zoneY(context);
 		int itemWidth = zoneWidth / columns - 10;

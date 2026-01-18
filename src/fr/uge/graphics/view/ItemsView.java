@@ -3,6 +3,7 @@ package fr.uge.graphics.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 
@@ -34,6 +35,8 @@ public class ItemsView implements ClickableItems{
 	 * @param images the images of the items
 	 */
 	public ItemsView(Items items, ImageLoader images) {
+		Objects.requireNonNull(items);
+		Objects.requireNonNull(images);
 		this.items = items; 
 		this.images = images; 
 	}
@@ -97,6 +100,8 @@ public class ItemsView implements ClickableItems{
 	 * @param isShop true if showing in shop mode, false otherwise
 	 */
 	public void drawItems(Graphics2D graphics, ApplicationContext context, boolean isShop) {
+		Objects.requireNonNull(context);
+		Objects.requireNonNull(graphics);
 		var list = items.getItems(); 
 		for(int i = 0; i < list.size(); i++) {
 			drawItemsSlot(graphics, context, i); 
@@ -115,6 +120,7 @@ public class ItemsView implements ClickableItems{
 	 * @return the clicked item or null
 	 */
 	public Item click(int mouseX, int mouseY, ApplicationContext context) {
+		Objects.requireNonNull(context); 
 		for(int i = 0; i < items.getItems().size(); i++) {
 			int x = itemX(context); 
 			int y = itemY(context, i); 

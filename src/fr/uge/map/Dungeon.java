@@ -76,6 +76,7 @@ public class Dungeon {
    * @throws IllegalArgumentException if the current floor is not in the dungeon
    */
   public Floor nextFloor(Floor current) {
+  	Objects.requireNonNull(current);
   	int i = dungeon.indexOf(current); 
   	if(i == -1) {
   		throw new IllegalArgumentException("Floor not in dungeon"); 

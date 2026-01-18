@@ -1,6 +1,7 @@
 package fr.uge.character;
 import fr.uge.inventory.*;
 
+
 import java.util.Random; 
 
 import java.util.Objects;
@@ -109,6 +110,7 @@ public class Enemy implements Fighter {
 	 * @param damage the damage taken
 	 */
 	public void receiveDamage(int damage) {
+		
 		HP = Math.max(HP - damage, 0);
 	}
 	
@@ -167,6 +169,7 @@ public class Enemy implements Fighter {
 	 * @return total damage dealt to hero (including protection)
 	 */
 	public int attack(Fighter opponent, Item item) {
+		Objects.requireNonNull(opponent); 
 		if (!(opponent instanceof Hero)) throw new IllegalArgumentException("Ennemy can only attack Hero");
 		Hero hero = (Hero) opponent;
 		int totalDamage = 0;

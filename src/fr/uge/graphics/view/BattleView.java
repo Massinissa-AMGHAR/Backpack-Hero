@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -68,7 +69,15 @@ public class BattleView implements View {
    * @param imagesStatus images for status effects
    */
 	public BattleView(Hero hero, Dungeon dungeon, Items lootItems, Enemies enemies, ImageLoader imagesHero, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesStatus) {
-
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(dungeon);
+		Objects.requireNonNull(enemies);
+		Objects.requireNonNull(imagesHero);
+		Objects.requireNonNull(imagesEnemies);
+		Objects.requireNonNull(imagesStatus);
+		Objects.requireNonNull(lootItems);
+		Objects.requireNonNull(imagesItems);
+		
 		this.hero = hero;
 		this.dungeon = dungeon;
 		this.enemies = enemies;
@@ -102,6 +111,7 @@ public class BattleView implements View {
 	}
 	
 	public void setFight(FightGraphics fight) {
+		Objects.requireNonNull(fight);
     this.fightGraphics = fight;
     updateSelectedEnemy();
 	}
@@ -279,6 +289,8 @@ public class BattleView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics);
+		Objects.requireNonNull(context);
 		messageView.update(); 
 		drawCursePhase(graphics, context);
 		background(graphics, context);
@@ -530,6 +542,8 @@ public class BattleView implements View {
 	 * @param context the application context with screen and input info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller);
+		Objects.requireNonNull(context);
 		if (curseViewClick(x, y, controller, context)) {
 			return;
 		}

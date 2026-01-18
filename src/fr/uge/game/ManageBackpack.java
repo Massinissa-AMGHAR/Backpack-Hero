@@ -1,6 +1,8 @@
 package fr.uge.game;
 
 
+import java.util.Objects;
+
 import fr.uge.character.HeroInventoryManager;
 
 import fr.uge.character.Merchant;
@@ -40,6 +42,8 @@ public class ManageBackpack {
    * @param merchant the merchant providing items
    */
 	public ManageBackpack(Backpack backpack, ItemPlacementView placementView, Merchant merchant) {
+		Objects.requireNonNull(backpack); 
+		Objects.requireNonNull(placementView);  
 		this.backpack = backpack; 
 		this.placementView = placementView; 
 		this.inventory = new HeroInventoryManager(backpack); 
@@ -76,6 +80,8 @@ public class ManageBackpack {
 	 * @return true if the item was successfully bought and moved, false otherwise
 	 */
 	public boolean clickFromShop(Item item, Items items) {
+		Objects.requireNonNull(item); 
+		Objects.requireNonNull(items); 
 		if(!inventory.buy(item.goldCost())) {
 			return false; 
 		}
@@ -91,6 +97,8 @@ public class ManageBackpack {
 	 * @param items the list of loot items
 	 */
 	public void clickFromLoot(Item item, Items items) {
+		Objects.requireNonNull(item); 
+		Objects.requireNonNull(items); 
 		if (placementView.hasItem()) {
 			return;
 		}

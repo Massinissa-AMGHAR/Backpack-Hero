@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Creates a view for the dungeon map.
@@ -49,6 +50,14 @@ public class MapView implements View {
 	 * @param imagesStatus the hero status images
 	 */
 	public MapView(Hero hero, Floor floor, Dungeon dungeon, ImageLoader images, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesEnemies, ImageLoader imagesStatus) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(dungeon);
+		Objects.requireNonNull(images);
+		Objects.requireNonNull(imagesServices);
+		Objects.requireNonNull(imagesEnemies);
+		Objects.requireNonNull(imagesStatus);
+		Objects.requireNonNull(imagesItems);
+		
 		this.hero = hero;
 		this.floor = floor;
 		this.dungeon = dungeon;
@@ -203,6 +212,8 @@ public class MapView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context); 
 		message.update(); 
 		background(graphics, context);
 		draw_map(graphics, context, floor);
@@ -279,6 +290,8 @@ public class MapView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller); 
+		Objects.requireNonNull(context);
 		var start = calculateMapStart(context.getScreenInfo().width(), context.getScreenInfo().height(), cols, rows, cellSize);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {

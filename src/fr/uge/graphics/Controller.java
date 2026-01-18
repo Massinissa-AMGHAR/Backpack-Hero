@@ -3,6 +3,7 @@ import fr.uge.graphics.image.*;
 
 import fr.uge.graphics.view.*;
 
+import java.util.Objects;
 
 import com.github.forax.zen.ApplicationContext;
 import com.github.forax.zen.KeyboardEvent;
@@ -59,7 +60,17 @@ public class Controller {
   
 	
   public Controller(Hero hero, Dungeon dungeon, Floor floor, ImageLoader imagesMap, ImageLoader imagesEnemies, ImageLoader imagesItems, ImageLoader imagesServices, ImageLoader imagesStatus) {
-		this.hero = hero;
+		Objects.requireNonNull(hero); 
+		Objects.requireNonNull(dungeon);
+		Objects.requireNonNull(floor);
+		Objects.requireNonNull(imagesMap);
+		Objects.requireNonNull(imagesEnemies);
+		Objects.requireNonNull(imagesServices);
+		Objects.requireNonNull(imagesStatus);
+		Objects.requireNonNull(imagesItems);
+	
+  
+  	this.hero = hero;
 		this.dungeon = dungeon;
 		this.floor = floor;
 		this.imagesMap = imagesMap;
@@ -119,6 +130,7 @@ public class Controller {
 	 * @param newView the view to switch to
 	 */
 	public void changeView(View newView) {
+		Objects.requireNonNull(newView); 
 		view = newView;
 	}
 	
@@ -128,6 +140,7 @@ public class Controller {
 	 * @param randomRoom the room being entered
 	 */
 	private void enterRoom(Room randomRoom) {
+		Objects.requireNonNull(randomRoom); 
     if (randomRoom.hasEnemies()) {
       startFight(randomRoom.enemies(), randomRoom);
       randomRoom.setVisited(true);
@@ -162,6 +175,7 @@ public class Controller {
 	 * @param j the column position
 	 */
 	public void enterGridRoom(Room gridRoom, int i, int j) {
+		Objects.requireNonNull(gridRoom); 
 		floor.placeHero(i, j);
 		var randomRoom = floor.generateRandomRoom(gridRoom);
 		enterRoom(randomRoom);
@@ -191,6 +205,8 @@ public class Controller {
 	 * @param room the room where the fight happens
 	 */
 	public void startFight(Enemies roomEnemies, Room room) {
+		Objects.requireNonNull(roomEnemies); 
+		Objects.requireNonNull(room); 
 		battleView = room.getBattleView(hero, dungeon, imagesMap, imagesEnemies, imagesItems, imagesStatus);
 		if (battleView.fight() == null) {
 			var fg = new FightGraphics(hero, roomEnemies, dungeon, battleView);
@@ -205,6 +221,7 @@ public class Controller {
 	 * @param room the room with the merchant
 	 */
 	public void startMerchant(Room room) {
+		Objects.requireNonNull(room); 
 		merchantView = room.getMerchantView(hero, dungeon, imagesMap, imagesServices, imagesItems);
 		changeView(merchantView);
 	}
@@ -215,6 +232,7 @@ public class Controller {
 	 * @param room the room with the healer
 	 */
 	public void startHealer(Room room) {
+		Objects.requireNonNull(room);
 		healerView = room.getHealerView(hero, dungeon, imagesMap, imagesServices, imagesItems);
 		changeView(healerView);
 	}
@@ -225,6 +243,7 @@ public class Controller {
 	 * @param room the room containing the treasure
 	 */
 	public void startTreasure(Room room) {
+		Objects.requireNonNull(room);
 		treasureView = room.getTreasureView(hero, dungeon, imagesMap, imagesItems);
 		changeView(treasureView);
 	}
@@ -369,6 +388,7 @@ public class Controller {
 	 * @param context the application context for rendering and events
 	 */
 	public void game(ApplicationContext context) {
+		Objects.requireNonNull(context);
     running = true;
     while (running) {
     	context.renderFrame(graphics -> {

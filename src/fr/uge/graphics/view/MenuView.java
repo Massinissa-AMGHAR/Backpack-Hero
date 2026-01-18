@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Creates the main menu view.
@@ -26,10 +27,13 @@ public class MenuView implements View {
 	 * @param images the images used in the menu
 	 */
 	public MenuView(ImageLoader images) {
+		Objects.requireNonNull(images); 
 		this.images = images;
 	}
 	
 	private void background(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context);
 		images.drawImage(graphics, images.get(11), 0, 0, context.getScreenInfo().width(), context.getScreenInfo().height());
 	}
 	
@@ -85,6 +89,8 @@ public class MenuView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void draw(Graphics2D graphics, ApplicationContext context) {
+		Objects.requireNonNull(graphics); 
+		Objects.requireNonNull(context);
 		var screenInfo = context.getScreenInfo();
 		var l = List.of("BACKPACK HERO", "START GAME", "HALL OF FAME");
 		background(graphics, context);
@@ -111,6 +117,8 @@ public class MenuView implements View {
 	 * @param context the application context with screen info
 	 */
 	public void Click(int x, int y, Controller controller, ApplicationContext context) {
+		Objects.requireNonNull(controller); 
+		Objects.requireNonNull(context);
 		if (isPlayButton(x, y)) {
 			controller.startNewGame(false);
 		}

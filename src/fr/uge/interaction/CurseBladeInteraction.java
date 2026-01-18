@@ -1,5 +1,7 @@
 package fr.uge.interaction;
 
+import java.util.Objects;
+
 import fr.uge.character.Enemy;
 import fr.uge.character.Hero;
 import fr.uge.game.FightGraphics;
@@ -19,6 +21,8 @@ public class CurseBladeInteraction implements ItemInteraction {
    * @param self the item causing the bonus damage
    */
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item self) {
+		Objects.requireNonNull(hero);
+		Objects.requireNonNull(self);
 		if (enemy == null) {
 			return;
 		}

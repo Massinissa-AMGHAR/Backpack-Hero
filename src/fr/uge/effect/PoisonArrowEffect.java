@@ -1,5 +1,7 @@
 package fr.uge.effect;
 
+import java.util.Objects;
+
 import fr.uge.character.*;
 import fr.uge.game.FightGraphics;
 import fr.uge.inventory.Item;
@@ -22,6 +24,9 @@ public class PoisonArrowEffect implements ItemEffect {
    * @param item the item giving the effect
    */
 	public void apply(Hero hero, Enemy enemy, FightGraphics fight, Item item) {
+		Objects.requireNonNull(hero); 
+		Objects.requireNonNull(fight); 
+		Objects.requireNonNull(item); 
 		if (enemy == null) {
 			return;
 		}
