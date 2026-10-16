@@ -18,3 +18,8 @@ Thumbs.db
 # tmp_files
 tmp/
 /bin/
+
+# Eclipse
+.classpath
+.project
+.settings/
